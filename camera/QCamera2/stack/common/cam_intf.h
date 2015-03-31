@@ -392,6 +392,7 @@ typedef struct{
 
     /* Max cpp batch size */
     uint8_t max_batch_bufs_supported;
+    uint8_t flash_dev_name[QCAMERA_MAX_FILEPATH_LENGTH];
 } cam_capability_t;
 
 typedef enum {
