@@ -33,7 +33,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.radio.wait_for_pbm=1
 
 PRODUCT_PROPERTY_OVERRIDES += \
-    rild.libargs=-d /dev/smd0 \
+    rild.libargs=-d[SPACE]/dev/smd0 \
     rild.libpath=/vendor/lib64/libril-qc-qmi-1.so \
     ril.subscription.types=NV,RUIM
 
