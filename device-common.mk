@@ -191,7 +191,8 @@ PRODUCT_PACKAGES += \
 
 # IMS
 PRODUCT_PACKAGES += \
-    libshims_ims
+    libshims_ims \
+    libshims_boringssl
 
 # Init
 PRODUCT_COPY_FILES += \
