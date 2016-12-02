@@ -100,6 +100,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     power.msm8994
 
+# Recovery
+PRODUCT_PACKAGES += \
+    librecovery_updater_kitakami
+
 # RIL
 PRODUCT_PACKAGES += \
     libxml2
