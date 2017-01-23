@@ -530,7 +530,6 @@ service timekeep /system/bin/timekeep restore
     user root
     group root
     oneshot
-    seclabel u:r:timekeep:s0
 
 service adsprpcd /system/bin/adsprpcd
    class main
