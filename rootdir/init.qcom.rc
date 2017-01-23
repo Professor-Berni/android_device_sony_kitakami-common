@@ -57,12 +57,6 @@ on init
     # Avoid long waits for rcu grace periods
     write /sys/kernel/rcu_expedited 1
 
-on early-boot
-    # set RLIMIT_MEMLOCK to 64MB
-    setrlimit 8 67108864 67108864
-    write /sys/kernel/boot_adsp/boot 1
-
-on init
     # Enable ramdumps from subsystems to dump
     # adsp ssr
     write /sys/bus/msm_subsys/devices/subsys0/restart_level "SYSTEM"
@@ -74,6 +68,11 @@ on init
     # Create a tmpfs for dynamic network mounting
     mkdir /storage/removable/remote 0700 root system
     mount tmpfs tmpfs /storage/removable/remote mode=0755,uid=0,gid=0
+
+on early-boot
+    # set RLIMIT_MEMLOCK to 64MB
+    setrlimit 8 67108864 67108864
+    write /sys/kernel/boot_adsp/boot 1
 
 on fs
     mount_all fstab.qcom
