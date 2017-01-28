@@ -289,6 +289,7 @@ static void dispatchGetCarrierRestrictions(Parcel &p, RequestInfo *pRI);
 static int responseInts(Parcel &p, void *response, size_t responselen);
 static int responseFailCause(Parcel &p, void *response, size_t responselen);
 static int responseStrings(Parcel &p, void *response, size_t responselen);
+static int responseStringsDataRegistrationState(Parcel &p, void *response, size_t responselen);
 static int responseString(Parcel &p, void *response, size_t responselen);
 static int responseVoid(Parcel &p, void *response, size_t responselen);
 static int responseCallList(Parcel &p, void *response, size_t responselen);
@@ -2593,6 +2594,31 @@ static int responseStrings(Parcel &p, void *response, size_t responselen) {
     return 0;
 }
 
+static int responseStringsDataRegistrationState(Parcel &p, void *response, size_t responselen) {
+    int numStrings;
+
+    if (response == NULL && responselen != 0) {
+        RLOGE("invalid response: NULL");
+        return RIL_ERRNO_INVALID_RESPONSE;
+    }
+    if (responselen % sizeof(char *) != 0) {
+        RLOGE("responseStrings: invalid response length %d expected multiple of %d\n",
+            (int)responselen, (int)sizeof(char *));
+        return RIL_ERRNO_INVALID_RESPONSE;
+    }
+
+    char **p_cur = (char **) response;
+
+    /* Rewrite invalid radio techs */
+    if (p_cur[3] != NULL) {
+        if (strncmp(p_cur[3], "20", 2) == 0) {
+            RLOGE("DATA_REGISTRATION_STATE: radioTechnology: 20 (DC_HSPAP) => 15 (HSPAP)");
+            strncpy(p_cur[3], "15", 2);
+        }
+    }
+
+    return responseStrings(p, response, responselen);
+}
 
 /**
  * NULL strings are accepted
