@@ -53,3 +53,6 @@
 /dev/socket/secd_ebl_sock                u:object_r:secd_socket:s0
 /data/credmgr                            u:object_r:secd_data_file:s0
 /data/credmgr(/.*)                       u:object_r:secd_data_file:s0
+
+# TimeKeep
+/data/time(/.*)                          u:object_r:timekeep_data_file:s0
