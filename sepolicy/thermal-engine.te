@@ -1,3 +1,5 @@
 allow thermal-engine ta_data_file:dir search;
 allow thermal-engine ta_data_file:file r_file_perms;
 allow thermal-engine diag_partition_device:dir search;
+allow thermal-engine diag_data_file:dir search;
+allow thermal-engine diag_data_file:sock_file write;

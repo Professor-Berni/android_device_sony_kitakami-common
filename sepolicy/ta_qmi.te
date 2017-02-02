@@ -13,6 +13,9 @@ allow ta_qmi self:capability { setgid setuid };
 # Connect to /dev/socket/tad
 unix_socket_connect(ta_qmi, tad, tad)
 
+# Connect to /dev/socket/property_service
+unix_socket_connect(ta_qmi, property, init)
+
 # Wakelocks!
 wakelock_use(ta_qmi)
 
@@ -20,4 +23,5 @@ wakelock_use(ta_qmi)
 allow ta_qmi smem_log_device:chr_file rw_file_perms;
 
 allow ta_qmi socket_device:sock_file write;
-
+allow ta_qmi ta_prop:property_service set;
+allow ta_qmi ta_prop:file { read open getattr };

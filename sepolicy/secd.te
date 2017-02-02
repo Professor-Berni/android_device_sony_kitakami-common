@@ -10,3 +10,5 @@ allow secd tee_device:chr_file { ioctl open read write };
 allow secd secd_data_file:file { lock open write create getattr read setattr unlink };
 allow secd secd_data_file:dir { rw_file_perms add_name remove_name search };
 allow secd diag_partition_device:dir search;
+allow secd diag_data_file:dir search;
+allow secd diag_data_file:sock_file write;

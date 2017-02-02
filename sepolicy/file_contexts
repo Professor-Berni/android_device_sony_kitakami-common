@@ -29,7 +29,11 @@
 /dev/block/bootdevice/by-name/TA                               u:object_r:trim_area_partition_device:s0
 /dev/block/platform/soc\.0/7824900\.sdhci/by-name/diag         u:object_r:diag_partition_device:s0
 /dev/block/platform/soc\.0/f9824900\.sdhci/by-name/diag        u:object_r:diag_partition_device:s0
+/dev/block/platform/soc\.0/f9824900\.sdhci/by-num/p39          u:object_r:diag_partition_device:s0
+/dev/block/platform/soc\.0/f9824900\.sdhci/mmcblk0p39          u:object_r:diag_partition_device:s0
 /dev/block/bootdevice/by-name/diag                             u:object_r:diag_partition_device:s0
+/dev/block/bootdevice/by-num/p39                               u:object_r:diag_partition_device:s0
+/dev/block/bootdevice/mmcblk0p39                               u:object_r:diag_partition_device:s0
 /dev/block/mmcblk0p39                                          u:object_r:diag_partition_device:s0
 
 # WiFi MAC address
@@ -57,6 +61,8 @@
 /dev/socket/secd_ebl_sock                u:object_r:secd_socket:s0
 /data/credmgr                            u:object_r:secd_data_file:s0
 /data/credmgr(/.*)                       u:object_r:secd_data_file:s0
+/idd                                     u:object_r:diag_data_file:s0
+/idd(/.*)?                               u:object_r:diag_data_file:s0
 
 # TimeKeep
 /data/time(/.*)                          u:object_r:timekeep_data_file:s0

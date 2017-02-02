@@ -1,0 +1,1 @@
+allow vold diag_data_file:dir { read open ioctl };

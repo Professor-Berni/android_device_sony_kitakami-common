@@ -19,5 +19,4 @@ allow init tad_socket:sock_file create;
 #Torch
 allow init sysfs_camera_torch:lnk_file read;
 
-allow init trim_area_partition_device:blk_file setattr;
-
+allow init trim_area_partition_device:blk_file { write setattr };

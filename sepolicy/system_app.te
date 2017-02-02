@@ -1,5 +1,5 @@
 allow system_app timekeep_prop:file { read getattr open };
 allow system_app timekeep_prop:property_service set;
-allow system_app time_data_file:dir search;
-allow system_app time_data_file:file { write open};
+allow system_app time_data_file:dir { search write add_name } ;
+allow system_app time_data_file:file { read write open getattr create };
 
