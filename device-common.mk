@@ -110,7 +110,7 @@ PRODUCT_PACKAGES += \
     TimeKeep
 
 # Shim libs
-PRODUCT_PACKAGES += libgui_shim
+PRODUCT_PACKAGES += libgui_shim camera.qcom_shim
 
 # Wlan
 PRODUCT_PACKAGES += macaddrsetup
