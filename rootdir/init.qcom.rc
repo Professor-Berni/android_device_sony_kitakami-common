@@ -538,6 +538,7 @@ service perfd /system/vendor/bin/perfd
     user root
     group system
     disabled
+    socket perfd seqpacket 0666 root system
     writepid /dev/cpuset/system-background/tasks
 
 service thermal-engine /system/vendor/bin/thermal-engine
