@@ -1243,6 +1243,13 @@ typedef struct {
                   * Range : 25 to 120
                   * INT_MAX: 0x7FFFFFFF denotes invalid value.
                   * Reference: 3GPP TS 25.123, section 9.1.1.1 */
+} RIL_UMTS_SignalStrength;
+
+typedef struct {
+    int rscp;    /* The Received Signal Code Power in dBm multipled by -1.
+                  * Range : 25 to 120
+                  * INT_MAX: 0x7FFFFFFF denotes invalid value.
+                  * Reference: 3GPP TS 25.123, section 9.1.1.1 */
 } RIL_TD_SCDMA_SignalStrength;
 
 /* Deprecated, use RIL_SignalStrength_v6 */
@@ -1268,9 +1275,9 @@ typedef struct {
 
 typedef struct {
     RIL_GW_SignalStrength       GW_SignalStrength;
+    RIL_UMTS_SignalStrength     UMTS_SignalStrength;
     RIL_CDMA_SignalStrength     CDMA_SignalStrength;
     RIL_EVDO_SignalStrength     EVDO_SignalStrength;
-    int sony_network_field;     //What the network is here?
     RIL_LTE_SignalStrength_v8   LTE_SignalStrength;
     RIL_TD_SCDMA_SignalStrength TD_SCDMA_SignalStrength;
 } RIL_SignalStrength_v10;
