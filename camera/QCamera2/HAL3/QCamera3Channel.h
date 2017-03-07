@@ -30,6 +30,7 @@
 #ifndef __QCAMERA3_CHANNEL_H__
 #define __QCAMERA3_CHANNEL_H__
 
+#include <sys/stat.h>
 #include <hardware/camera3.h>
 #include "QCamera3Stream.h"
 #include "QCamera3Mem.h"
