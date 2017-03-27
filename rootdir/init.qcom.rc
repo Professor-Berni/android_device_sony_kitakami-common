@@ -113,6 +113,16 @@ on boot
     mkdir /dev/socket/qmux_gps 0770 gps gps
     chmod 2770 /dev/socket/qmux_gps
 
+    # Required for fingerprint
+    chown system system /sys/bus/spi/devices/spi0.1/clk_enable
+    chmod 0660 /sys/bus/spi/devices/spi0.1/clk_enable
+    chown system system /sys/bus/spi/devices/spi0.1/spi_prepare
+    chmod 0660 /sys/bus/spi/devices/spi0.1/spi_prepare
+    chown system system /sys/bus/spi/devices/spi0.1/wakeup_enable
+    chmod 0660 /sys/bus/spi/devices/spi0.1/wakeup_enable
+    chown system system /sys/bus/spi/devices/spi0.1/irq
+    chmod 0660 /sys/bus/spi/devices/spi0.1/irq
+
     # add a cpuset for the camera daemon
     # we want all the little cores for camera
     mkdir /dev/cpuset/camera-daemon
@@ -239,6 +249,9 @@ on post-fs
     swapon_all fstab.qcom
 
 on post-fs-data
+    # Fingerprint data folder
+    mkdir /data/fpc 0770 system system
+
     #Secd
     mkdir /data/credmgr 0770 system credmgr_client
 
@@ -735,3 +748,11 @@ on property:service.usb.otg.switch=check
 
 on property:service.usb.otg.switch.timeout=*
     write /sys/module/qpnp_smbcharger_extension/parameters/id_polling_timeout ${service.usb.otg.switch.timeout}
+
+# Fingerprint service
+service fingerprintd /system/bin/fingerprintd
+    class late_start
+    user system
+    group input
+    writepid /dev/cpuset/system-background/tasks
+#group drmrpc input system

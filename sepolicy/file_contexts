@@ -66,3 +66,15 @@
 
 # TimeKeep
 /data/time(/.*)                          u:object_r:timekeep_data_file:s0
+
+# Fingerprint sensor SPI device
+
+/data/fpcd(/.*)?                                                         u:object_r:fpcd_old_data_file:s0
+
+/data/fpc(/.*)?                                                          u:object_r:fpcd_data_file:s0
+/data/fpc/socket(/.*)?                                                   u:object_r:fpcd_socket:s0
+
+/sys/devices/soc\.0/f9923000\.spi/spi_master/spi0/spi0\.1/irq            u:object_r:sysfs_fpcd_irq:s0
+/sys/devices/soc\.0/f9923000\.spi/spi_master/spi0/spi0\.1/clk_enable     u:object_r:sysfs_fpcd_clk_enable:s0
+/sys/devices/soc\.0/f9923000\.spi/spi_master/spi0/spi0\.1/spi_prepare    u:object_r:sysfs_fpcd_spi_prepare:s0
+/sys/devices/soc\.0/f9923000\.spi/spi_master/spi0/spi0\.1/wakeup_enable  u:object_r:sysfs_fpcd_wakeup:s0

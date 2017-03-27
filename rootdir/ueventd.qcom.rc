@@ -261,3 +261,11 @@
 /sys/devices/soc.0/f9923000.spi/spi_master/spi0/spi0.1 spi_prepare      0220 system input
 /sys/devices/soc.0/f9923000.spi/spi_master/spi0/spi0.1 wakeup_enable    0220 system input
 /sys/devices/soc.0/f9923000.spi/spi_master/spi0/spi0.1 irq              0660 system input
+
+# Fingerprint sensor device
+/sys/devices/soc/soc:fpc1145 hw_reset         0220 system input
+/sys/devices/soc/soc:fpc1145 pinctl_set       0220 system input
+/sys/devices/soc/soc:fpc1145 regulator_enable 0220 system input
+/sys/devices/soc/soc:fpc1145 spi_prepare      0220 system input
+/sys/devices/soc/soc:fpc1145 irq              0660 system input
+/sys/devices/soc/soc:fpc1145 wakeup_enable    0220 system input
