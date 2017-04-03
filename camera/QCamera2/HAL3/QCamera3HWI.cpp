@@ -1570,7 +1570,8 @@ int QCamera3HardwareInterface::configureStreams(
 
                 default:
                     ALOGE("%s: not a supported format 0x%x", __func__, newStream->format);
-                    break;
+                    pthread_mutex_unlock(&mMutex);
+                    return -EINVAL;
                 }
             }
 
