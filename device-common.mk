@@ -53,6 +53,9 @@ PRODUCT_PACKAGES += charger_res_images
 PRODUCT_PACKAGES += \
     librmnetctl
 
+# Gello
+PRODUCT_PACKAGES += Gello
+
 # Lights
 PRODUCT_PACKAGES += \
     lights.msm8994
