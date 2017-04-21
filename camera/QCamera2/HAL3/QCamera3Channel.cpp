@@ -43,6 +43,7 @@
 #include "QCamera3Channel.h"
 #include "QCamera3HWI.h"
 #include "QCameraFormat.h"
+#include <sys/stat.h>
 
 using namespace android;
 
