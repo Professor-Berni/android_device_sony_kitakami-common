@@ -128,6 +128,10 @@ TARGET_FS_CONFIG_GEN := $(COMMON_PATH)/config.fs
 # FM radio
 BOARD_HAVE_BCM_FM := true
 
+# BT/FM (Broadcom): Adjust the sysfs patch for 3.10 kernel
+BOARD_HAVE_BCM_FM_SYSFS := "/sys/bus/platform/drivers/bcm_ldisc/bcm_ldisc/"
+BOARD_BRCM_HCI_NUM := 26
+
 # Partitions types
 BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
 TARGET_USERIMAGES_USE_EXT4 := true
