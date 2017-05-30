@@ -34,11 +34,11 @@
 #include <utils/List.h>
 #include <utils/KeyedVector.h>
 #include <hardware/camera3.h>
-#include <camera/CameraMetadata.h>
 #include "QCameraTrace.h"
 #include "QCamera3HALHeader.h"
 #include "QCamera3Channel.h"
 #include "QCamera3CropRegionMapper.h"
+#include "CameraMetadata.h"
 
 #include <hardware/power.h>
 
@@ -58,7 +58,10 @@ extern "C" {
 
 using namespace android;
 
+
 namespace qcamera {
+
+using ::android::hardware::camera::common::V1_0::helper::CameraMetadata;
 
 #ifndef TRUE
 #define TRUE 1
