@@ -38,7 +38,6 @@ LOCAL_SRC_FILES += \
         HAL/QCameraPostProc.cpp \
         HAL/QCamera2HWICallbacks.cpp \
         HAL/QCameraParameters.cpp \
-        HAL/CameraParameters.cpp \
         HAL/QCameraThermalAdapter.cpp
 
 LOCAL_CFLAGS := -Wall -Wextra -Werror
