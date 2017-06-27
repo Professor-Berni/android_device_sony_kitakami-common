@@ -39,6 +39,7 @@
 #include <media/msm_cam_sensor.h>
 #include <cutils/properties.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #define EXTRA_ENTRY 6
 

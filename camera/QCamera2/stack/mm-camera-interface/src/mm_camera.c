@@ -36,6 +36,7 @@
 #include <poll.h>
 #include <cutils/properties.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <cam_semaphore.h>
 

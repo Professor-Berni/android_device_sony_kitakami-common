@@ -38,6 +38,7 @@
 #include <time.h>
 #include <cam_semaphore.h>
 #include <media/msm_media_info.h>
+#include <unistd.h>
 
 #include "mm_camera_dbg.h"
 #include "mm_camera_interface.h"
