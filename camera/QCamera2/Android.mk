@@ -60,12 +60,12 @@ LOCAL_C_INCLUDES := \
 #HAL 1.0 Include paths
 LOCAL_C_INCLUDES += \
         frameworks/native/include/media/hardware \
-        hardware/qcom/camera/QCamera2/HAL \
+        $(LOCAL_PATH)/HAL \
 
 ifeq (1,$(filter 1,$(shell echo "$$(( $(PLATFORM_SDK_VERSION) >= 24 ))" )))
 LOCAL_C_INCLUDES += \
-        hardware/qcom/media/msm8974/libstagefrighthw \
-        hardware/qcom/media/msm8974/mm-core/inc
+        $(call project-path-for,qcom-media)/libstagefrighthw \
+        $(call project-path-for,qcom-media)/mm-core/inc
 else
 LOCAL_C_INCLUDES += \
         hardware/qcom/media/libstagefrighthw \
@@ -97,7 +97,7 @@ endif
 LOCAL_C_INCLUDES += \
         $(TARGET_OUT_HEADERS)/qcom/display
 LOCAL_C_INCLUDES += \
-        hardware/qcom/display/msm8994/libqservice
+        $(call project-path-for,qcom-display)/libqservice
 LOCAL_SHARED_LIBRARIES := libcamera_client liblog libhardware libutils libcutils libdl
 LOCAL_SHARED_LIBRARIES += libmmcamera_interface libmmjpeg_interface libui libcamera_metadata
 LOCAL_SHARED_LIBRARIES += libqdMetaData libqservice libbinder
