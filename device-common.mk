@@ -266,6 +266,10 @@ PRODUCT_PACKAGES += \
     timekeep \
     TimeKeep
 
+# USB
+PRODUCT_PACKAGES += \
+    android.hardware.usb@1.0-service
+
 # Wifi
 PRODUCT_PACKAGES += \
     p2p_supplicant.conf \
