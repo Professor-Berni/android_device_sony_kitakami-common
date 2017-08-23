@@ -22,6 +22,7 @@ LOCAL_SRC_FILES := \
     Camera2Wrapper.cpp \
     Camera3Wrapper.cpp
 
+LOCAL_STATIC_LIBRARIES := libbase libarect
 LOCAL_SHARED_LIBRARIES := \
     libhardware \
     liblog \
@@ -31,7 +32,8 @@ LOCAL_SHARED_LIBRARIES := \
     libsensor \
     libutils \
     libcutils \
-    android.hidl.token@1.0-utils
+    android.hidl.token@1.0-utils \
+    android.hardware.graphics.bufferqueue@1.0
 
 LOCAL_C_INCLUDES := \
     framework/native/include \
