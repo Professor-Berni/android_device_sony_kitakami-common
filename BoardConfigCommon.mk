@@ -145,7 +145,10 @@ TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_RIL_VARIANT := caf
 
 # Shims
-TARGET_LD_SHIM_LIBS := /system/lib/hw/camera.qcom.so|/system/vendor/lib/camera.qcom_shim.so
+TARGET_LD_SHIM_LIBS := \
+     /system/lib/hw/camera.qcom.so|/system/vendor/lib/camera.qcom_shim.so \
+     /system/lib64/libsys-utils.so|libsensor.so \
+     /system/lib/libcammw.so|libsensor.so
 
 # SELinux
 include device/qcom/sepolicy/sepolicy.mk
