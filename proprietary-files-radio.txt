@@ -1,12 +1,12 @@
 # CNE
-vendor/lib/libcneapiclient.so
+vendor/lib/libcneapiclient.so|ba560601e54cab292a306be9c4247e10753e4a2a
 vendor/lib/libvendorconn.so
-vendor/lib/libwqe.so
+vendor/lib/libwqe.so|04e000f40eabee3fc333c5726d8f7720c7e1a144
 vendor/lib/libxml.so
 vendor/lib/libril-qc-radioconfig.so
-vendor/lib64/libcneapiclient.so
+vendor/lib64/libcneapiclient.so|3aa5d84c3a0cc3e25e7f245610f3f34050c4b06b
 vendor/lib64/libvendorconn.so
-vendor/lib64/libwqe.so
+vendor/lib64/libwqe.so|0e5accf0580bfdd6a3d3a1e961be7a90012844b6
 vendor/lib64/libxml.so
 vendor/lib64/libril-qc-radioconfig.so
 
@@ -66,7 +66,6 @@ lib64/libtpm.so
 vendor/lib/liblqe.so
 vendor/lib/libmdmdetect.so
 vendor/lib/libsubsystem_control.so
-vendor/lib64/libcneapiclient.so
 vendor/lib64/libconfigdb.so
 vendor/lib64/liblqe.so
 vendor/lib64/libmdmdetect.so
