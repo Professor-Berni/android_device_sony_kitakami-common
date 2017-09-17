@@ -122,6 +122,9 @@ PRODUCT_PACKAGES += \
     android.hardware.gatekeeper@1.0-impl
 
 # GPS
+PRODUCT_PACKAGES += \
+    libshim_gps
+
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/gps/flp.conf:system/etc/flp.conf \
     $(LOCAL_PATH)/gps/gps.conf:system/etc/gps.conf \
