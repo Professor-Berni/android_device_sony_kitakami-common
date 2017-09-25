@@ -18,10 +18,17 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := camera.qcom_shim.cpp
 
+LOCAL_SHARED_LIBRARIES := \
+    libgui \
+    liblog \
+    libui
+
+LOCAL_C_INCLUDES := \
+    frameworks/native/include
+
 LOCAL_MODULE := camera.qcom_shim
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_CLASS := SHARED_LIBRARIES
-LOCAL_SHARED_LIBRARIES := liblog
 LOCAL_32_BIT_ONLY := true
 LOCAL_PROPRIETARY_MODULE := true
 
