@@ -212,6 +212,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     p2p_supplicant.conf \
     hostapd \
+    libwifi-hal-bcm \
     libwpa_client \
     wpa_supplicant \
     wpa_supplicant.conf
