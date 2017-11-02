@@ -6,3 +6,21 @@ value:2951
 
 [AID_RFS_SHARED]
 value:2952
+
+[AID_IDD]
+value: 2987
+
+[AID_UPDATEMISCTA]
+value: 2991
+
+[AID_TRIMAREA]
+value: 2993
+
+[AID_CREDMGR_CLI]
+value: 2996
+
+[AID_TAD]
+value: 2997
+
+[AID_TA_QMI]
+value: 2998
