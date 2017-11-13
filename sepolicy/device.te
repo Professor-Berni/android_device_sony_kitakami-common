@@ -1,2 +1,0 @@
-type trim_area_partition_device, dev_type;
-type diag_partition_device, dev_type;
