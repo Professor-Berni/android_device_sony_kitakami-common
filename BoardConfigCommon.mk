@@ -99,6 +99,9 @@ SF_VSYNC_EVENT_PHASE_OFFSET_NS := 6000000
 # Encryption
 TARGET_HW_DISK_ENCRYPTION := true
 
+# Filesystem
+TARGET_FS_CONFIG_GEN := $(COMMON_PATH)/config.fs
+
 # FM radio
 BOARD_HAVE_BCM_FM := true
 
