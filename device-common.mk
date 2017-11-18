@@ -201,8 +201,7 @@ PRODUCT_PACKAGES += \
 
 # Shim libs
 PRODUCT_PACKAGES += \
-   camera.qcom_shim \
-   libgui_shim
+   camera.qcom_shim
 
 # TimeKeep
 PRODUCT_PACKAGES += \
