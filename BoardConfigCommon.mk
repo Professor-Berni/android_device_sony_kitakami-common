@@ -81,6 +81,9 @@ BOARD_CHARGER_ENABLE_SUSPEND := true
 BOARD_CHARGER_SHOW_PERCENTAGE := true
 BOARD_CHARGER_DISABLE_INIT_BLANK := true
 
+# CM hardware
+BOARD_USES_CYANOGEN_HARDWARE := true
+
 # Display
 NUM_FRAMEBUFFER_SURFACE_BUFFERS := 3
 TARGET_USES_ION := true
@@ -100,6 +103,9 @@ SF_VSYNC_EVENT_PHASE_OFFSET_NS := 6000000
 # Encryption
 TARGET_HW_DISK_ENCRYPTION := true
 
+# FM radio
+BOARD_HAVE_BCM_FM := true
+
 # Partitions types
 BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
 TARGET_USERIMAGES_USE_EXT4 := true
@@ -114,11 +120,18 @@ TARGET_PLATFORM_DEVICE_BASE := /devices/soc.0/
 # Power
 TARGET_POWERHAL_VARIANT := qcom
 
+# Properties
+TARGET_SYSTEM_PROP += $(COMMON_PATH)/system.prop
+
 # RPC
 TARGET_NO_RPC := true
 
 # Keymaster
 TARGET_PROVIDES_KEYMASTER := true
+
+# NFC
+NFC_NXP_CHIP_TYPE := PN547C2
+BOARD_NFC_CHIPSET := pn547
 
 # Sensors
 USE_SENSOR_MULTI_HAL := true
@@ -143,3 +156,14 @@ include device/qcom/sepolicy/sepolicy.mk
 
 BOARD_SEPOLICY_DIRS += \
     $(COMMON_PATH)/sepolicy
+
+# WiFi
+BOARD_WLAN_DEVICE           := bcmdhd
+BOARD_WPA_SUPPLICANT_DRIVER := NL80211
+BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
+BOARD_HOSTAPD_DRIVER        := NL80211
+BOARD_HOSTAPD_PRIVATE_LIB   := lib_driver_cmd_$(BOARD_WLAN_DEVICE)
+WIFI_DRIVER_FW_PATH_PARAM   := "/sys/module/bcmdhd/parameters/firmware_path"
+WIFI_DRIVER_FW_PATH_AP      := "/system/etc/firmware/wlan/bcmdhd/fw_bcmdhd_apsta.bin"
+WIFI_DRIVER_FW_PATH_STA     := "/system/etc/firmware/wlan/bcmdhd/fw_bcmdhd.bin"
+WPA_SUPPLICANT_VERSION      := VER_0_8_X

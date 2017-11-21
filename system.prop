@@ -1,0 +1,95 @@
+# Audio
+tunnel.audio.encode = false
+audio.deep_buffer.media=true
+audio.offload.gapless.enabled=true
+audio.offload.buffer.size.kb=32
+audio.offload.video=false
+audio.offload.pcm.16bit.enable=true
+audio.offload.passthrough=false
+audio.offload.multiple.enabled=true
+audio.offload.pcm.24bit.enable=true
+audio.offload.track.enable=true
+persist.audio.fluence.voicecall=true
+persist.audio.fluence.voicerec=false
+persist.audio.fluence.speaker=true
+ro.qc.sdk.audio.fluencetype=none
+ro.qc.sdk.audio.ssr=false
+persist.audio.ssr.3mic=false
+use.voice.path.for.pcm.voip=true
+persist.speaker.prot.enable=false
+persist.spkr.cal.duration=0
+qcom.hw.aac.encoder=true
+
+# Camera
+ro.qc.sdk.gestures.camera=false
+ro.qc.sdk.camera.facialproc=false
+camera.disable_zsl_mode=1
+
+# Bluetooth
+bluetooth.enable_timeout_ms=12000
+ro.bluetooth.hfp.ver=1.6
+ro.bt.bdaddr_path=/data/etc/bluetooth_bdaddr
+
+# Display
+debug.sf.hw=1
+debug.egl.hw=1
+debug.composition.type=c2d
+persist.hwc.mdpcomp.enable=true
+persist.mdpcomp.4k2kSplit=1
+persist.hwc.mdpcomp.maxpermixer=5
+persist.mdpcomp_perfhint=50
+debug.mdpcomp.logs=0
+persist.metadata_dynfps.disable=true
+persist.hwc.ptor.enable=true
+dev.pm.dyn_samplingrate=1
+persist.demo.hdmirotationlock=false
+ro.qualcomm.cabl=2
+hw.cabl.level=Auto
+ro.opengles.version=196609
+
+# Dex2oat limits
+dalvik.vm.boot-dex2oat-threads=4
+dalvik.vm.dex2oat-threads=2
+dalvik.vm.image-dex2oat-threads=4
+
+# Media
+media.stagefright.enable-player=true
+media.stagefright.enable-http=true
+media.stagefright.enable-aac=true
+media.stagefright.enable-qcp=true
+media.stagefright.enable-fma2dp=true
+media.stagefright.enable-scan=true
+mmp.enable.3g2=true
+mm.enable.smoothstreaming=true
+media.aac_51_output_enabled=true
+av.debug.disable.pers.cache=true
+
+# Perf
+ro.min_freq_0=384000
+ro.min_freq_4=384000
+ro.vendor.extension_library=libqti-perfd-client.so
+
+# SEMC props
+ro.semc.version.fs=GENERIC
+ro.semc.version.fs_revision=32.3.A.0.376
+
+# Sensors
+ro.sony.sensors.wu=true
+ro.sony.sensors.max_geomag_rotv=70
+ro.sony.sensors.step_detector=false
+ro.sony.sensors.step_counter=false
+ro.sony.sensors.smd=false
+ro.sony.sensors.game_rv=false
+ro.sony.sensors.amd=false
+ro.sony.sensors.rmd=false
+ro.sony.sdk.sensors.gestures=false
+ro.sony.sensors.facing=false
+ro.sony.sensors.pedometer=false
+ro.sony.sensors.scrn_ortn=false
+ro.sony.sensors.cmc=false
+ro.sony.sensors.dpc=false
+ro.sony.sensors.pug=false
+ro.qc.sdk.sensors.gestures=true
+
+# Wifi
+wifi.interface=wlan0
