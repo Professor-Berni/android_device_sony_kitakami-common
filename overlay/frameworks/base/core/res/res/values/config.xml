@@ -52,22 +52,23 @@
          Zone N + 1     array[N] <= LUX < infinity
          Must be overridden in platform specific overlays -->
     <integer-array name="config_autoBrightnessLevels">
-        <item>16</item>
+        <item>1</item>
+        <item>8</item>
+        <item>24</item>
         <item>64</item>
-        <item>144</item>
+        <item>128</item>
+        <item>170</item>
+        <item>220</item>
         <item>256</item>
-        <item>400</item>
-        <item>576</item>
-        <item>784</item>
+        <item>384</item>
+        <item>512</item>
+        <item>768</item>
         <item>1024</item>
-        <item>1296</item>
-        <item>1600</item>
-        <item>1936</item>
-        <item>2304</item>
-        <item>2704</item>
-        <item>3136</item>
-        <item>3600</item>
-        <item>4096</item>
+        <item>1536</item>
+        <item>2048</item>
+        <item>2560</item>
+        <item>3584</item>
+        <item>4095</item>
     </integer-array>
 
     <!-- Array of output values for LCD backlight corresponding to the LUX values
@@ -75,38 +76,46 @@
          than the size of the config_autoBrightnessLevels array.
          This must be overridden in platform specific overlays -->
     <integer-array name="config_autoBrightnessLcdBacklightValues">
-        <item>10</item>   <!--    0 -->
-        <item>16</item>   <!--   16 -->
-        <item>32</item>   <!--   64 -->
-        <item>48</item>   <!--  144 -->
-        <item>64</item>   <!--  256 -->
-        <item>80</item>   <!--  400 -->
-        <item>96</item>   <!--  576 -->
-        <item>112</item>  <!--  784 -->
-        <item>128</item>  <!-- 1024 -->
-        <item>144</item>  <!-- 1296 -->
-        <item>160</item>  <!-- 1600 -->
-        <item>176</item>  <!-- 1936 -->
-        <item>192</item>  <!-- 2304 -->
-        <item>208</item>  <!-- 2704 -->
-        <item>224</item>  <!-- 3136 -->
-        <item>240</item>  <!-- 3600 -->
-        <item>255</item>  <!-- 4096 -->
+        <item>1</item>   <!-- 0-8 -->
+        <item>2</item>   <!-- 8-24 -->
+        <item>4</item>   <!-- 24-64 -->
+        <item>8</item>   <!-- 64-128 -->
+        <item>24</item>   <!-- 128-170 -->
+        <item>32</item>   <!-- 170-220 -->
+        <item>46</item>   <!-- 220-256 -->
+        <item>65</item>   <!-- 256-384 -->
+        <item>80</item>   <!-- 384-512 -->
+        <item>100</item>   <!-- 512-768 -->
+        <item>130</item>   <!-- 768-1024 -->
+        <item>150</item>   <!-- 1024-1536 -->
+        <item>170</item>   <!-- 1536-2048 -->
+        <item>190</item>   <!-- 2048-2560 -->
+        <item>220</item>   <!-- 2560-3584 -->
+        <item>254</item>   <!-- 3584-4094 -->
+        <item>255</item>   <!-- 4095+ -->
     </integer-array>
 
     <!-- Minimum screen brightness setting allowed by the power manager.
          The user is forbidden from setting the brightness below this level. -->
-    <integer name="config_screenBrightnessSettingMinimum">10</integer>
+    <integer name="config_screenBrightnessSettingMinimum">4</integer> <!-- 24 -->
+
+    <!-- Maximum screen brightness allowed by the power manager.
+         The user is forbidden from setting the brightness above this level. -->
+    <integer name="config_screenBrightnessSettingMaximum">255</integer> <!-- 4095 -->
+
+    <!-- Default screen brightness setting.
+         Must be in the range specified by minimum and maximum. -->
+    <integer name="config_screenBrightnessSettingDefault">150</integer> <!-- 1536 -->
 
     <!-- Screen brightness used to dim the screen while dozing in a very low power state.
          May be less than the minimum allowed brightness setting
          that can be set by the user. -->
-    <integer name="config_screenBrightnessDoze">5</integer>
+    <integer name="config_screenBrightnessDoze">1</integer> <!-- 8 -->
 
     <!-- Screen brightness used to dim the screen when the user activity
          timeout expires.  May be less than the minimum allowed brightness setting
          that can be set by the user. -->
-    <integer name="config_screenBrightnessDim">10</integer>
+    <integer name="config_screenBrightnessDim">3</integer> <!-- 24 -->
 
     <!-- Minimum allowable screen brightness to use in a very dark room.
          This value sets the floor for the darkest possible auto-brightness
@@ -115,7 +124,7 @@
          some range of adjustment to dim the screen further than usual in very
          dark rooms. The contents of the screen must still be clearly visible
          in darkness (although they may not be visible in a bright room). -->
-    <integer name="config_screenBrightnessDark">5</integer>
+    <integer name="config_screenBrightnessDark">4</integer> <!-- 64 -->
 
     <!-- If this is true, the screen will come on when you unplug usb/power/whatever. -->
     <bool name="config_unplugTurnsOnScreen">true</bool>
