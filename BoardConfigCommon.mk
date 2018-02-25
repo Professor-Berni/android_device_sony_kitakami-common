@@ -148,6 +148,9 @@ TARGET_RELEASETOOLS_EXTENSIONS := $(COMMON_PATH)
 BOARD_PROVIDES_LIBRIL := true
 TARGET_RIL_VARIANT := caf
 
+# Shims
+TARGET_LD_SHIM_LIBS := /system/lib/hw/camera.qcom.so|/system/vendor/lib/camera.qcom_shim.so
+
 # SELinux
 include device/qcom/sepolicy/sepolicy.mk
 
