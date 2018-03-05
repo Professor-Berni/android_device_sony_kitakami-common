@@ -20,7 +20,6 @@ vendor/lib/libril-qc-ltedirectdisc.so
 vendor/lib/libril-qc-qmi-1.so
 vendor/lib/libril-qc-radioconfig.so
 vendor/lib/librilqmiservices.so
-vendor/lib/libsettings.so|0003c26844af89c0ad4d4bbb6fd73948f09ace50
 vendor/lib64/libdiag.so
 vendor/lib64/libdsi_netctrl.so
 vendor/lib64/libdsutils.so
@@ -41,7 +40,7 @@ vendor/lib64/libsmemlog.so
 vendor/lib64/libril-qc-ltedirectdisc.so
 vendor/lib64/libril-qc-radioconfig.so
 vendor/lib64/librilqmiservices.so
-vendor/lib64/libsettings.so|d46f959c6da4ffcc43090ad02edc4a3c326f9a29
+vendor/lib64/libsettings.so|5020a3c72c9e5c9a9f3c48c67c740961bb05000b
 
 # Radio
 bin/netmgrd
