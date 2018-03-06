@@ -207,10 +207,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/media_codecs_performance.xml:system/etc/media_codecs_performance.xml \
     $(LOCAL_PATH)/configs/media_profiles_V1_0.xml:system/etc/media_profiles_V1_0.xml
 
-# Multihal
-PRODUCT_PACKAGES += \
-    sensors.msm8994
-
 # NFC
 PRODUCT_PACKAGES += \
     android.hardware.nfc@1.0-impl \
@@ -249,8 +245,7 @@ PRODUCT_COPY_FILES += \
 
 # Sensors
 PRODUCT_PACKAGES += \
-    android.hardware.sensors@1.0-impl \
-    android.hardware.sensors@1.0-service
+    android.hardware.sensors@1.0-impl
 
 # Shim libs
 PRODUCT_PACKAGES += \
