@@ -71,7 +71,7 @@ ro.vendor.extension_library=libqti-perfd-client.so
 
 # SEMC props
 ro.semc.version.fs=GENERIC
-ro.semc.version.fs_revision=32.3.A.0.376
+ro.semc.version.fs_revision=32.4.A.1.54
 
 # Sensors
 ro.sony.sensors.wu=true
