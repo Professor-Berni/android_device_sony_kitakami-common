@@ -33,8 +33,20 @@
 #include <hardware/camera.h>
 #include <utils/Mutex.h>
 #include <utils/List.h>
+<<<<<<< HEAD
 #include <qdMetaData.h>
 #include <utils/Timers.h>
+=======
+
+//Media depedancies
+#include "OMX_QCOMExtns.h"
+
+// Display dependencies
+#include "qdMetaData.h"
+
+// Camera dependencies
+#include "hardware/camera.h"
+>>>>>>> 1ab3be299... kitakami-common: camera: Completed FR49059 and FR49058
 
 extern "C" {
 #include <sys/types.h>
