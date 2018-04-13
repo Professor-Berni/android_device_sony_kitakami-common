@@ -140,6 +140,7 @@ on boot
     write /dev/cpuset/system-background/cpus 0-2
     write /dev/cpuset/top-app/cpus 0-7
     write /dev/cpuset/camera-daemon/cpus 0-3
+    write /dev/cpuset/restricted/cpus 0-3
 
     write /proc/sys/kernel/sched_boost 1
     write /proc/sys/vm/dirty_ratio 5
