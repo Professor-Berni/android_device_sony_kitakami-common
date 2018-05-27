@@ -244,8 +244,4 @@ lib64/libta.so
 -vendor/lib64/libtime_genoff.so
 
 # Widevine
-lib/drm/libdrmwvmplugin.so
-vendor/lib/libwvdrm_L1.so
-vendor/lib/libwvm.so
-vendor/lib/libWVStreamControlAPI_L1.so
-vendor/lib/mediadrm/libwvdrmengine.so
+vendor/lib/mediadrm/libwvdrmengine.so|e3a79580033962d8396d52617d849d44af5257f7
