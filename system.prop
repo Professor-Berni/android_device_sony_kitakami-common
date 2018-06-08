@@ -42,6 +42,7 @@ ro.bt.bdaddr_path=/data/etc/bluetooth_bdaddr
 # Display
 debug.sf.hw=1
 debug.egl.hw=1
+debug.hwui.use_buffer_age=false
 debug.composition.type=c2d
 persist.hwc.mdpcomp.enable=true
 persist.mdpcomp.4k2kSplit=1
