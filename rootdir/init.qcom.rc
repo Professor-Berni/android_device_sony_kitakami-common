@@ -470,9 +470,9 @@ service irsc_util /system/bin/irsc_util "/etc/sec_config"
     oneshot
 
 service sensors /system/bin/sensors.qcom
-    class main
+    class core
     user root
-    group sensors radio system
+    group root radio system
 
 # Adjust socket buffer to enlarge TCP receive window for high bandwidth
 # but only if ro.data.large_tcp_window_size property is set.
