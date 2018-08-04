@@ -261,7 +261,6 @@ on post-fs-data
     mkdir /idd/output 0755 oem_2987 oem_2987
     mkdir /idd/socket 0711 oem_2987 oem_2987
     mkdir /idd/startup-prober 0700 root root
-
     restorecon_recursive /idd
     mkdir /rca/plugins 0750 oem_2987 oem_2987
     restorecon_recursive /rca
@@ -470,9 +469,9 @@ service irsc_util /system/bin/irsc_util "/etc/sec_config"
     oneshot
 
 service sensors /system/bin/sensors.qcom
-    class core
+    class main
     user root
-    group root radio system
+    group radio system
 
 # Adjust socket buffer to enlarge TCP receive window for high bandwidth
 # but only if ro.data.large_tcp_window_size property is set.
@@ -536,10 +535,10 @@ service perfd /system/vendor/bin/perfd
 service thermal-engine /system/vendor/bin/thermal-engine
    class main
    user root
+   group root
    socket thermal-send-client stream 0666 system system
    socket thermal-recv-client stream 0660 system system
    socket thermal-recv-passive-client stream 0666 system system
-   group root
 
 service adsprpcd /system/bin/adsprpcd
    class main
@@ -551,13 +550,14 @@ service tad_static /system/bin/tad_static /dev/block/bootdevice/by-name/TA 0,16
     class core
     user oem_2997
     group oem_2997 root
-    socket oem_2997 stream 0660 system oem_2993
+    socket tad stream 0660 system oem_2993
     writepid /dev/cpuset/system-background/tasks
 
 # SONY misc
 service ta_qmi_service /system/bin/ta_qmi_service
     class main
     user root
+    group wakelock
     writepid /dev/cpuset/system-background/tasks
 
 # SONY prop
@@ -584,22 +584,31 @@ service rmt_storage /system/bin/rmt_storage
 service ril-daemon2 /vendor/bin/hw/rild -c 2
     class main
     socket rild2 stream 660 root radio
+    socket sap_uim_socket2 stream 660 bluetooth bluetooth
     socket rild-debug2 stream 660 radio system
     user root
-    group radio cache inet misc audio sdcard_r sdcard_rw qcom_diag diag log drmrpc oem_2993
+    group radio cache inet misc audio log readproc wakelock oem_2950 oem_2993
     disabled
+
+service ril-daemon /vendor/bin/hw/rild
+    class main
+    socket rild stream 660 root radio
+    socket sap_uim_socket1 stream 660 bluetooth bluetooth
+    socket rild-debug stream 660 radio system
+    user root
+    group radio cache inet misc audio log readproc wakelock oem_2950 oem_2993
 
 # QCOM prop
 service qmuxd /system/bin/qmuxd
     class main
     user radio
-    group radio audio bluetooth wakelock gps nfc diag drmrpc
+    group radio audio bluetooth gps diag drmrpc oem_2950
     writepid /dev/cpuset/system-background/tasks
 
 # QCOM prop
 service netmgrd /system/bin/netmgrd
     class main
-    group system wakelock
+    group root wifi wakelock radio inet oem_2950
     writepid /dev/cpuset/system-background/tasks
 
 service taimport /system/bin/taimport
@@ -659,39 +668,20 @@ service secd /system/bin/secd
     socket secd_devsec_sock stream 0660 system oem_2996
     socket secd_credmgr_sock stream 0660 system oem_2996
 
-service iddd /system/bin/iddd
-    class core
-    user oem_2987
-    group oem_2987 log inet oem_2993
-
-# Redefined Service
 service audioserver /system/bin/audioserver
     class main
     user audioserver
-    # media gid needed for /dev/fm (radio) and for /data/misc/media (tee)
-    group audio oem_2993 camera drmrpc inet media mediadrm net_bt net_bt_admin net_bw_acct qcom_diag
+    group audio camera drmrpc inet media mediadrm net_bt net_bt_admin net_bw_acct oem_2993
     ioprio rt 4
-    writepid /dev/cpuset/foreground/tasks
-
-service cameraserver /system/bin/cameraserver
-    class main
-    user cameraserver
-    group audio camera drmrpc inet media mediadrm net_bt net_bt_admin net_bw_acct oem_2996 oem_2993
-    ioprio rt 4
-    writepid /dev/cpuset/foreground/tasks
-
-service drm /system/bin/drmserver
-    class main
-    user drm
-    group drm system inet drmrpc readproc oem_2993
-    writepid /dev/cpuset/foreground/tasks
+    writepid /dev/cpuset/foreground/tasks /dev/stune/foreground/tasks
+    onrestart restart audio-hal-2-0
 
 service media /system/bin/mediaserver
     class main
     user media
     group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm oem_2996
     ioprio rt 4
-    writepid /dev/cpuset/foreground/tasks
+    writepid /dev/cpuset/foreground/tasks /dev/stune/foreground/tasks
 
 service mediadrm /system/bin/mediadrmserver
     class main
@@ -700,13 +690,25 @@ service mediadrm /system/bin/mediadrmserver
     ioprio rt 4
     writepid /dev/cpuset/foreground/tasks
 
-service ril-daemon /system/bin/rild
+service camera-provider-2-4 /vendor/bin/hw/android.hardware.camera.provider@2.4-service
+    class hal
+    user cameraserver
+    group audio camera input drmrpc oem_2996 oem_2993
+    ioprio rt 4
+    capabilities SYS_NICE
+    writepid /dev/cpuset/camera-daemon/tasks /dev/stune/top-app/tasks
+
+service cameraserver /system/bin/cameraserver
     class main
-    socket rild stream 660 root radio
-    socket sap_uim_socket1 stream 660 bluetooth bluetooth
-    socket rild-debug stream 660 radio system
-    user root
-    group radio cache inet misc audio log readproc wakelock qcom_diag drmrpc oem_2993
+    user cameraserver
+    group audio camera input drmrpc oem_2996 oem_2993
+    ioprio rt 4
+    writepid /dev/cpuset/camera-daemon/tasks /dev/stune/top-app/tasks
+
+service iddd /system/bin/iddd
+    class core
+    user oem_2987
+    group oem_2987 log inet oem_2993
 
 on property:service.usb.otg.switch=check
     write /sys/module/qpnp_smbcharger_extension/parameters/start_id_polling 1
