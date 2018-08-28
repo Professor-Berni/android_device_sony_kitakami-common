@@ -583,7 +583,7 @@ service ril-daemon2 /vendor/bin/hw/rild -c 2
     socket sap_uim_socket2 stream 660 bluetooth bluetooth
     socket rild-debug2 stream 660 radio system
     user root
-    group radio cache inet misc audio log readproc wakelock oem_2950 oem_2993
+    group radio cache inet misc audio log readproc wakelock oem_2993
     disabled
 
 service ril-daemon /vendor/bin/hw/rild
