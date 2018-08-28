@@ -1,5 +1,5 @@
 # Audio
-tunnel.audio.encode = false
+vendor.tunnel.audio.encode = false
 audio.deep_buffer.media=true
 audio.offload.gapless.enabled=true
 audio.offload.buffer.size.kb=32
@@ -9,11 +9,11 @@ audio.offload.passthrough=false
 audio.offload.multiple.enabled=true
 audio.offload.pcm.24bit.enable=true
 audio.offload.track.enable=true
-persist.audio.fluence.voicecall=true
-persist.audio.fluence.voicerec=false
-persist.audio.fluence.speaker=true
-ro.qc.sdk.audio.fluencetype=none
-ro.qc.sdk.audio.ssr=false
+persist.vendor.audio.fluence.voicecall=true
+persist.vendor.audio.fluence.voicerec=false
+persist.vendor.audio.fluence.speaker=true
+ro.vendor.audio.fluencetype=none
+ro.vendor.audio.ssr=false
 persist.audio.ssr.3mic=false
 use.voice.path.for.pcm.voip=true
 persist.speaker.prot.enable=false
