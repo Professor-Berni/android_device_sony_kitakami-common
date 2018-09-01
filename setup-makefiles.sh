@@ -47,6 +47,10 @@ printf 'ifneq ($(BOARD_HAVE_RADIO),false)\n' >> "$PRODUCTMK"
 
 write_makefiles "$MY_DIR"/proprietary-files-radio.txt
 
+echo "ifeq (\$(strip \$(BOARD_NFC_CHIPSET)),pn547)" >> "$ANDROIDMK"
+write_makefiles "$MY_DIR"/proprietary-files-pn547.txt
+echo "endif" >> "$ANDROIDMK"
+
 printf 'endif\n' >> "$PRODUCTMK"
 
 # We are done!
