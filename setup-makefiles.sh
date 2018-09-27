@@ -37,7 +37,7 @@ fi
 setup_vendor "$DEVICE_COMMON" "$VENDOR" "$CM_ROOT" true
 
 # Copyright headers and guards
-write_headers "ivy karin karin_windy sumire suzuran"
+write_headers "ivy karin karin_windy satsuki sumire suzuran"
 
 # The standard common blobs
 write_makefiles "$MY_DIR"/proprietary-files.txt
