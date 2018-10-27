@@ -19,3 +19,5 @@
 
 /devices/soc.0/f9200000.ssusb/f9200000.dwc3/xhci-hcd.0.auto/usb* auto auto defaults voldmanaged=usbdisk:auto
 
+# Zram
+/dev/block/zram0                            none                swap    defaults                                                                                zramsize=536870912,max_comp_streams=8
