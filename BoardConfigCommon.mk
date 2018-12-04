@@ -161,7 +161,6 @@ TARGET_RECOVERY_FSTAB := $(COMMON_PATH)/rootdir/fstab.qcom
 TARGET_USERIMAGES_USE_EXT4 := true
 
 # RIL
-BOARD_RIL_CLASS := ../../../$(COMMON_PATH)/ril
 TARGET_RIL_VARIANT := caf
 
 # Shims
