@@ -620,6 +620,20 @@ bool dispatchStrings(int serial, int slotId, int request, bool allowEmpty, int c
 #endif
         free(pStrings);
     }
+
+    /**
+      * Sony 8960 RIL stack compatibility
+      * Qualcomm's RIL doesn't seem to issue any callbacks for opcode 47
+      * This may be a bug on how we call rild or simply some proprietary 'feature'
+      * ..and we don't care: We simply send a SUCCESS message back to the caller to
+      * indicate that we received the command & unblock the UI.
+      * The user will still see if the registration was OK by using the
+      * normal signal meter
+      */
+    if (request == RIL_REQUEST_SET_NETWORK_SELECTION_MANUAL) {
+        RLOGE("Sending fake success event for request %s", requestToString(request));
+        RIL_onRequestComplete(pRI, RIL_E_SUCCESS, NULL, 0);
+    }
     return true;
 }
 
