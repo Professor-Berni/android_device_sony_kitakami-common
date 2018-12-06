@@ -62,7 +62,15 @@ static void onRequestCompleteShim(RIL_Token t, RIL_Errno e, void* response, size
     }
 
     int request = requestInfo->pCI->requestNumber;
-    switch (request) {}
+    switch (request) {
+        case RIL_REQUEST_DEVICE_IDENTITY:
+            if (responselen != 5 * sizeof(char*)) {
+                ALOGE("%s: invalid response length of RIL_REQUEST_DEVICE_IDENTITY", __func__);
+                goto do_not_handle;
+            }
+            responselen = 4 * sizeof(char*);
+            break;
+    }
 
 do_not_handle:
     ossRilEnv->OnRequestComplete(t, e, response, responselen);
