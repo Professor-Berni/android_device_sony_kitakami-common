@@ -77,6 +77,10 @@ mm.enable.smoothstreaming=true
 media.aac_51_output_enabled=true
 av.debug.disable.pers.cache=true
 
+# Memory optimizations
+ro.vendor.qti.am.reschedule_service=true
+ro.vendor.qti.sys.fw.bservice_enable=true
+
 # Perf
 ro.min_freq_0=384000
 ro.min_freq_4=384000
