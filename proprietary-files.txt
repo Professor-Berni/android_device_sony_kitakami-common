@@ -21,6 +21,12 @@ vendor/lib64/libacdbrtac.so
 vendor/lib64/libadiertac.so
 vendor/lib64/libaudcal.so
 
+# Bluetooth
+vendor/lib/libaptX_encoder.so
+vendor/lib/libaptXHD_encoder.so
+vendor/lib64/libaptX_encoder.so
+vendor/lib64/libaptXHD_encoder.so
+
 # CMN firmware
 etc/firmware/cmnlib.b00
 etc/firmware/cmnlib.b01
