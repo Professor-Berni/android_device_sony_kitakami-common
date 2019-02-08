@@ -21,12 +21,6 @@ vendor/lib64/libacdbrtac.so
 vendor/lib64/libadiertac.so
 vendor/lib64/libaudcal.so
 
-# Bluetooth
-vendor/lib/libaptX_encoder.so
-vendor/lib/libaptXHD_encoder.so
-vendor/lib64/libaptX_encoder.so
-vendor/lib64/libaptXHD_encoder.so
-
 # CMN firmware
 etc/firmware/cmnlib.b00
 etc/firmware/cmnlib.b01
@@ -168,7 +162,6 @@ lib/libdevice_security.so
 lib/libplstorage.so
 lib/libsuntory.so
 lib/libsuntory_utils.so
-lib64/lib-preload64.so|7c5582e9df7dfd98b70814b3792429b2d9a0231b
 lib64/lib_asb_tee.so
 lib64/libcredential-manager-service.so
 lib64/libdevice_security.so
@@ -231,7 +224,6 @@ vendor/lib/libmmcamera_ubifocus_lib.so
 bin/mlog_qmi_service
 bin/sct_service
 bin/taimport
-bin/tad_static|09838bf6e1fbc19106b09f47b3f48963641faeed
 bin/ta_qmi_service
 bin/updatemiscta
 lib/libMiscTaAccessor.so
