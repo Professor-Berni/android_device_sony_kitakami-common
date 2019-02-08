@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2016 The CyanogenMod Project
-# Copyright (C) 2017 The LineageOS Project
+# Copyright (C) 2017-2019 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,6 +17,9 @@
 
 # Get non-open-source common files
 $(call inherit-product, vendor/sony/kitakami-common/kitakami-common-vendor.mk)
+
+# Get non-open-source common extra files
+$(call inherit-product, vendor/sony/kitakami-common-extras/kitakami-common-vendor-extras.mk)
 
 # Overlays
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
