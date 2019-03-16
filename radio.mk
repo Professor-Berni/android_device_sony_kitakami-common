@@ -43,3 +43,11 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.ril.telephony.mqanelements=5 \
     ro.telephony.call_ring.multiple=false \
     ro.use_data_netmgrd=true
+
+#VoLTE / VoWifi
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.dbg.ims_volte_enable=1 \
+    persist.dbg.volte_avail_ovr=1 \
+    persist.dbg.vt_avail_ovr=1 \
+    persist.dbg.wfc_avail_ovr=1 \
+    persist.radio.calls.on.ims=1
