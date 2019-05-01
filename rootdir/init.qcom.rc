@@ -636,10 +636,10 @@ service updatemiscta /system/bin/updatemiscta
     group oem_2993
     oneshot
 
-service charger /charger
+service charger /system/bin/charger
     class charger
-    group log
-    seclabel u:r:healthd:s0
+    group log system graphics
+    seclabel u:r:charger:s0
 
 service per_mgr /system/bin/pm-service
     class core
