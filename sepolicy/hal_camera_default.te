@@ -1,0 +1,8 @@
+allow hal_camera_default camera_data_file:sock_file write;
+allow hal_camera_default hal_configstore_ISurfaceFlingerConfigs:hwservice_manager find;
+allow hal_camera_default hal_configstore_default:binder call;
+allow hal_camera_default qcamerasvr:unix_dgram_socket sendto;
+allow hal_camera_default qcamerasvr:unix_stream_socket connectto;
+allow hal_camera_default secd:unix_stream_socket connectto;
+allow hal_camera_default socket_device:sock_file write;
+

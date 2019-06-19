@@ -1,0 +1,12 @@
+# sct_service service
+type sct_service, domain;
+type sct_service_exec, exec_type, file_type;
+
+init_daemon_domain(sct_service)
+
+allow sct_service self:socket read;
+
+allow sct_service self:socket write;
+
+allow sct_service self:capability net_raw;
+

@@ -1,0 +1,14 @@
+# ta_qmi_service service
+type ta_qmi_service, domain;
+type ta_qmi_service_exec, exec_type, file_type;
+
+init_daemon_domain(ta_qmi_service)
+
+allow ta_qmi_service self:capability2 block_suspend;
+allow ta_qmi_service self:socket { read write };
+allow ta_qmi_service socket_device:sock_file write;
+allow ta_qmi_service tad_static:unix_stream_socket connectto;
+
+allow ta_qmi_service self:capability { net_raw setgid setuid };
+allow ta_qmi_service sysfs_wake_lock:file { append open };
+

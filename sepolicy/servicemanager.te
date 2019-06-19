@@ -1,0 +1,12 @@
+allow servicemanager per_proxy:dir search;
+allow servicemanager rild:dir search;
+allow servicemanager rild:file { open read };
+allow servicemanager rild:process getattr;
+
+allow servicemanager per_mgr:dir search;
+allow servicemanager per_mgr:file { open read };
+allow servicemanager per_mgr:process getattr;
+
+allow servicemanager per_proxy:file { open read };
+allow servicemanager per_proxy:process getattr;
+

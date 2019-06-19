@@ -1,0 +1,4 @@
+allow toolbox self:capability { dac_override dac_read_search };
+
+allow toolbox diag_data_file:dir { getattr open read remove_name rmdir write search rw_dir_perms };
+

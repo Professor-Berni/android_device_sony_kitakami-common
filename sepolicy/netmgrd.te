@@ -1,0 +1,8 @@
+allow netmgrd self:capability dac_override;
+
+allow netmgrd netd_socket:sock_file write;
+
+allow netmgrd toolbox_exec:file { execute execute_no_trans getattr open read };
+
+allow netmgrd net_data_file:dir read;
+

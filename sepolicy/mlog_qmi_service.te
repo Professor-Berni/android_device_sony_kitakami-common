@@ -1,0 +1,11 @@
+# mlog_qmi_service service
+type mlog_qmi_service, domain;
+type mlog_qmi_service_exec, exec_type, file_type;
+
+init_daemon_domain(mlog_qmi_service)
+
+allow mlog_qmi_service self:socket { read write };
+
+allow mlog_qmi_service self:capability net_raw;
+# allow mlog_qmi_service self:socket { bind create ioctl };
+

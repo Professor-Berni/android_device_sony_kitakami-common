@@ -1,0 +1,6 @@
+# tad_static service
+type tad_static, domain;
+type tad_static_exec, exec_type, file_type;
+
+init_daemon_domain(tad_static)
+

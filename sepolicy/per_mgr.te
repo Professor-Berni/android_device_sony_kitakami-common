@@ -1,0 +1,7 @@
+allow per_mgr self:capability net_raw;
+
+allow per_mgr per_proxy:binder call;
+
+allow per_mgr self:capability net_raw;
+allow per_mgr servicemanager:binder { call transfer };
+
