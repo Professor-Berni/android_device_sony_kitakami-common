@@ -51,6 +51,9 @@ on init
     chown oem_2997 oem_2997 /dev/block/mmcblk0p1
     chmod 0770 /dev/block/mmcblk0p1
 
+    # default is root radio 0440
+    chmod 0644 /proc/cmdline
+
     write /sys/devices/soc.0/f98a4900.sdhci/mmc_host/mmc1/clkgate_delay 1
     # Avoid long waits for rcu grace periods
     write /sys/kernel/rcu_expedited 1
