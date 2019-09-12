@@ -250,10 +250,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
    camera.qcom_shim
 
-# Thermal
-PRODUCT_PACKAGES += \
-    android.hardware.thermal@1.0-impl
-
 # TimeKeep
 PRODUCT_PACKAGES += \
     timekeep \
