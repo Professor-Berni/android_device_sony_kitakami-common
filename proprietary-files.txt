@@ -147,11 +147,10 @@ vendor/lib64/libqti_performance.so
 vendor/lib/libqti-perfd-client.so
 vendor/lib/libqti_performance.so
 
-# Peripheral manager
+# Peripheral manager from Cyanogen OS 13.1.5
 bin/pm-proxy
 bin/pm-service
-vendor/lib64/libperipheral_client.so
-vendor/lib/libperipheral_client.so
+vendor/lib64/libperipheral_client.so|a2d0d11de098d1b3d02218b087868b4fbc2ba466
 
 # Secd
 bin/secd
