@@ -145,10 +145,10 @@ vendor/lib64/libqti_performance.so
 vendor/lib/libqti-perfd-client.so
 vendor/lib/libqti_performance.so
 
-# Peripheral manager from Cyanogen OS 13.1.5
+# Peripheral manager from Nexus 6P
 bin/pm-proxy
 bin/pm-service
-vendor/lib64/libperipheral_client.so|a2d0d11de098d1b3d02218b087868b4fbc2ba466
+vendor/lib64/libperipheral_client.so|5cf2eab39bacead0334deaf7a904d8e53c4f80bb
 
 # Secd
 bin/secd
