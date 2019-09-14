@@ -160,9 +160,6 @@ BOARD_USES_QCOM_HARDWARE := true
 TARGET_RECOVERY_FSTAB := $(COMMON_PATH)/rootdir/fstab.qcom
 TARGET_USERIMAGES_USE_EXT4 := true
 
-# RIL
-TARGET_RIL_VARIANT := caf
-
 # Shims
 TARGET_LD_SHIM_LIBS := \
      /system/lib/hw/camera.qcom.so|/system/vendor/lib/camera.qcom_shim.so \
