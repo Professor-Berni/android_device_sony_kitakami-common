@@ -41,11 +41,7 @@ on early-init
     write /sys/module/msm_performance/parameters/managed_cpus 4-7
 
 on init
-    mkdir /firmware 0771 system system
-    mkdir /persist 0771 system system
     mkdir /persist/data 0700 system system
-    mkdir /idd 0751 oem_2987 oem_2987
-    mkdir /rca 0750 oem_2987 oem_2987
 
     wait /dev/block/mmcblk0p1
     chown oem_2997 oem_2997 /dev/block/mmcblk0p1

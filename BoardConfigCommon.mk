@@ -136,6 +136,12 @@ TARGET_PLATFORM_DEVICE_BASE := /devices/soc.0/
 # Properties
 TARGET_SYSTEM_PROP += $(COMMON_PATH)/system.prop
 
+BOARD_ROOT_EXTRA_FOLDERS := \
+    firmware \
+    persist \
+    idd \
+    rca
+
 # RPC
 TARGET_NO_RPC := true
 
