@@ -639,6 +639,7 @@ service updatemiscta /system/bin/updatemiscta
 service charger /system/bin/charger
     class charger
     group log system graphics
+    capabilities SYS_BOOT
     seclabel u:r:charger:s0
 
 service per_mgr /system/bin/pm-service
