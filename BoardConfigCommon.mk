@@ -119,9 +119,6 @@ DEVICE_MANIFEST_FILE := $(COMMON_PATH)/manifest.xml
 # Init
 TARGET_PLATFORM_DEVICE_BASE := /devices/soc.0/
 
-# Power
-TARGET_HAS_NO_WLAN_STATS := true
-
 # Properties
 TARGET_SYSTEM_PROP += $(COMMON_PATH)/system.prop
 
