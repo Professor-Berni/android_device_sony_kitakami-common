@@ -295,7 +295,7 @@ PRODUCT_PACKAGES += \
 
 # Wifi
 PRODUCT_PACKAGES += \
-    android.hardware.wifi@1.0-service \
+    android.hardware.wifi@1.0-service.legacy \
     p2p_supplicant.conf \
     hostapd \
     libwifi-hal-bcm \
