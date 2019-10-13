@@ -156,9 +156,11 @@ TARGET_RIL_VARIANT := caf
 
 # Shims
 TARGET_LD_SHIM_LIBS := \
-	/system/lib/hw/camera.qcom.so|/system/vendor/lib/camera.qcom_shim.so \
-	/system/lib64/libsys-utils.so|libsensor.so \
-	/system/lib/libcammw.so|libsensor.so
+    /system/lib/hw/camera.qcom.so|/system/vendor/lib/camera.qcom_shim.so \
+    /system/lib64/libsys-utils.so|libsensor.so \
+    /system/lib/libcammw.so|libsensor.so \
+    /system/vendor/lib/libizat_core.so|/system/vendor/lib/libshim_gps.so \
+    /system/vendor/lib64/libizat_core.so|/system/vendor/lib64/libshim_gps.so
 
 # SELinux
 include device/qcom/sepolicy/sepolicy.mk
