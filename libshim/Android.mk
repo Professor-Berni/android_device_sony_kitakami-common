@@ -50,7 +50,7 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := libshim_mediabuffer.cpp
 
-LOCAL_SHARED_LIBRARIES := libstagefright_foundation libui libgui
+LOCAL_SHARED_LIBRARIES := libstagefright_foundation libui libgui libmedia
 
 LOCAL_MODULE := libshims_ims
 LOCAL_MODULE_TAGS := optional
