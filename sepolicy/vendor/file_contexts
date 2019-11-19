@@ -14,6 +14,7 @@
 /dev/block/bootdevice/by-num/p39                           u:object_r:diag_partition_device:s0
 /dev/block/bootdevice/mmcblk0p39                           u:object_r:diag_partition_device:s0
 /dev/block/mmcblk0p39                                      u:object_r:diag_partition_device:s0
+/lta-label                                                 u:object_r:rootfs:s0
 
 # WiFi MAC address
 /sys/devices/platform/bcmdhd_wlan/macaddr                  u:object_r:sysfs_addrsetup:s0

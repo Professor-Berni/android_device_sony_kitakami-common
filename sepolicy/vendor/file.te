@@ -1,6 +1,7 @@
 type brcm_ldisc_sysfs, sysfs_type, fs_type;
 type diag_partition_device, file_type;
 type fpc_data_file, file_type;
+type lta_label, fs_type;
 type mediadrm_vendor_data_file, file_type, data_file_type;
 type secd_data_file, file_type;
 type secd_socket, file_type;
