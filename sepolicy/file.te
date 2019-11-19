@@ -1,4 +1,5 @@
 type fpc_data_file, file_type;
+type lta_label, fs_type;
 type proc_kernel_sched, fs_type;
 type secd_data_file, file_type;
 type secd_socket, file_type;

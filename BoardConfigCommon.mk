@@ -132,6 +132,9 @@ TARGET_POWERHAL_VARIANT := qcom
 # Properties
 TARGET_SYSTEM_PROP += $(COMMON_PATH)/system.prop
 
+BOARD_ROOT_EXTRA_FOLDERS := \
+    lta-label
+
 # RPC
 TARGET_NO_RPC := true
 

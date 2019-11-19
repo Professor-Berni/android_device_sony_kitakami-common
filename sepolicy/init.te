@@ -25,3 +25,6 @@ allow init tmpfs:lnk_file create_file_perms;
 allow init trim_area_partition_device:blk_file { rw_file_perms setattr };
 allow init vfat:file r_file_perms;
 allow init video_device:chr_file rw_file_perms;
+
+# Allow init to read files in /lta-label
+r_dir_file(init, lta_label)
