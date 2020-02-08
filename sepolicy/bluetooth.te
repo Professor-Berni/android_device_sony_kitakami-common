@@ -1,0 +1,4 @@
+allow bluetooth hci_attach_dev:chr_file { open read write };
+allow bluetooth ta_data_file:file { open read };
+allow bluetooth ta_data_file:dir { search };
+

@@ -1,0 +1,6 @@
+allow rild cache_file:dir { rw_file_perms remove_name };
+allow rild cache_file:file { r_file_perms unlink };
+allow rild tad_socket:sock_file write;
+allow rild tee_device:chr_file { read write open ioctl};
+allow rild tad:unix_stream_socket connectto;
+allow radio system_app_data_file:dir getattr;
