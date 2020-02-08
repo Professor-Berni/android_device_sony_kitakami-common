@@ -1,0 +1,4 @@
+/firmware(/.*)?              u:object_r:firmware_file:s0
+/idd(/.*)?              u:object_r:idd_file:s0
+/persist(/.*)?              u:object_r:persist_file:s0
+/rca(/.*)?              u:object_r:rca_file:s0
