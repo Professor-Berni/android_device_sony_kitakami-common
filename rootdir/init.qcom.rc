@@ -563,7 +563,7 @@ service ta_qmi_service /system/bin/ta_qmi_service
 # SONY prop
 service sct_service /system/bin/sct_service
     class main
-    user root drmrpc
+    user root
     writepid /dev/cpuset/system-background/tasks
 
 # SONY prop
