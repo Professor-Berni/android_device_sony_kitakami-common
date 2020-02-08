@@ -15,5 +15,6 @@ LOCAL_CERTIFICATE := platform
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_PACKAGE_NAME := SonyOtgSwitch
+LOCAL_SDK_VERSION := system_current
 
 include $(BUILD_PACKAGE)
