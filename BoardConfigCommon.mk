@@ -173,7 +173,7 @@ TARGET_LD_SHIM_LIBS := \
      /system/vendor/lib64/libizat_core.so|/system/vendor/lib64/libshim_gps.so
 
 # SELinux
-#include device/qcom/sepolicy/sepolicy.mk
+include device/qcom/sepolicy-legacy/sepolicy.mk
 
 BOARD_SEPOLICY_DIRS += \
     $(COMMON_PATH)/sepolicy-minimal
