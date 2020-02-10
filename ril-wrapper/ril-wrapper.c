@@ -29,13 +29,15 @@
 #define RIL_LIB_NAME "libril-qc-qmi-1.so"
 
 typedef struct {
-    int rscp;
-    int ecio;
-} RIL_WCDMA_SignalStrength;
+    int rscp;    /* The Received Signal Code Power in dBm multipled by -1.
+                  * Range : 25 to 120
+                  * INT_MAX: 0x7FFFFFFF denotes invalid value.
+                  * Reference: 3GPP TS 25.123, section 9.1.1.1 */
+} RIL_UMTS_SignalStrength;
 
 typedef struct {
     RIL_GW_SignalStrength GW_SignalStrength;
-    RIL_WCDMA_SignalStrength WCDMA_SignalStrength;
+    RIL_UMTS_SignalStrength     UMTS_SignalStrength;
     RIL_CDMA_SignalStrength CDMA_SignalStrength;
     RIL_EVDO_SignalStrength EVDO_SignalStrength;
     RIL_LTE_SignalStrength_v8 LTE_SignalStrength;
@@ -66,21 +68,12 @@ static const struct RIL_Env* ossRilEnv;
 static size_t transformResponse(const void* response) {
     RIL_SignalStrength_v10_vendor vendorResponse = *(RIL_SignalStrength_v10_vendor*)response;
     RIL_SignalStrength_v10* rilResponse = (RIL_SignalStrength_v10*)response;
-    int gsmSignalStrength = vendorResponse.GW_SignalStrength.signalStrength;
 
-    if (gsmSignalStrength != -1) {
-        gsmSignalStrength = -(gsmSignalStrength - 113) / 2;
-    }
-
-    rilResponse->GW_SignalStrength.signalStrength = vendorResponse.WCDMA_SignalStrength.rscp <= 0
-                                                        ? gsmSignalStrength
-                                                        : vendorResponse.WCDMA_SignalStrength.rscp;
-    rilResponse->GW_SignalStrength.bitErrorRate = vendorResponse.GW_SignalStrength.bitErrorRate;
-
+    rilResponse->GW_SignalStrength = vendorResponse.GW_SignalStrength;
     rilResponse->CDMA_SignalStrength = vendorResponse.CDMA_SignalStrength;
     rilResponse->EVDO_SignalStrength = vendorResponse.EVDO_SignalStrength;
     rilResponse->LTE_SignalStrength = vendorResponse.LTE_SignalStrength;
-    rilResponse->TD_SCDMA_SignalStrength.rscp = vendorResponse.WCDMA_SignalStrength.rscp;
+    rilResponse->TD_SCDMA_SignalStrength.rscp = vendorResponse.TD_SCDMA_SignalStrength.rscp;
 
     return sizeof(RIL_SignalStrength_v10);
 }
@@ -106,15 +99,6 @@ static void onRequestCompleteShim(RIL_Token t, RIL_Errno e, void* response, size
             }
 
             responselen = transformResponse(response);
-            break;
-
-        case RIL_REQUEST_DEVICE_IDENTITY:
-            if (responselen != 5 * sizeof(char*)) {
-                ALOGE("%s: invalid response length of RIL_REQUEST_DEVICE_IDENTITY", __func__);
-                goto do_not_handle;
-            }
-
-            responselen = 4 * sizeof(char*);
             break;
     }
 
