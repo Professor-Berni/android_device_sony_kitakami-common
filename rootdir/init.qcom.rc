@@ -676,35 +676,6 @@ service audioserver /system/bin/audioserver
     writepid /dev/cpuset/foreground/tasks /dev/stune/foreground/tasks
     onrestart restart audio-hal-2-0
 
-service media /system/bin/mediaserver
-    class main
-    user media
-    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm oem_2996
-    ioprio rt 4
-    writepid /dev/cpuset/foreground/tasks /dev/stune/foreground/tasks
-
-service mediadrm /system/bin/mediadrmserver
-    class main
-    user media
-    group mediadrm drmrpc oem_2993
-    ioprio rt 4
-    writepid /dev/cpuset/foreground/tasks
-
-service camera-provider-2-4 /vendor/bin/hw/android.hardware.camera.provider@2.4-service
-    class hal
-    user cameraserver
-    group audio camera input drmrpc oem_2996 oem_2993
-    ioprio rt 4
-    capabilities SYS_NICE
-    writepid /dev/cpuset/camera-daemon/tasks /dev/stune/top-app/tasks
-
-service cameraserver /system/bin/cameraserver
-    class main
-    user cameraserver
-    group audio camera input drmrpc oem_2996 oem_2993
-    ioprio rt 4
-    writepid /dev/cpuset/camera-daemon/tasks /dev/stune/top-app/tasks
-
 service iddd /system/bin/iddd
     class core
     user oem_2987
@@ -716,14 +687,6 @@ on property:service.usb.otg.switch=check
 
 on property:service.usb.otg.switch.timeout=*
     write /sys/module/qpnp_smbcharger_extension/parameters/id_polling_timeout ${service.usb.otg.switch.timeout}
-
-# Fingerprint service
-service fingerprintd /system/bin/fingerprintd
-    class late_start
-    user system
-    group input
-    writepid /dev/cpuset/system-background/tasks
-#group drmrpc input system
 
 on property:apexd.status=ready
     mount none /system/etc/swcodec/ld.config.txt /apex/com.android.media.swcodec/etc/ld.config.txt bind
