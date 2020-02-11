@@ -126,7 +126,7 @@ TARGET_EXFAT_DRIVER := sdfat
 TARGET_FS_CONFIG_GEN := $(COMMON_PATH)/config.fs
 
 # FM radio
-BOARD_HAVE_BCM_FM := false #UIM not compatible with Oreo, yet;
+BOARD_HAVE_BCM_FM := true
 
 # Partitions types
 BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
