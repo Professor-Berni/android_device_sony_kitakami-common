@@ -69,9 +69,6 @@ ro.min_freq_0=384000
 ro.min_freq_4=384000
 ro.vendor.extension_library=libqti-perfd-client.so
 
-# RIL
-ro.telephony.ril_class=SonyKitakamiRIL
-
 # SEMC props
 ro.semc.version.fs=GENERIC
 ro.semc.version.fs_revision=32.4.A.1.54
