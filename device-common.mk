@@ -136,6 +136,10 @@ PRODUCT_PACKAGES += \
     libtinyxml \
     memtrack.msm8994
 
+# Doze mode
+PRODUCT_PACKAGES += \
+    SonyDoze
+
 # Gatekeeper
 PRODUCT_PACKAGES += \
     android.hardware.gatekeeper@1.0-impl
