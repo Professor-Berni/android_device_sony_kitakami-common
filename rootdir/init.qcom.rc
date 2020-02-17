@@ -669,14 +669,6 @@ service secd /system/bin/secd
     socket secd_devsec_sock stream 0660 system oem_2996
     socket secd_credmgr_sock stream 0660 system oem_2996
 
-service audioserver /system/bin/audioserver
-    class main
-    user audioserver
-    group audio camera drmrpc inet media mediadrm net_bt net_bt_admin net_bw_acct oem_2993
-    ioprio rt 4
-    writepid /dev/cpuset/foreground/tasks /dev/stune/foreground/tasks
-    onrestart restart audio-hal-2-0
-
 service iddd /system/bin/iddd
     class core
     user oem_2987
