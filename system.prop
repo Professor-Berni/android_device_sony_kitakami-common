@@ -14,7 +14,6 @@ persist.vendor.audio.fluence.voicerec=false
 persist.vendor.audio.fluence.speaker=true
 ro.vendor.audio.fluencetype=none
 ro.vendor.audio.ssr=false
-ro.vendor.fm.use_audio_session=true
 persist.audio.ssr.3mic=false
 use.voice.path.for.pcm.voip=true
 persist.speaker.prot.enable=false
