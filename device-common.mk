@@ -90,6 +90,16 @@ PRODUCT_PACKAGES += \
     libqcomvoiceprocessing \
     tinymix
 
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/audio/notifications/Ascensions.ogg:$(TARGET_COPY_OUT_SYSTEM)/media/audio/notifications/Ascensions.ogg \
+    $(LOCAL_PATH)/audio/notifications/Birds_of_Paradise.ogg:$(TARGET_COPY_OUT_SYSTEM)/media/audio/notifications/Birds_of_Paradise.ogg \
+    $(LOCAL_PATH)/audio/notifications/Climb.ogg:$(TARGET_COPY_OUT_SYSTEM)/media/audio/notifications/Climb.ogg \
+    $(LOCAL_PATH)/audio/notifications/Climb_up.ogg:$(TARGET_COPY_OUT_SYSTEM)/media/audio/notifications/Climb_up.ogg \
+    $(LOCAL_PATH)/audio/notifications/Notification.ogg:$(TARGET_COPY_OUT_SYSTEM)/media/audio/notifications/Notification.ogg \
+    $(LOCAL_PATH)/audio/notifications/Ray.ogg:$(TARGET_COPY_OUT_SYSTEM)/media/audio/notifications/Ray.ogg \
+    $(LOCAL_PATH)/audio/notifications/Whisper.ogg:$(TARGET_COPY_OUT_SYSTEM)/media/audio/notifications/Whisper.ogg \
+    $(LOCAL_PATH)/audio/ringtones/Breeze.ogg:$(TARGET_COPY_OUT_SYSTEM)/media/audio/ringtones/Breeze.ogg \
+
 # Audio configuration
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/audio/audio_effects.conf:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.conf \

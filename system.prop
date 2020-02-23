@@ -19,6 +19,8 @@ use.voice.path.for.pcm.voip=true
 persist.speaker.prot.enable=false
 persist.spkr.cal.duration=0
 qcom.hw.aac.encoder=true
+ro.config.notification_sound=Notification.ogg
+ro.config.ringtone=CyanTone.ogg
 
 # Camera
 ro.qc.sdk.gestures.camera=false
