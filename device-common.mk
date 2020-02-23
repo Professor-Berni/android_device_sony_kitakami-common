@@ -77,10 +77,8 @@ PRODUCT_PACKAGES += \
     audiod \
     audio.a2dp.default \
     android.hardware.audio@2.0-impl \
-    android.hardware.audio@4.0-impl \
     android.hardware.audio@2.0-service \
     android.hardware.audio.effect@2.0-impl \
-    android.hardware.audio.effect@4.0-impl \
     android.hardware.broadcastradio@1.0-impl \
     audio.primary.msm8994 \
     audio.r_submix.default \
@@ -126,7 +124,6 @@ PRODUCT_PACKAGES += \
 # Camera
 PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl \
-    android.hardware.camera.provider@2.4-external-service \
     Snap
 
 PRODUCT_COPY_FILES += \
@@ -144,8 +141,10 @@ PRODUCT_PACKAGES += \
     android.hardware.graphics.allocator@2.0-impl \
     android.hardware.graphics.allocator@2.0-service \
     android.hardware.graphics.composer@2.1-impl \
+    android.hardware.graphics.composer@2.1-service \
     android.hardware.graphics.mapper@2.0-impl-2.1 \
     android.hardware.memtrack@1.0-impl \
+    android.hardware.memtrack@1.0-service \
     copybit.msm8994 \
     gralloc.msm8994 \
     hwcomposer.msm8994 \
@@ -155,6 +154,11 @@ PRODUCT_PACKAGES += \
 # Doze mode
 PRODUCT_PACKAGES += \
     SonyDoze
+
+# DRM
+PRODUCT_PACKAGES += \
+    android.hardware.drm@1.0-impl \
+    android.hardware.drm@1.0-service
 
 # Gatekeeper
 PRODUCT_PACKAGES += \
@@ -171,7 +175,8 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/gps/sap.conf:system/etc/sap.conf
 
 PRODUCT_PACKAGES += \
-    android.hardware.gnss@1.0-impl
+    android.hardware.gnss@1.0-impl \
+    android.hardware.gnss@1.0-service
 
 # Flash LED config
 PRODUCT_COPY_FILES += \
@@ -185,7 +190,8 @@ PRODUCT_PACKAGES += \
 
 # Health
 PRODUCT_PACKAGES += \
-    android.hardware.health@1.0-impl
+    android.hardware.health@2.0-impl \
+    android.hardware.health@2.0-service
 
 # Init
 PRODUCT_COPY_FILES += \
@@ -208,11 +214,14 @@ PRODUCT_COPY_FILES += \
 
 # Keymaster
 PRODUCT_PACKAGES += \
-    android.hardware.keymaster@3.0-impl
+    android.hardware.keymaster@3.0-impl \
+    android.hardware.keymaster@3.0-service
 
 # Lights
 PRODUCT_PACKAGES += \
-    android.hardware.light@2.0-service.kitakami
+    android.hardware.light@2.0-impl \
+    android.hardware.light@2.0-service.kitakami \
+    lights.msm8994
 
 # Media
 PRODUCT_PACKAGES += \
@@ -245,6 +254,7 @@ PRODUCT_COPY_FILES += \
 # NFC
 PRODUCT_PACKAGES += \
     android.hardware.nfc@1.0-impl \
+    android.hardware.nfc@1.0-service \
     com.android.nfc_extras \
     NfcNci \
     Tag
@@ -267,7 +277,9 @@ PRODUCT_PACKAGES += \
 
 # RIL
 PRODUCT_PACKAGES += \
-    libxml2
+    libxml2 \
+    android.hardware.radio@1.0-impl \
+    android.hardware.radio.deprecated@1.0-impl
 
 # RIL Wrapper
 PRODUCT_PACKAGES += \
@@ -280,7 +292,8 @@ PRODUCT_COPY_FILES += \
 
 # Sensors
 PRODUCT_PACKAGES += \
-    android.hardware.sensors@1.0-impl
+    android.hardware.sensors@1.0-impl \
+    android.hardware.sensors@1.0-service
 
 # Shim libs
 PRODUCT_PACKAGES += \
@@ -301,7 +314,8 @@ PRODUCT_PACKAGES += \
 
 # Vibrator
 PRODUCT_PACKAGES += \
-    android.hardware.vibrator@1.0-impl
+    android.hardware.vibrator@1.0-impl \
+    android.hardware.vibrator@1.0-service
 
 # Wifi
 PRODUCT_PACKAGES += \
