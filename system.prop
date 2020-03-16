@@ -22,11 +22,6 @@ qcom.hw.aac.encoder=true
 ro.config.notification_sound=Notification.ogg
 ro.config.ringtone=CyanTone.ogg
 
-# Camera
-ro.qc.sdk.gestures.camera=false
-ro.qc.sdk.camera.facialproc=false
-camera.disable_zsl_mode=1
-
 # Bluetooth
 bluetooth.enable_timeout_ms=12000
 ro.bluetooth.hfp.ver=1.6

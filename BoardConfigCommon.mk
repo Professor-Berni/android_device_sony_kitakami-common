@@ -86,12 +86,8 @@ BOARD_CUSTOM_BT_CONFIG := $(COMMON_PATH)/bluetooth/vnd_generic.txt
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_BCM := true
 
-# Camera
-TARGET_USES_MEDIA_EXTENSIONS := true
-
 TARGET_PROCESS_SDK_VERSION_OVERRIDE := \
     /system/bin/iddd=25 \
-    /system/bin/mm-qcamera-daemon=25 \
     /system/bin/sensors.qcom=25
 
 # Charger
@@ -182,7 +178,6 @@ TARGET_USERIMAGES_USE_EXT4 := true
 
 # Shims
 TARGET_LD_SHIM_LIBS := \
-     /system/lib/hw/camera.qcom.so|/system/vendor/lib/camera.qcom_shim.so \
      /system/lib64/libsys-utils.so|libsensor.so \
      /system/lib/libcammw.so|libsensor.so \
      /system/vendor/lib/libizat_core.so|/system/vendor/lib/libshim_gps.so \
