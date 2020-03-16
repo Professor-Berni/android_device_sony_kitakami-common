@@ -18,6 +18,9 @@
 # Get non-open-source common files
 $(call inherit-product, vendor/sony/kitakami-common/kitakami-common-vendor.mk)
 
+# Get non-open-source common extra files
+$(call inherit-product, vendor/sony/kitakami-common-extras/kitakami-common-vendor-extras.mk)
+
 # Overlays
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
