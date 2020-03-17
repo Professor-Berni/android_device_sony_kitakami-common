@@ -151,6 +151,9 @@ BOARD_ROOT_EXTRA_FOLDERS := \
     idd \
     rca
 
+# RIL
+BOARD_PROVIDES_LIBRIL := true
+
 # RPC
 TARGET_NO_RPC := true
 
