@@ -16,6 +16,28 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
+LOCAL_SRC_FILES := \
+    camera.qcom_shim.cpp \
+    graphic-buffer.cpp
+
+LOCAL_SHARED_LIBRARIES := \
+    libgui \
+    liblog \
+    libui
+
+LOCAL_C_INCLUDES := \
+    frameworks/native/include
+
+LOCAL_MODULE := camera.qcom_shim
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+LOCAL_32_BIT_ONLY := true
+LOCAL_PROPRIETARY_MODULE := true
+
+include $(BUILD_SHARED_LIBRARY)
+
+include $(CLEAR_VARS)
+
 LOCAL_SRC_FILES := gps_shim.cpp
 
 LOCAL_MODULE := libshim_gps
