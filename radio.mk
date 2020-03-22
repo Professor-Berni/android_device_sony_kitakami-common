@@ -34,7 +34,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 PRODUCT_PROPERTY_OVERRIDES += \
     rild.libargs=-d[SPACE]/dev/smd0 \
-    rild.libpath=/vendor/lib64/libril-qc-qmi-1.so \
+    rild.libpath=/vendor/lib64/libril-wrapper.so \
     ril.subscription.types=NV,RUIM
 
 PRODUCT_PROPERTY_OVERRIDES += \
