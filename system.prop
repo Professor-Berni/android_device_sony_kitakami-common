@@ -43,6 +43,7 @@ persist.mdpcomp_perfhint=50
 debug.mdpcomp.logs=0
 persist.metadata_dynfps.disable=true
 persist.hwc.ptor.enable=true
+debug.sf.disable_backpressure=1
 debug.sf.latch_unsignaled=1
 dev.pm.dyn_samplingrate=1
 persist.demo.hdmirotationlock=false
