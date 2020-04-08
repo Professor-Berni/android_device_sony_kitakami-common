@@ -120,3 +120,4 @@ ro.qc.sdk.sensors.gestures=true
 # Wifi
 wifi.interface=wlan0
 wifi.direct.interface=p2p-dev-wlan0
+persist.data.iwlan.enable=true
