@@ -88,6 +88,8 @@ BOARD_HAVE_BLUETOOTH_BCM := true
 
 # Camera
 TARGET_USES_MEDIA_EXTENSIONS := true
+BOARD_QTI_CAMERA_32BIT_ONLY := true
+USE_DEVICE_SPECIFIC_CAMERA := true
 
 TARGET_PROCESS_SDK_VERSION_OVERRIDE := \
     /system/bin/iddd=25 \
@@ -185,7 +187,6 @@ TARGET_USERIMAGES_USE_EXT4 := true
 
 # Shims
 TARGET_LD_SHIM_LIBS := \
-     /system/lib/hw/camera.qcom.so|/system/vendor/lib/camera.qcom_shim.so \
      /system/lib64/libsys-utils.so|libsensor.so \
      /system/lib/libcammw.so|libsensor.so \
      /system/vendor/lib/libizat_core.so|/system/vendor/lib/libshim_gps.so \
