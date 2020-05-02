@@ -299,6 +299,13 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
    camera.qcom_shim
 
+# Thermal
+PRODUCT_PACKAGES += \
+    thermal.qcom
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/thermal-engine.conf:$(TARGET_COPY_OUT_VENDOR)/etc/thermal-engine.conf
+
 # TimeKeep
 PRODUCT_PACKAGES += \
     timekeep \
