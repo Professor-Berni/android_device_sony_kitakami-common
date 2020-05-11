@@ -18,12 +18,15 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := \
     camera.qcom_shim.cpp \
-    graphic-buffer.cpp
+    graphic-buffer.cpp \
+    MediaBuffer.cpp
 
 LOCAL_SHARED_LIBRARIES := \
     libgui \
     liblog \
-    libui
+    libui \
+    libstagefright \
+    libmedia
 
 LOCAL_C_INCLUDES := \
     frameworks/native/include
