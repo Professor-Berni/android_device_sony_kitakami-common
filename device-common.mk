@@ -131,8 +131,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl \
     android.hardware.camera.provider@2.4-external-service \
-    camera.msm8994 \
-    libqomx_core \
     Snap
 
 PRODUCT_COPY_FILES += \
