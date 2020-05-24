@@ -120,6 +120,8 @@ PRODUCT_PACKAGES += \
 # Camera
 PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl \
+    camera.msm8994 \
+    libqomx_core.so \
     Snap
 
 # Charger
@@ -272,10 +274,6 @@ PRODUCT_COPY_FILES += \
 # Sensors
 PRODUCT_PACKAGES += \
     android.hardware.sensors@1.0-impl
-
-# Shim libs
-PRODUCT_PACKAGES += \
-	camera.qcom_shim
 
 # Thermal
 PRODUCT_PACKAGES += \

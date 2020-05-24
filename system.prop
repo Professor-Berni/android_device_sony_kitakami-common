@@ -24,6 +24,9 @@ qcom.hw.aac.encoder=true
 ro.qc.sdk.gestures.camera=false
 ro.qc.sdk.camera.facialproc=false
 camera.disable_zsl_mode=1
+persist.camera.HAL3.enabled=0
+persist.camera.hal.debug=2
+persist.camera.global.debug=2
 
 # Bluetooth
 bluetooth.enable_timeout_ms=12000
