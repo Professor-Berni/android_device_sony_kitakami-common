@@ -314,6 +314,9 @@ on post-fs-data
     mkdir /data/misc/display 0770 system graphics
     mkdir /persist/display 0770 system graphics
 
+    # Create directory used by LiveDisplay
+    mkdir /data/vendor/display 0770 system graphics
+
     # QCOM Sensors
     mkdir /data/system 0775 system system
     mkdir /data/system/sensors 0775 system system
@@ -648,6 +651,12 @@ service per_proxy /system/bin/pm-proxy
     user system
     group system net_raw
     disabled
+
+service ppd /system/vendor/bin/mm-pp-daemon
+    class hal
+    user system
+    socket pps stream 0660 system system
+    group system graphics
 
 on property:init.svc.per_mgr=running
     start per_proxy
