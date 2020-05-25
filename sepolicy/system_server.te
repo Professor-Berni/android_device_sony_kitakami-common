@@ -33,3 +33,5 @@ allow system_server sensors_socket:sock_file write;
 
 allow system_server unlabeled:file unlink;
 
+allow system_server default_android_service:service_manager find;
+

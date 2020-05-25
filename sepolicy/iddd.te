@@ -17,3 +17,6 @@ allow iddd diag_data_file:sock_file unlink;
 allow iddd tad:unix_stream_socket connectto;
 allow iddd tad_socket:sock_file write;
 
+allow iddd diag_data_file:dir { create rmdir };
+allow iddd diag_data_file:sock_file write;
+

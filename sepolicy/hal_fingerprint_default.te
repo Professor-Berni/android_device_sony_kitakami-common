@@ -10,3 +10,6 @@ allow hal_fingerprint_default input_device:dir { open read };
 allow hal_fingerprint_default system_data_file:dir { add_name remove_name write };
 allow hal_fingerprint_default system_data_file:sock_file { create unlink };
 
+allow hal_fingerprint_default diag_data_file:sock_file write;
+allow hal_fingerprint_default iddd:unix_dgram_socket sendto;
+
