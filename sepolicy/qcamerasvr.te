@@ -16,3 +16,5 @@ allow qcamerasvr camera_prop:file { getattr open read };
 
 allow qcamerasvr cameraserver:fd use;
 
+allow qcamerasvr camera_data_file:dir search;
+
