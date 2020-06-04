@@ -652,17 +652,17 @@ service per_proxy /system/bin/pm-proxy
     group system net_raw
     disabled
 
-service ppd /system/vendor/bin/mm-pp-daemon
-    class hal
-    user system
-    socket pps stream 0660 system system
-    group system graphics
-
 on property:init.svc.per_mgr=running
     start per_proxy
 
 on property:sys.shutdown.requested=*
     stop per_proxy
+
+service ppd /system/vendor/bin/mm-pp-daemon
+    class hal
+    user system
+    socket pps stream 0660 system system
+    group system graphics
 
 # brcm-uim-sysfs (BT/FM/ANT+)
 #service uim /system/bin/brcm-uim-sysfs
