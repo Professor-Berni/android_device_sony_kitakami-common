@@ -21,4 +21,3 @@ allow sudaemon vendor_system_prop:file getattr;
 allow sudaemon wifi_prop:file getattr;
 allow sudaemon wigig_prop:file getattr;
 allow sudaemon xlat_prop:file getattr;
-

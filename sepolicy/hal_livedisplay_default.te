@@ -1,0 +1,1 @@
+allow hal_livedisplay_default ppd:unix_stream_socket connectto;

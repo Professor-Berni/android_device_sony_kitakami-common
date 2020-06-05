@@ -1,4 +1,0 @@
-allow mm-pp-daemon ion_device:chr_file write;
-set_prop(mm-pp-daemon, display_prop);
-allow mm-pp-daemon system_prop:property_service set;
-

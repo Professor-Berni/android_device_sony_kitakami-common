@@ -12,14 +12,12 @@ allow timekeep self:capability {
     dac_override
     dac_read_search
 };
-
 allow timekeep timekeep_data_file:file create_file_perms;
 allow timekeep timekeep_data_file:dir { create_dir_perms search };
 allow timekeep time_data_file:dir { create_dir_perms search };
 allow timekeep time_data_file:file { write open getattr setattr };
+allow timekeep sysfs:file {read open };
+
 set_prop(timekeep, timekeep_prop)
 
 r_dir_file(timekeep, sysfs_timekeep)
-
-allow timekeep sysfs:file {read open };
-

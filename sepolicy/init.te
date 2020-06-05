@@ -1,17 +1,9 @@
 #For sdcard
 allow init tmpfs:lnk_file create_file_perms;
-
 allow init proc_kernel_sched:file write;
 allow init proc_dirty_ratio:file write;
-
 allow init persist_file:dir mounton;
 allow init debugfs:file w_file_perms;
-
-#FM BCM
-allow init hci_attach_dev:chr_file rw_file_perms;
-allow init brcm_uim_exec:file { execute getattr read open };
-allow init brcm_ldisc_sysfs:lnk_file { read };
-allow init uim:process { siginh noatsecure transition rlimitinh };
 
 #TAD
 allow init tad_socket:sock_file create;
@@ -20,9 +12,22 @@ allow init tad_socket:sock_file create;
 allow init sysfs_camera_torch:lnk_file read;
 
 allow init trim_area_partition_device:blk_file { write setattr };
-
 allow init block_device:blk_file setattr;
 allow init socket_device:sock_file { create setattr };
-
 allow init socket_device:sock_file unlink;
-
+allow init cameraserver:fd use;
+allow init diag_data_file:file { lock rename };
+allow init diag_data_file:sock_file write;
+allow init ion_device:chr_file ioctl;
+allow init property_socket:sock_file write;
+allow init rpmb_device:blk_file write;
+allow init self:capability2 block_suspend;
+allow init self:socket { read write };
+allow init ssd_device:blk_file write;
+allow init tad_socket:sock_file write;
+allow init tee_device:chr_file { ioctl write };
+allow init video_device:chr_file { ioctl write };
+allow init secd_data_file:file { ioctl lock };
+allow init servicemanager:binder call;
+allow init vfat:file { getattr open read };
+allow init proc_interrupts:file getattr;

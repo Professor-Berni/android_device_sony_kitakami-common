@@ -1,1 +1,1 @@
-type timekeep_service,            service_manager_type;
+type timekeep_service, service_manager_type;

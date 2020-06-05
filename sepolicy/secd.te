@@ -13,14 +13,10 @@ allow secd secd_data_file:dir { rw_file_perms add_name remove_name search };
 allow secd diag_partition_device:dir search;
 allow secd diag_data_file:dir search;
 allow secd diag_data_file:sock_file write;
-
 allow secd firmware_file:dir search;
 allow secd firmware_file:file { getattr open read };
 allow secd iddd:unix_dgram_socket sendto;
 allow secd ion_device:chr_file { ioctl open read };
 allow secd socket_device:sock_file write;
-allow secd tad_static:unix_stream_socket connectto;
 allow secd tee_device:chr_file { ioctl open read write };
-
 allow secd secd_data_file:file ioctl;
-

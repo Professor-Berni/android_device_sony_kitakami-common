@@ -1,7 +1,3 @@
-allow audioserver tad:unix_stream_socket connectto;
 allow audioserver tad_socket:sock_file write;
 allow audioserver perfd:unix_stream_socket connectto;
 allow audioserver socket_device:sock_file write;
-
-allow audioserver tad_static:unix_stream_socket connectto;
-

@@ -1,6 +1,7 @@
 type init-power-sh, domain;
 type init-power-sh_exec, exec_type, file_type;
 
+# Started by init
 init_daemon_domain(init-power-sh)
 
 allow init-power-sh shell_exec:file r_file_perms;
@@ -28,12 +29,9 @@ allow init-power-sh toolbox_exec:file rx_file_perms;
 
 allow init-power-sh sysfs:dir { open read };
 allow init-power-sh sysfs_kgsl:file { open write };
-
 allow init-power-sh file_contexts_file:file { getattr open read };
 allow init-power-sh sysfs_msm_perf:dir search;
 allow init-power-sh sysfs_msm_perf:file { open write };
-
 allow init-power-sh proc:file open;
 allow init-power-sh sysfs_cpu_boost:dir search;
 allow init-power-sh sysfs_cpu_boost:file { open write };
-

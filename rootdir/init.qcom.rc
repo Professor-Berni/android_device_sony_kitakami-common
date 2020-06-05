@@ -555,7 +555,7 @@ service adsprpcd /system/bin/adsprpcd
    group media drmrpc
 
 # SONY misc
-service tad_static /system/bin/tad_static /dev/block/bootdevice/by-name/TA 0,16
+service tad /system/bin/tad_static /dev/block/bootdevice/by-name/TA 0,16
     class core
     user oem_2997
     group oem_2997 root
