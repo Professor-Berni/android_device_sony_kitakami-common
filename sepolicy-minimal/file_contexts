@@ -1,2 +1,0 @@
-/idd(/.*)?              u:object_r:firmware_file:s0
-/rca(/.*)?              u:object_r:firmware_file:s0

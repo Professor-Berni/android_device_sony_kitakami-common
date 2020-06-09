@@ -1,0 +1,20 @@
+# qcamerasvr service
+type qcamerasvr, domain;
+type qcamerasvr_exec, exec_type, file_type;
+
+# Started by init
+init_daemon_domain(qcamerasvr)
+
+allow qcamerasvr camera_data_file:dir { add_name remove_name write };
+allow qcamerasvr camera_data_file:sock_file { create unlink };
+allow qcamerasvr hal_camera_default:fd use;
+allow qcamerasvr ion_device:chr_file { open read };
+allow qcamerasvr mediaserver:fd use;
+allow qcamerasvr sysfs:file { open read };
+allow qcamerasvr video_device:chr_file { ioctl open read write };
+allow qcamerasvr camera_prop:file { getattr open read };
+allow qcamerasvr cameraserver:fd use;
+allow qcamerasvr camera_data_file:dir search;
+allow qcamerasvr camera_socket:sock_file unlink;
+allow qcamerasvr sysfs_graphics:file { open read };
+allow qcamerasvr ta_data_file:dir search;

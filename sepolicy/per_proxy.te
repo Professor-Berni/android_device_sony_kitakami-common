@@ -1,0 +1,13 @@
+# per_proxy service
+type per_proxy, domain;
+type per_proxy_exec, exec_type, file_type;
+
+# Started by init
+init_daemon_domain(per_proxy)
+
+allow per_proxy default_android_service:service_manager find;
+allow per_proxy per_mgr:binder call;
+allow per_proxy servicemanager:binder call;
+allow per_proxy sysfs:file { open read };
+allow per_proxy per_mgr:binder transfer;
+allow per_proxy binder_per_mgr_service:service_manager find;

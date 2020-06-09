@@ -238,7 +238,7 @@ on boot
     mkdir /data/nfc 0770 nfc nfc
     mkdir /data/nfc/param 0770 nfc nfc
 
-    # Set the console loglevel to < KERN_INFO
+    # Set the console loglevel to lt. KERN_INFO
     # Set the default message loglevel to KERN_INFO
     write /proc/sys/kernel/printk "6 6 1 7"
 
@@ -556,7 +556,7 @@ service adsprpcd /system/bin/adsprpcd
    group media drmrpc
 
 # SONY misc
-service tad_static /system/bin/tad_static /dev/block/bootdevice/by-name/TA 0,16
+service tad /system/bin/tad_static /dev/block/bootdevice/by-name/TA 0,16
     class core
     user oem_2997
     group oem_2997 root
@@ -650,18 +650,17 @@ service per_proxy /system/bin/pm-proxy
     group system net_raw
     disabled
 
-service ppd /system/vendor/bin/mm-pp-daemon
-    class hal
-    user system
-    socket pps stream 0660 system system
-    group system graphics
-    writepid /dev/cpuset/system-background/tasks
-
 on property:init.svc.per_mgr=running
     start per_proxy
 
 on property:sys.shutdown.requested=*
     stop per_proxy
+
+service ppd /system/vendor/bin/mm-pp-daemon
+    class hal
+    user system
+    socket pps stream 0660 system system
+    group system graphics
 
 # brcm-uim-sysfs (BT/FM/ANT+)
 #service uim /system/vendor/bin/brcm-uim-sysfs

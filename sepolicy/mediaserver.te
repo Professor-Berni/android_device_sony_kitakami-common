@@ -1,0 +1,4 @@
+allow mediaserver hal_configstore_ISurfaceFlingerConfigs:hwservice_manager find;
+allow mediaserver sensorservice_service:service_manager find;
+allow mediaserver sysfs_graphics:file { getattr open read };
+allow mediaserver system_server:unix_stream_socket read;

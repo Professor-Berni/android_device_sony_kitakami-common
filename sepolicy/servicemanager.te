@@ -1,0 +1,9 @@
+allow servicemanager init:dir search;
+allow servicemanager init:file { open read };
+allow servicemanager init:process getattr;
+allow servicemanager per_proxy:dir search;
+allow servicemanager per_proxy:file { open read };
+allow servicemanager per_proxy:process getattr;
+allow servicemanager mediaswcodec:dir search;
+allow servicemanager mediaswcodec:file { open read };
+allow servicemanager mediaswcodec:process getattr;

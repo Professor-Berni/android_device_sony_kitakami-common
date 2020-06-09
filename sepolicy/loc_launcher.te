@@ -1,0 +1,14 @@
+# loc_launcher service
+type loc_launcher, domain;
+type loc_launcher_exec, exec_type, file_type;
+
+init_daemon_domain(loc_launcher)
+
+allow loc_launcher self:capability setuid;
+allow loc_launcher system_data_file:dir { add_name remove_name write };
+allow loc_launcher system_data_file:sock_file { create setattr unlink };
+allow loc_launcher location_data_file:dir { add_name remove_name write };
+allow loc_launcher location_data_file:sock_file { create setattr };
+allow loc_launcher location_socket:sock_file unlink;
+allow loc_launcher location_data_file:sock_file unlink;
+allow loc_launcher location_data_file:dir search;

@@ -1,0 +1,13 @@
+# msm_irqbalance service
+type msm_irqbalance, domain;
+type msm_irqbalance_exec, exec_type, file_type;
+
+# Started by init
+init_daemon_domain(msm_irqbalance)
+
+allow msm_irqbalance proc:file { getattr open read write };
+allow msm_irqbalance self:capability dac_override;
+allow msm_irqbalance sysfs_devices_system_cpu:file write;
+allow msm_irqbalance self:capability { setgid setuid };
+allow msm_irqbalance proc_interrupts:file { getattr open read };
+allow msm_irqbalance proc_stat:file { getattr open read };
