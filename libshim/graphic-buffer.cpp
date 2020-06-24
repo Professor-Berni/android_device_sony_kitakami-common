@@ -18,6 +18,9 @@
 #include <ui/Rect.h>
 #include <gui/SurfaceControl.h>
 
+int32_t outBytesPerPixel = 0;
+int32_t outBytesPerStride = 0;
+
 namespace android {
 
 // ---------------------------------------------------------------------------
@@ -29,7 +32,7 @@ extern "C" {
     void _ZN7android19GraphicBufferMapper4lockEPK13native_handlejRKNS_4RectEPPvPiS9_(native_handle const*, unsigned int, android::Rect const&, void**, int*, int*);
 
     void _ZN7android19GraphicBufferMapper4lockEPK13native_handlejRKNS_4RectEPPv(buffer_handle_t handle, uint32_t usage, const android::Rect& bounds, void** vaddr) {
-        _ZN7android19GraphicBufferMapper4lockEPK13native_handlejRKNS_4RectEPPvPiS9_(handle, usage, bounds, vaddr, nullptr, nullptr);
+        _ZN7android19GraphicBufferMapper4lockEPK13native_handlejRKNS_4RectEPPvPiS9_(handle, usage, bounds, vaddr, &outBytesPerPixel, &outBytesPerStride);
     }
 }
 
