@@ -40,12 +40,12 @@ setup_vendor "$DEVICE_COMMON" "$VENDOR" "$CM_ROOT" true
 write_headers "ivy karin karin_windy sumire suzuran"
 
 # The standard common blobs
-write_makefiles "$MY_DIR"/proprietary-files.txt
+write_makefiles "$MY_DIR"/proprietary-files.txt true
 
 printf '\n' >> "$PRODUCTMK"
 printf 'ifneq ($(BOARD_HAVE_RADIO),false)\n' >> "$PRODUCTMK"
 
-write_makefiles "$MY_DIR"/proprietary-files-radio.txt
+write_makefiles "$MY_DIR"/proprietary-files-radio.txt true
 
 printf 'endif\n' >> "$PRODUCTMK"
 
@@ -61,7 +61,7 @@ if [ -s "$MY_DIR"/../$DEVICE/proprietary-files.txt ]; then
     write_headers
 
     # The standard device blobs
-    write_makefiles "$MY_DIR"/../$DEVICE/proprietary-files.txt
+    write_makefiles "$MY_DIR"/../$DEVICE/proprietary-files.txt true
 
     # We are done!
     write_footers
