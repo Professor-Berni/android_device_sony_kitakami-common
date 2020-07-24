@@ -5,3 +5,4 @@ allow ueventd device:file relabelfrom;
 allow ueventd sysfs_camera_torch:file { open write };
 allow ueventd vfat:dir search;
 allow ueventd vfat:file { getattr open read };
+allow ueventd self:capability sys_nice;

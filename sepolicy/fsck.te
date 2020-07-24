@@ -1,1 +1,2 @@
 allow fsck diag_partition_device:blk_file { read write };
+allow fsck self:capability { dac_override dac_read_search };
