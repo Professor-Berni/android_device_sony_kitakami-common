@@ -197,7 +197,7 @@ TARGET_LD_SHIM_LIBS := \
 
 # SELinux
 include device/qcom/sepolicy-legacy/sepolicy.mk
-BOARD_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy
+BOARD_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy/vendor
 
 # WiFi
 BOARD_WLAN_DEVICE           := bcmdhd
