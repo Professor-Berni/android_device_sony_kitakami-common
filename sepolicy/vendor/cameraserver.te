@@ -14,3 +14,4 @@ allow cameraserver sysfs_graphics:file { getattr open read };
 allow cameraserver init:unix_dgram_socket sendto;
 allow cameraserver qcamerasvr:unix_dgram_socket sendto;
 allow cameraserver qcamerasvr:unix_stream_socket connectto;
+allow cameraserver secd:unix_stream_socket connectto;
