@@ -1,0 +1,1 @@
+allow hal_audio_default tad_socket:sock_file { create_file_perms write };
