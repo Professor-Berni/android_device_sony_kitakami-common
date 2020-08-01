@@ -1,3 +1,4 @@
 allow priv_app device:dir open;
 allow priv_app proc_interrupts:file open;
 allow priv_app hal_memtrack_hwservice:hwservice_manager find;
+allow priv_app vr_manager_service:service_manager find;
