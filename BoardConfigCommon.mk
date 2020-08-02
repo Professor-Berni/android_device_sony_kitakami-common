@@ -95,6 +95,9 @@ TARGET_PROCESS_SDK_VERSION_OVERRIDE := \
     /system/bin/cameraserver=25 \
     /system/bin/mediaserver=25 \
     /system/bin/iddd=25 \
+    /system/bin/secd=25 \
+    /system/bin/tad_static=25 \
+    /system/bin/loc_launcher=25 \
     /system/bin/mm-qcamera-daemon=25 \
     /system/bin/sensors.qcom=25
 
@@ -189,11 +192,12 @@ TARGET_USERIMAGES_USE_EXT4 := true
 
 # Shims
 TARGET_LD_SHIM_LIBS := \
-     /system/lib/hw/camera.qcom.so|/system/vendor/lib/camera.qcom_shim.so \
+     /system/vendor/lib/hw/camera.msm8994.so|/system/vendor/lib/camera.qcom_shim.so \
      /system/lib64/libsys-utils.so|libsensor.so \
      /system/lib/libcammw.so|libsensor.so \
      /system/vendor/lib/libizat_core.so|/system/vendor/lib/libshim_gps.so \
-     /system/vendor/lib64/libizat_core.so|/system/vendor/lib64/libshim_gps.so
+     /system/vendor/lib64/libizat_core.so|/system/vendor/lib64/libshim_gps.so \
+     /system/bin/secd|/system/lib64/lib-preload64.so
 
 # SELinux
 include device/qcom/sepolicy-legacy/sepolicy.mk
