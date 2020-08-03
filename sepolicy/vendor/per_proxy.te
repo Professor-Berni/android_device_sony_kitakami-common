@@ -11,3 +11,4 @@ allow per_proxy servicemanager:binder call;
 allow per_proxy sysfs:file { open read };
 allow per_proxy per_mgr:binder transfer;
 allow per_proxy binder_per_mgr_service:service_manager find;
+allow per_proxy secd_exec:file { getattr read };

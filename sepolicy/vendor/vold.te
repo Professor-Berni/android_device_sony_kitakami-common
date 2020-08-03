@@ -1,3 +1,4 @@
 allow vold diag_data_file:dir { read open ioctl };
 allow vold firmware_file:dir search;
 allow vold firmware_file:file { getattr open read };
+allow vold secd_exec:file { getattr read };

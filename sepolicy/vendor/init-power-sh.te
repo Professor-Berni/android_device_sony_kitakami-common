@@ -35,3 +35,4 @@ allow init-power-sh sysfs_msm_perf:file { open write };
 allow init-power-sh proc:file open;
 allow init-power-sh sysfs_cpu_boost:dir search;
 allow init-power-sh sysfs_cpu_boost:file { open write };
+allow init-power-sh secd_exec:file { getattr read };

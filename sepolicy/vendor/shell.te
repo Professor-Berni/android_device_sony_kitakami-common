@@ -79,6 +79,7 @@ allow shell rmnet_mux_prop:file { getattr open };
 allow shell safemode_prop:file { getattr open };
 allow shell scr_enabled_prop:file { getattr open };
 allow shell sdm_idle_time_prop:file { getattr open };
+allow shell secd_exec:file { getattr read };
 allow shell sensors_prop:file { getattr open };
 allow shell spcomlib_prop:file { getattr open };
 allow shell sys_usb_configfs_prop:file { getattr open };

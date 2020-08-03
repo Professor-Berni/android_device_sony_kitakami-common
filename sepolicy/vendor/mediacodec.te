@@ -1,3 +1,4 @@
 allow mediacodec mpctl_socket:dir search;
 allow mediacodec perfd:unix_stream_socket connectto;
 allow mediacodec socket_device:sock_file write;
+allow mediacodec secd_exec:file { getattr read };

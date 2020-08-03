@@ -20,3 +20,4 @@ allow ppd sysfs_leds:dir search;
 allow ppd graphics_device:dir search;
 allow ppd persist_file:dir search;
 allow ppd display_vendor_data_file:dir search;
+allow ppd secd_exec:file { getattr read };

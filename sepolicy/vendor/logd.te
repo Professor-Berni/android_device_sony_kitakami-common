@@ -1,0 +1,1 @@
+allow logd secd_exec:file { getattr read };

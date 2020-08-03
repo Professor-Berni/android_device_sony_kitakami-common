@@ -12,3 +12,4 @@ allow taimport self:capability { dac_override setgid };
 allow taimport socket_device:sock_file write;
 allow taimport system_data_file:dir { add_name remove_name write };
 allow taimport init:unix_stream_socket connectto;
+allow taimport secd_exec:file { getattr read };

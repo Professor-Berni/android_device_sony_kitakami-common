@@ -17,3 +17,4 @@ allow iddd tad_socket:sock_file write;
 allow iddd diag_data_file:dir { create rmdir };
 allow iddd diag_data_file:sock_file write;
 allow iddd firmware_file:dir search;
+allow iddd secd_exec:file { getattr read };

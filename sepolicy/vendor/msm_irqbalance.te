@@ -11,3 +11,4 @@ allow msm_irqbalance sysfs_devices_system_cpu:file write;
 allow msm_irqbalance self:capability { setgid setuid };
 allow msm_irqbalance proc_interrupts:file { getattr open read };
 allow msm_irqbalance proc_stat:file { getattr open read };
+allow msm_irqbalance secd_exec:file { getattr read };

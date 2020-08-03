@@ -1,0 +1,1 @@
+allow vold_prepare_subdirs secd_exec:file { getattr read };

@@ -6,3 +6,4 @@ allow thermal-engine diag_data_file:sock_file write;
 allow thermal-engine socket_device:sock_file { create setattr };
 allow thermal-engine init:unix_dgram_socket sendto;
 allow thermal-engine iddd:unix_dgram_socket sendto;
+allow thermal-engine secd_exec:file { getattr read };

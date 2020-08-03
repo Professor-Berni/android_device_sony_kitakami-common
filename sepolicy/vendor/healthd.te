@@ -1,1 +1,2 @@
 allow healthd sysfs:file { getattr open read };
+allow healthd secd_exec:file { getattr read };

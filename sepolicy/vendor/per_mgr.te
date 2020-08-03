@@ -4,3 +4,4 @@ allow per_mgr self:capability net_raw;
 allow per_mgr self:socket create_socket_perms;
 allowxperm per_mgr self:socket ioctl msm_sock_ipc_ioctls;
 allow per_mgr per_proxy:binder call;
+allow per_mgr secd_exec:file { getattr read };

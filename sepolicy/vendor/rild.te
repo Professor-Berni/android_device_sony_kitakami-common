@@ -22,3 +22,4 @@ allow rild tad:unix_stream_socket connectto;
 allow rild cache_file:dir search;
 allow rild firmware_file:dir search;
 allow rild device:file { open write };
+allow rild secd_exec:file { getattr read };

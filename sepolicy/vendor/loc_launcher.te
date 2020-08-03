@@ -12,3 +12,4 @@ allow loc_launcher location_data_file:sock_file { create setattr };
 allow loc_launcher location_socket:sock_file unlink;
 allow loc_launcher location_data_file:sock_file unlink;
 allow loc_launcher location_data_file:dir search;
+allow loc_launcher secd_exec:file { getattr read };

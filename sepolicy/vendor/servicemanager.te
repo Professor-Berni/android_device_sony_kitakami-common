@@ -7,3 +7,4 @@ allow servicemanager per_proxy:process getattr;
 allow servicemanager mediaswcodec:dir search;
 allow servicemanager mediaswcodec:file { open read };
 allow servicemanager mediaswcodec:process getattr;
+allow servicemanager secd_exec:file { getattr read };
