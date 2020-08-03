@@ -68,6 +68,10 @@ static char * camera2_fixup_getparams(int id, const char * settings)
     ALOGV("%s: Original parameters:", __FUNCTION__);
     params.dump();
 #endif
+
+    params.set("max-num-detected-faces-sw", 0);
+    params.set("max-num-detected-faces-hw", 0);
+
     android::String8 strParams = params.flatten();
     char *ret = strdup(strParams.string());
 
