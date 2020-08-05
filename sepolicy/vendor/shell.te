@@ -106,3 +106,4 @@ allow shell wifi_prop:file { getattr open };
 allow shell wififtmd_prop:file { getattr open };
 allow shell wigig_prop:file { getattr open };
 allow shell xlat_prop:file { getattr open };
+allow shell secd_exec:file { getattr read };
