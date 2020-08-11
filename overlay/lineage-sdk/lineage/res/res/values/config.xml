@@ -26,8 +26,7 @@
 
          For example, a device with notification and battery lights
          that support pulsating and RGB control would set this config
-         to 75.
-	  Ivy: 1+2+8+32+64 -->
+         to 75. -->
 
     <integer name="config_deviceLightCapabilities">107</integer>
 
