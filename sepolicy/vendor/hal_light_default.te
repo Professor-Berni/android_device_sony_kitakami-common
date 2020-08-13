@@ -1,2 +1,2 @@
-allow hal_light_default secd_exec:file read;
-allow hal_light_default sysfs:file { read write };
+allow hal_light_default secd_exec:file { getattr read };
+allow hal_light_default sysfs:file { open read write };
