@@ -505,14 +505,6 @@ service imscmservice /system/vendor/bin/imscmservice
    user system
    group radio diag log
 
-service ims_regmanager /system/bin/exe-ims-regmanagerprocessnative
-    class late_start
-    group net_bt_admin inet radio wifi
-    disabled
-
-on property:persist.ims.regmanager.mode=1
-    start ims_regmanager
-
 service irsc_util /system/bin/irsc_util "/etc/sec_config"
     class main
     user root
