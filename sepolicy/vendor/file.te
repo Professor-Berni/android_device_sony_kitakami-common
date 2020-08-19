@@ -21,3 +21,5 @@ type fpc_data_file, file_type;
 # Camera
 type sysfs_camera, sysfs_type, fs_type;
 
+# Socket
+type ims_socket, file_type;

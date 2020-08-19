@@ -75,6 +75,12 @@
 /system/vendor/bin/mm-pp-daemon                            u:object_r:ppd_exec:s0
 /system/vendor/bin/perfd                                   u:object_r:perfd_exec:s0
 /system/vendor/bin/timekeep                                u:object_r:timekeep_exec:s0
+/system/vendor/bin/imsdatadaemon                           u:object_r:ims_exec:s0
+/system/vendor/bin/imsqmidaemon                            u:object_r:ims_exec:s0
+/system/vendor/bin/ims_rtp_daemon                          u:object_r:ims_exec:s0
 
 /system/vendor/(lib|lib64)/libril-wrapper\.so              u:object_r:hal_ril_wrapper_exec:s0
 
+/dev/socket/ims_qmid                                  u:object_r:ims_socket:s0
+/dev/socket/ims_datad                                 u:object_r:ims_socket:s0
+/dev/socket/ims_rtpd                                  u:object_r:ims_socket:s0
