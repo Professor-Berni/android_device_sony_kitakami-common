@@ -81,6 +81,3 @@
 
 /system/vendor/(lib|lib64)/libril-wrapper\.so              u:object_r:hal_ril_wrapper_exec:s0
 
-/dev/socket/ims_qmid                                  u:object_r:ims_socket:s0
-/dev/socket/ims_datad                                 u:object_r:ims_socket:s0
-/dev/socket/ims_rtpd                                  u:object_r:ims_socket:s0
