@@ -21,9 +21,11 @@ LOCAL_SRC_FILES := \
     graphic-buffer.cpp
 
 LOCAL_SHARED_LIBRARIES := \
+    libbinder \
     libgui \
     liblog \
-    libui
+    libui \
+    libutils
 
 LOCAL_C_INCLUDES := \
     frameworks/native/include
