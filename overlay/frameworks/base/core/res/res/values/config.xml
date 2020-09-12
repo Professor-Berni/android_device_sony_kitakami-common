@@ -324,4 +324,6 @@
     -->
     <bool name="config_wifiDisplaySupportsProtectedBuffers">true</bool>
 
+    <!-- Whether device supports wifi ap mac randomization -->
+    <bool name="config_wifi_ap_randomization_supported">false</bool>
 </resources>
