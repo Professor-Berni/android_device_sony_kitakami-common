@@ -22,6 +22,9 @@
 # Camera
 /sys/devices(/soc\.0)?/pmi8994-flash-27(/.*)?              u:object_r:sysfs_camera_torch:s0
 
+# Dumpstate HAL
+/vendor/bin/hw/android\.hardware\.dumpstate@1\.1-service\.kitakami u:object_r:hal_dumpstate_impl_exec:s0
+
 # HCI
 /dev/ttyHS0                                                u:object_r:hci_attach_dev:s0
 /dev/brcm_bt_drv                                           u:object_r:hci_attach_dev:s0
