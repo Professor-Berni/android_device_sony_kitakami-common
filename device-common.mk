@@ -189,11 +189,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     android.hardware.health@1.0-impl
 
-# IMS
-PRODUCT_PACKAGES += \
-    libshims_ims \
-    libshims_boringssl
-
 # Init
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/fstab.qcom:root/fstab.qcom \

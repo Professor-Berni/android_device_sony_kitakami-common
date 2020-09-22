@@ -2,4 +2,3 @@ type timekeep_prop, property_type;
 type tee_prop, property_type;
 type ta_prop, property_type;
 type display_prop, property_type;
-type rcs_prop, property_type;

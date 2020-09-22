@@ -1,1 +1,0 @@
-allow hal_imsrtp secd_exec:file { getattr read };
