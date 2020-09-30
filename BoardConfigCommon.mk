@@ -200,7 +200,7 @@ TARGET_LD_SHIM_LIBS := \
      /system/bin/secd|/system/lib64/lib-preload64.so
 
 # SELinux
-include device/qcom/sepolicy-legacy/sepolicy.mk
+# include device/qcom/sepolicy-legacy/sepolicy.mk
 BOARD_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy/vendor
 
 # WiFi
