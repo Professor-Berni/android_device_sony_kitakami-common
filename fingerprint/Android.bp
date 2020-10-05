@@ -24,7 +24,6 @@ cc_binary {
         "liblog",
         "libhidlbase",
         "libhardware",
-        "libhwbinder",
         "android.hardware.biometrics.fingerprint@2.1",
     ],
     proprietary: true,
