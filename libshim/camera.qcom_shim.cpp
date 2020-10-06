@@ -107,23 +107,21 @@ extern "C" void _ZN7android13GraphicBufferC1Ejjij(
 //sp<SurfaceControl> SurfaceComposerClient::createSurface(const String8& name, uint32_t w, uint32_t h,
 //                                                        PixelFormat format, uint32_t flags,
 //                                                        SurfaceControl* parent,
-//                                                        LayerMetadata metadata);
-extern "C" void* _ZN7android21SurfaceComposerClient13createSurfaceERKNS_7String8EjjijPNS_14SurfaceControlENS_13LayerMetadataE(
-    const android::String8& name,// name of the surface
-    uint32_t w,         // width in pixel
-    uint32_t h,         // height in pixel
-    PixelFormat format, // pixel-format desired
-    uint32_t flags,     // usage flags
-    SurfaceControl* parent, // parent
-    android::LayerMetadata metadata
-);
+//                                                        LayerMetadata metadata,
+//                                                        uint32_t* outTransformHint)
+extern "C" void* _ZN7android21SurfaceComposerClient13createSurfaceERKNS_7String8EjjijPNS_14SurfaceControlENS_13LayerMetadataEPj(const android::String8& name, uint32_t w, uint32_t h,
+                                                        PixelFormat format, uint32_t flags,
+                                                        SurfaceControl* parent,
+                                                        android::LayerMetadata metadata,
+                                                        uint32_t* outTransformHint);
+
 
 
 extern "C" void* _ZN7android21SurfaceComposerClient13createSurfaceERKNS_7String8Ejjij(
     const android::String8& name, uint32_t w, uint32_t h, PixelFormat format,
     uint32_t flags) {
   android::LayerMetadata metadata;
-  sc = _ZN7android21SurfaceComposerClient13createSurfaceERKNS_7String8EjjijPNS_14SurfaceControlENS_13LayerMetadataE(name, w, h, format, flags, nullptr, metadata);
+  sc = _ZN7android21SurfaceComposerClient13createSurfaceERKNS_7String8EjjijPNS_14SurfaceControlENS_13LayerMetadataEPj(name, w, h, format, flags, nullptr, metadata, nullptr);
   return sc;
 }
 
@@ -152,7 +150,7 @@ extern "C" void _ZN7android21SurfaceComposerClient20setDisplayProjectionERKNS_2s
     uint32_t orientation,
     const android::Rect& layerStackRect,
     const android::Rect& displayRect) {
-  t->setDisplayProjection(token, orientation, layerStackRect, displayRect);
+  t->setDisplayProjection(token, static_cast<android::ui::Rotation>(orientation), layerStackRect, displayRect);
 }
 
 extern "C" void _ZN7android21SurfaceComposerClient20setDisplayLayerStackERKNS_2spINS_7IBinderEEEj(
@@ -184,10 +182,13 @@ extern "C" void* _ZN7android21SurfaceComposerClient17getBuiltInDisplayEi(int32_t
   return _ZN7android21SurfaceComposerClient23getPhysicalDisplayTokenEy(static_cast<uint64_t>(id));
 }
 
-extern "C" void _ZN7android14SurfaceControl7destroyEv(void);
+
+extern "C" void _ZN7android14SurfaceControlD0Ev(void);
+extern "C" void _ZN7android14SurfaceControlD1Ev(void);
+extern "C" void _ZN7android14SurfaceControlD2Ev(void);
 
 extern "C" void _ZN7android14SurfaceControl5clearEv(void){
-  _ZN7android14SurfaceControl7destroyEv();
+  _ZN7android14SurfaceControlD0Ev();
 }
 
 //android::GraphicBuffer::lock(uint32_t inUsage, void** vaddr, int32_t* outBytesPerPixel,
