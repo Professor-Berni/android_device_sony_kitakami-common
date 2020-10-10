@@ -120,6 +120,9 @@ ro.sony.sensors.dpc=false
 ro.sony.sensors.pug=false
 ro.qc.sdk.sensors.gestures=true
 
+# Traced
+persist.traced.enable=0
+
 # Wifi
 wifi.interface=wlan0
 wifi.direct.interface=p2p-dev-wlan0
