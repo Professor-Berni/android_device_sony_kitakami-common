@@ -108,7 +108,7 @@ extern "C" void _ZN7android13GraphicBufferC1Ejjij(
 //                                                        PixelFormat format, uint32_t flags,
 //                                                        SurfaceControl* parent,
 //                                                        LayerMetadata metadata);
-/*extern "C" void* _ZN7android21SurfaceComposerClient13createSurfaceERKNS_7String8EjjijPNS_14SurfaceControlENS_13LayerMetadataE(
+extern "C" void* _ZN7android21SurfaceComposerClient13createSurfaceERKNS_7String8EjjijPNS_14SurfaceControlENS_13LayerMetadataE(
     const android::String8& name,// name of the surface
     uint32_t w,         // width in pixel
     uint32_t h,         // height in pixel
@@ -116,16 +116,16 @@ extern "C" void _ZN7android13GraphicBufferC1Ejjij(
     uint32_t flags,     // usage flags
     SurfaceControl* parent, // parent
     android::LayerMetadata metadata
-);*/
+);
 
 
-/*extern "C" void* _ZN7android21SurfaceComposerClient13createSurfaceERKNS_7String8Ejjij(
+extern "C" void* _ZN7android21SurfaceComposerClient13createSurfaceERKNS_7String8Ejjij(
     const android::String8& name, uint32_t w, uint32_t h, PixelFormat format,
     uint32_t flags) {
   android::LayerMetadata metadata;
   sc = _ZN7android21SurfaceComposerClient13createSurfaceERKNS_7String8EjjijPNS_14SurfaceControlENS_13LayerMetadataE(name, w, h, format, flags, nullptr, metadata);
   return sc;
-}*/
+}
 
 // status_t setLayer(uint32_t layer);
 extern "C" status_t _ZN7android14SurfaceControl8setLayerEj(uint32_t layer) {
@@ -145,6 +145,14 @@ extern "C" void _ZN7android21SurfaceComposerClient21openGlobalTransactionEv() {
 extern "C" void _ZN7android21SurfaceComposerClient17setDisplaySurfaceERKNS_2spINS_7IBinderEEERKNS1_INS_22IGraphicBufferProducerEEE(
     const sp<IBinder>& token, const sp<IGraphicBufferProducer>& bufferProducer) {
   t->setDisplaySurface(token, bufferProducer);
+}
+
+extern "C" void _ZN7android21SurfaceComposerClient20setDisplayProjectionERKNS_2spINS_7IBinderEEEjRKNS_4RectES8_(
+    const sp<IBinder>& token,
+    uint32_t orientation,
+    const android::Rect& layerStackRect,
+    const android::Rect& displayRect) {
+  t->setDisplayProjection(token, orientation, layerStackRect, displayRect);
 }
 
 extern "C" void _ZN7android21SurfaceComposerClient20setDisplayLayerStackERKNS_2spINS_7IBinderEEEj(
@@ -176,11 +184,11 @@ extern "C" void* _ZN7android21SurfaceComposerClient17getBuiltInDisplayEi(int32_t
   return _ZN7android21SurfaceComposerClient23getPhysicalDisplayTokenEy(static_cast<uint64_t>(id));
 }
 
-/*extern "C" void _ZN7android14SurfaceControl7destroyEv(void);
+extern "C" void _ZN7android14SurfaceControl7destroyEv(void);
 
 extern "C" void _ZN7android14SurfaceControl5clearEv(void){
   _ZN7android14SurfaceControl7destroyEv();
-}*/
+}
 
 //android::GraphicBuffer::lock(uint32_t inUsage, void** vaddr, int32_t* outBytesPerPixel,
 //                             int32_t* outBytesPerStride);
