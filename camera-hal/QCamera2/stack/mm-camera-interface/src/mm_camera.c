@@ -278,9 +278,7 @@ int32_t mm_camera_open(mm_camera_obj_t *my_obj)
     if (NULL == my_obj) {
         goto on_error;
     }
-    ALOGD("%s: (bt): line %d, call of mm_camera_util_get_dev_name(%d)", __func__, __LINE__, my_obj->my_hdl);
     dev_name_value = mm_camera_util_get_dev_name(my_obj->my_hdl);
-    ALOGD("%s: (bt): line %d, mm_camera_util_get_dev_name()-rc: %s", __func__, __LINE__, dev_name_value);
     if (NULL == dev_name_value) {
         goto on_error;
     }
@@ -304,7 +302,7 @@ int32_t mm_camera_open(mm_camera_obj_t *my_obj)
             }
             break;
         }
-        ALOGE("%s:Failed with %s error, retrying after %d milli-seconds",
+        ALOGE("%s: Failed with %s error, retrying after %d milli-seconds",
              __func__, strerror(errno), sleep_msec);
         usleep(sleep_msec * 1000U);
     }while (n_try > 0);
@@ -329,7 +327,7 @@ int32_t mm_camera_open(mm_camera_obj_t *my_obj)
             CDBG("%s: opened, break out while loop", __func__);
             break;
         }
-        CDBG("%s:failed with I/O error retrying after %d milli-seconds",
+        CDBG("%s: failed with I/O error retrying after %d milli-seconds",
              __func__, sleep_msec);
         usleep(sleep_msec * 1000U);
     } while (n_try > 0);
@@ -663,9 +661,7 @@ int32_t mm_camera_set_parms(mm_camera_obj_t *my_obj,
     int32_t rc = -1;
     int32_t value = 0;
     if (parms !=  NULL) {
-        ALOGD("%s: (bt): line %d, call of mm_camera_util_s_ctrl(%d)", __func__, __LINE__, my_obj->ctrl_fd);
         rc = mm_camera_util_s_ctrl(my_obj->ctrl_fd, CAM_PRIV_PARM, &value);
-        ALOGD("%s: (bt): line %d, mm_camera_util_s_ctrl()-rc: %d", __func__, __LINE__, rc);
     }
     pthread_mutex_unlock(&my_obj->cam_lock);
     return rc;
@@ -719,9 +715,7 @@ int32_t mm_camera_do_auto_focus(mm_camera_obj_t *my_obj)
 {
     int32_t rc = -1;
     int32_t value = 0;
-    ALOGD("%s: (bt): line %d, call of mm_camera_util_s_ctrl(%d)", __func__, __LINE__, my_obj->ctrl_fd);
     rc = mm_camera_util_s_ctrl(my_obj->ctrl_fd, CAM_PRIV_DO_AUTO_FOCUS, &value);
-    ALOGD("%s: (bt): line %d, mm_camera_util_s_ctrl()-rc: %d", __func__, __LINE__, rc);
     pthread_mutex_unlock(&my_obj->cam_lock);
     return rc;
 }
@@ -742,9 +736,7 @@ int32_t mm_camera_cancel_auto_focus(mm_camera_obj_t *my_obj)
 {
     int32_t rc = -1;
     int32_t value = 0;
-    ALOGD("%s: (bt): line %d, call of mm_camera_util_s_ctrl(%d)", __func__, __LINE__, my_obj->ctrl_fd);
     rc = mm_camera_util_s_ctrl(my_obj->ctrl_fd, CAM_PRIV_CANCEL_AUTO_FOCUS, &value);
-    ALOGD("%s: (bt): line %d, mm_camera_util_s_ctrl()-rc: %d", __func__, __LINE__, rc);
     pthread_mutex_unlock(&my_obj->cam_lock);
     return rc;
 }
@@ -767,9 +759,7 @@ int32_t mm_camera_prepare_snapshot(mm_camera_obj_t *my_obj,
 {
     int32_t rc = -1;
     int32_t value = do_af_flag;
-    ALOGD("%s: (bt): line %d, call of mm_camera_util_s_ctrl(%d)", __func__, __LINE__, my_obj->ctrl_fd);
     rc = mm_camera_util_s_ctrl(my_obj->ctrl_fd, CAM_PRIV_PREPARE_SNAPSHOT, &value);
-    ALOGD("%s: (bt): line %d, mm_camera_util_s_ctrl()-rc: %d", __func__, __LINE__, rc);
     pthread_mutex_unlock(&my_obj->cam_lock);
     return rc;
 }
@@ -791,10 +781,7 @@ int32_t mm_camera_start_zsl_snapshot(mm_camera_obj_t *my_obj)
     int32_t rc = -1;
     int32_t value = 0;
 
-    ALOGD("%s: (bt): line %d, call of mm_camera_util_s_ctrl(%d)", __func__, __LINE__, my_obj->ctrl_fd);
-    rc = mm_camera_util_s_ctrl(my_obj->ctrl_fd,
-             CAM_PRIV_START_ZSL_SNAPSHOT, &value);
-    ALOGD("%s: (bt): line %d, mm_camera_util_s_ctrl()-rc: %d", __func__, __LINE__, rc);
+    rc = mm_camera_util_s_ctrl(my_obj->ctrl_fd, CAM_PRIV_START_ZSL_SNAPSHOT, &value);
     return rc;
 }
 
@@ -814,10 +801,7 @@ int32_t mm_camera_stop_zsl_snapshot(mm_camera_obj_t *my_obj)
 {
     int32_t rc = -1;
     int32_t value;
-    ALOGD("%s: (bt): line %d, call of mm_camera_util_s_ctrl(%d)", __func__, __LINE__, my_obj->ctrl_fd);
-    rc = mm_camera_util_s_ctrl(my_obj->ctrl_fd,
-             CAM_PRIV_STOP_ZSL_SNAPSHOT, &value);
-    ALOGD("%s: (bt): line %d, mm_camera_util_s_ctrl()-rc: %d", __func__, __LINE__, rc);
+    rc = mm_camera_util_s_ctrl(my_obj->ctrl_fd, CAM_PRIV_STOP_ZSL_SNAPSHOT, &value);
     return rc;
 }
 
@@ -1874,10 +1858,13 @@ int32_t mm_camera_util_s_ctrl(int32_t fd, uint32_t id, int32_t *value)
     if (value != NULL) {
         control.value = *value;
     }
+
     rc = ioctl(fd, VIDIOC_S_CTRL, &control);
 
-    CDBG("%s: fd: %d, S_CTRL, id: 0x%x, value: %p, rc: %d, errno: %d\n",
-         __func__, fd, id, value, rc, errno);
+    if (rc < 0) {
+        CDBG_ERROR("%s: Error: ioctl S_CTRL failed: %s", __func__, strerror(errno));
+    }
+
     if (value != NULL) {
         *value = control.value;
     }

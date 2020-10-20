@@ -6186,9 +6186,13 @@ int32_t QCamera2HardwareInterface::startChannel(qcamera_ch_type_enum_t ch_type)
 {
     int32_t rc = UNKNOWN_ERROR;
     if (m_channels[ch_type] != NULL) {
+        ALOGD("%s: (bt): line %d, call of config()", __func__, __LINE__);
         rc = m_channels[ch_type]->config();
+        ALOGD("%s: (bt): line %d, config()-rc: %d", __func__, __LINE__, rc);
         if (NO_ERROR == rc) {
+            ALOGD("%s: (bt): line %d, call of start()", __func__, __LINE__);
             rc = m_channels[ch_type]->start();
+            ALOGD("%s: (bt): line %d, start()-rc: %d", __func__, __LINE__, rc);
         }
     }
 

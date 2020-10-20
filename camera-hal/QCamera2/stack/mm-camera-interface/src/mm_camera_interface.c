@@ -792,7 +792,6 @@ static int32_t mm_camera_intf_config_stream(uint32_t camera_handle,
     CDBG("%s: E, camera_handle: %d, ch_id: %d, stream_id: %d", __func__, camera_handle, ch_id, stream_id);
 
     pthread_mutex_lock(&g_intf_lock);
-    ALOGD("%s: (bt): line %d, call of mm_camera_util_get_camera_by_handler(camera_handle: %d)", __func__, __LINE__, camera_handle);
     my_obj = mm_camera_util_get_camera_by_handler(camera_handle);
 
     CDBG("%s: mm_camera_intf_config_stream, stream_id: %d", __func__, stream_id);
@@ -800,9 +799,7 @@ static int32_t mm_camera_intf_config_stream(uint32_t camera_handle,
     if(my_obj) {
         pthread_mutex_lock(&my_obj->cam_lock);
         pthread_mutex_unlock(&g_intf_lock);
-        ALOGD("%s: (bt): line %d, call of mm_camera_config_stream()", __func__, __LINE__);
         rc = mm_camera_config_stream(my_obj, ch_id, stream_id, config);
-        ALOGD("%s: (bt): line %d, mm_camera_config_stream()-rc: %d", __func__, __LINE__, rc);
     } else {
         pthread_mutex_unlock(&g_intf_lock);
     }
@@ -1387,14 +1384,14 @@ void get_sensor_info()
         snprintf(dev_name, sizeof(dev_name), "/dev/media%d", num_media_devices);
         dev_fd = open(dev_name, O_RDWR | O_NONBLOCK);
         if (dev_fd < 0) {
-            CDBG("Done discovering media devices\n");
+            CDBG("%s: Done discovering media devices", __func__);
             break;
         }
         num_media_devices++;
         memset(&mdev_info, 0, sizeof(mdev_info));
         rc = ioctl(dev_fd, MEDIA_IOC_DEVICE_INFO, &mdev_info);
         if (rc < 0) {
-            CDBG_ERROR("Error: ioctl media_dev failed: %s\n", strerror(errno));
+            CDBG_ERROR("%s: Error: ioctl media_dev failed: %s", __func__, strerror(errno));
             close(dev_fd);
             dev_fd = -1;
             num_cameras = 0;
@@ -1418,7 +1415,7 @@ void get_sensor_info()
             entity.id = num_entities++;
             rc = ioctl(dev_fd, MEDIA_IOC_ENUM_ENTITIES, &entity);
             if (rc < 0) {
-                CDBG("Done enumerating media entities\n");
+                CDBG("%s: Done enumerating media entities", __func__);
                 rc = 0;
                 break;
             }
@@ -1427,7 +1424,7 @@ void get_sensor_info()
                 temp = entity.flags >> 8;
                 mount_angle = (temp & 0xFF) * 90;
                 facing = (temp >> 8);
-                ALOGD("index: %u, flag: %x, mount_angle: %u, facing: %u\n",
+                ALOGD("%s: index: %u, flag: %x, mount_angle: %u, facing: %u\n", __func__,
                     (unsigned int)num_cameras, (unsigned int)temp,
                     (unsigned int)mount_angle, (unsigned int)facing);
                 g_cam_ctrl.info[num_cameras].facing = (int)facing;
@@ -1437,8 +1434,8 @@ void get_sensor_info()
             }
         }
 
-        CDBG("%s: dev_info[id: %zu, name: '%s']\n",
-            __func__, num_cameras, g_cam_ctrl.video_dev_name[num_cameras]);
+        CDBG("%s: dev_info[id: %zu, name: '%s']\n", __func__,
+            num_cameras, g_cam_ctrl.video_dev_name[num_cameras]);
 
         close(dev_fd);
         dev_fd = -1;
@@ -1535,7 +1532,7 @@ uint8_t get_num_of_cameras()
     property_get("vold.decrypt", prop, "0");
     int decrypt = atoi(prop);
     if (decrypt == 1)
-     return 0;
+        return 0;
 
     /* lock the mutex */
     pthread_mutex_lock(&g_intf_lock);
@@ -1546,21 +1543,24 @@ uint8_t get_num_of_cameras()
 
         snprintf(dev_name, sizeof(dev_name), "/dev/media%d", num_media_devices);
         dev_fd = open(dev_name, O_RDWR | O_NONBLOCK);
+        CDBG("%s: (bt): line: %d: dev_fd: %d, dev_name: %s", __func__, __LINE__, dev_fd, dev_name);
         if (dev_fd < 0) {
-            CDBG("Done discovering media devices\n");
+            CDBG("%s: line: %d: Done discovering media devices", __func__, __LINE__);
             break;
         }
         num_media_devices++;
         rc = ioctl(dev_fd, MEDIA_IOC_DEVICE_INFO, &mdev_info);
         if (rc < 0) {
-            CDBG_ERROR("Error: ioctl media_dev failed: %s\n", strerror(errno));
+            CDBG_ERROR("%s: line: %d: Error: ioctl media_dev failed: %s", __func__,
+                       __LINE__, strerror(errno));
             close(dev_fd);
             dev_fd = -1;
             break;
         }
 
-        if (strncmp(mdev_info.model, MSM_CONFIGURATION_NAME,
-          sizeof(mdev_info.model)) != 0) {
+//(bt): MSM_CONFIGURATION_NAME is "msm_config"
+        CDBG("%s: (bt): line: %d: mdev_info.model: %s", __func__, __LINE__, mdev_info.model);
+        if (strncmp(mdev_info.model, MSM_CONFIGURATION_NAME, sizeof(mdev_info.model)) != 0) {
             close(dev_fd);
             dev_fd = -1;
             continue;
@@ -1570,18 +1570,21 @@ uint8_t get_num_of_cameras()
             struct media_entity_desc entity;
             memset(&entity, 0, sizeof(entity));
             entity.id = num_entities++;
-            CDBG("entity id: %d", entity.id);
+            CDBG("%s: entity id: %d", __func__, entity.id);
             rc = ioctl(dev_fd, MEDIA_IOC_ENUM_ENTITIES, &entity);
             if (rc < 0) {
-                CDBG("Done enumerating media entities");
+                CDBG("%s: line: %d: Done enumerating media entities", __func__, __LINE__);
                 rc = 0;
                 break;
             }
-            CDBG("entity name: %s, type: %d, group id: %d",
+            CDBG("%s: entity name: %s, type: %d, group_id: %d", __func__,
                 entity.name, entity.type, entity.group_id);
+//(bt): MEDIA_ENT_T_V4L2_SUBDEV is 131072
+//(bt): MSM_CAMERA_SUBDEV_SENSOR_INIT is 14
             if (entity.type == MEDIA_ENT_T_V4L2_SUBDEV &&
                 entity.group_id == MSM_CAMERA_SUBDEV_SENSOR_INIT) {
                 snprintf(subdev_name, sizeof(dev_name), "/dev/%s", entity.name);
+                CDBG("%s: line: %d: Break enumerating media entities", __func__, __LINE__);
                 break;
             }
         }
@@ -1592,14 +1595,14 @@ uint8_t get_num_of_cameras()
     /* Open sensor_init subdev */
     sd_fd = open(subdev_name, O_RDWR);
     if (sd_fd < 0) {
-        CDBG_ERROR("Open sensor_init subdev failed");
+        CDBG_ERROR("%s: Open sensor_init subdev failed", __func__);
         return FALSE;
     }
 
     cfg.cfgtype = CFG_SINIT_PROBE_WAIT_DONE;
     cfg.cfg.setting = NULL;
     if (ioctl(sd_fd, VIDIOC_MSM_SENSOR_INIT_CFG, &cfg) < 0) {
-        CDBG_ERROR("failed");
+        CDBG_ERROR("%s: failed", __func__);
     }
     close(sd_fd);
     dev_fd = -1;
@@ -1612,21 +1615,25 @@ uint8_t get_num_of_cameras()
 
         snprintf(dev_name, sizeof(dev_name), "/dev/media%d", num_media_devices);
         dev_fd = open(dev_name, O_RDWR | O_NONBLOCK);
+        CDBG("%s: (bt): line: %d: dev_fd: %d, dev_name: %s", __func__, __LINE__, dev_fd, dev_name);
         if (dev_fd < 0) {
-            CDBG("Done discovering media devices: %s\n", strerror(errno));
+            CDBG("%s: line: %d: Done discovering media devices", __func__, __LINE__);
             break;
         }
         num_media_devices++;
         memset(&mdev_info, 0, sizeof(mdev_info));
         rc = ioctl(dev_fd, MEDIA_IOC_DEVICE_INFO, &mdev_info);
         if (rc < 0) {
-            CDBG_ERROR("Error: ioctl media_dev failed: %s\n", strerror(errno));
+            CDBG_ERROR("%s: line: %d: Error: ioctl media_dev failed: %s", __func__,
+                       __LINE__, strerror(errno));
             close(dev_fd);
             dev_fd = -1;
             num_cameras = 0;
             break;
         }
 
+//(bt): MSM_CAMERA_NAME is "msm_camera"
+        CDBG("%s: (bt): line: %d: mdev_info.model: %s", __func__, __LINE__, mdev_info.model);
         if(strncmp(mdev_info.model, MSM_CAMERA_NAME, sizeof(mdev_info.model)) != 0) {
             close(dev_fd);
             dev_fd = -1;
@@ -1639,18 +1646,24 @@ uint8_t get_num_of_cameras()
             entity.id = num_entities++;
             rc = ioctl(dev_fd, MEDIA_IOC_ENUM_ENTITIES, &entity);
             if (rc < 0) {
-                CDBG("Done enumerating media entities\n");
+                CDBG("%s: line: %d: Done enumerating media entities", __func__, __LINE__);
                 rc = 0;
                 break;
             }
-            if(entity.type == MEDIA_ENT_T_DEVNODE_V4L && entity.group_id == QCAMERA_VNODE_GROUP_ID) {
+//(bt): MEDIA_ENT_T_DEVNODE_V4L is 65537
+//(bt): QCAMERA_VNODE_GROUP_ID is 2
+            CDBG("%s: (bt): line: %d: entity name: %s, type: %d, group_id: %d", __func__,
+                 __LINE__, entity.name, entity.type, entity.group_id);
+            if(entity.type == MEDIA_ENT_T_DEVNODE_V4L &&
+               entity.group_id == QCAMERA_VNODE_GROUP_ID) {
                 strlcpy(g_cam_ctrl.video_dev_name[num_cameras],
                      entity.name, sizeof(entity.name));
+                CDBG("%s: line: %d: Break enumerating media entities", __func__, __LINE__);
                 break;
             }
         }
 
-        CDBG("%s: dev_info[id: %d, name: '%s']\n",
+        CDBG("%s: dev_info[id: %d, name: '%s']",
             __func__, (int)num_cameras, g_cam_ctrl.video_dev_name[num_cameras]);
 
         num_cameras++;
@@ -1663,7 +1676,7 @@ uint8_t get_num_of_cameras()
     sort_camera_info(g_cam_ctrl.num_cam);
     /* unlock the mutex */
     pthread_mutex_unlock(&g_intf_lock);
-    CDBG("%s: num_cameras: %d\n", __func__, (int)g_cam_ctrl.num_cam);
+    CDBG("%s: num_cameras: %d", __func__, (int)g_cam_ctrl.num_cam);
     return(uint8_t)g_cam_ctrl.num_cam;
 }
 
@@ -1804,9 +1817,7 @@ int32_t camera_open(uint8_t camera_idx, mm_camera_vtbl_t **camera_vtbl)
     pthread_mutex_lock(&cam_obj->cam_lock);
     pthread_mutex_unlock(&g_intf_lock);
 
-    ALOGD("%s: (bt): line %d, call of mm_camera_open()", __func__, __LINE__);
     rc = mm_camera_open(cam_obj);
-    ALOGD("%s: (bt): line %d, mm_camera_open()-rc: %d", __func__, __LINE__, rc);
 
     pthread_mutex_lock(&g_intf_lock);
     if (rc != 0) {

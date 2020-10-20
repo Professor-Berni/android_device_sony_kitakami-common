@@ -492,19 +492,15 @@ int32_t mm_channel_fsm_fn(mm_channel_t *my_obj,
     switch (my_obj->state) {
     case MM_CHANNEL_STATE_NOTUSED:
         rc = mm_channel_fsm_fn_notused(my_obj, evt, in_val, out_val);
-        ALOGD("%s: (bt): line %d, mm_channel_fsm_fn_notused", __func__, __LINE__);
         break;
     case MM_CHANNEL_STATE_STOPPED:
         rc = mm_channel_fsm_fn_stopped(my_obj, evt, in_val, out_val);
-        ALOGD("%s: (bt): line %d, mm_channel_fsm_fn_stopped", __func__, __LINE__);
         break;
     case MM_CHANNEL_STATE_ACTIVE:
         rc = mm_channel_fsm_fn_active(my_obj, evt, in_val, out_val);
-        ALOGD("%s: (bt): line %d, mm_channel_fsm_fn_active", __func__, __LINE__);
         break;
     case MM_CHANNEL_STATE_PAUSED:
         rc = mm_channel_fsm_fn_paused(my_obj, evt, in_val, out_val);
-        ALOGD("%s: (bt): line %d, mm_channel_fsm_fn_paused", __func__, __LINE__);
         break;
     default:
         CDBG("%s: Not a valid state (%d)", __func__, my_obj->state);
@@ -1143,9 +1139,7 @@ int32_t mm_channel_config_stream(mm_channel_t *my_obj,
     int rc = -1;
     mm_stream_t * stream_obj = NULL;
     CDBG("%s: E, stream ID: %d", __func__, stream_id);
-    ALOGD("%s: (bt): line %d, call of mm_channel_util_get_stream_by_handler()", __func__, __LINE__);
     stream_obj = mm_channel_util_get_stream_by_handler(my_obj, stream_id);
-    ALOGD("%s: (bt): line %d, mm_channel_util_get_stream_by_handler(), my_handle: %d, fd: %d, state: %d", __func__, __LINE__, stream_obj->my_hdl, stream_obj->fd, stream_obj->state);
 
     if (NULL == stream_obj) {
         CDBG_ERROR("%s: Invalid Stream Object for stream_id: %d", __func__, stream_id);

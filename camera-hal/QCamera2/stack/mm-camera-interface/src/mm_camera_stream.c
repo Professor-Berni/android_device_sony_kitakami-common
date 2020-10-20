@@ -484,12 +484,6 @@ int32_t mm_stream_fsm_inited(mm_stream_t *my_obj,
             break;
         }
 
-        dev_name_value = mm_camera_util_get_dev_name(my_obj->ch_obj->cam_obj->my_hdl);
-        if (NULL == dev_name_value) {
-            CDBG_ERROR("%s: NULL device name\n", __func__);
-            rc = -1;
-            break;
-        }
         snprintf(dev_name, sizeof(dev_name), "/dev/%s",
                  dev_name_value);
 
@@ -500,6 +494,10 @@ int32_t mm_stream_fsm_inited(mm_stream_t *my_obj,
             break;
         }
         CDBG("%s: open dev fd: %d\n", __func__, my_obj->fd);
+        ALOGD("%s: (bt): line %d, open dev fd: %d, dev_name: %s ", __func__, __LINE__,
+              my_obj->fd, dev_name);
+        ALOGD("%s: (bt): line %d, state (%d) for evt (%d), in (%p), out (%p)",
+                   __func__, __LINE__, my_obj->state, evt, in_val, out_val);
         rc = mm_stream_set_ext_mode(my_obj);
         if (0 == rc) {
             my_obj->state = MM_STREAM_STATE_ACQUIRED;
@@ -905,13 +903,10 @@ int32_t mm_stream_config(mm_stream_t *my_obj,
     my_obj->buf_cb[0].user_data = config->userdata;
     my_obj->buf_cb[0].cb_count = -1; /* infinite by default */
 
-    ALOGD("%s: (bt): line %d, call of mm_stream_sync_info()", __func__, __LINE__);
     rc = mm_stream_sync_info(my_obj);
-    ALOGD("%s: (bt): line %d, mm_stream_sync_info()-rc: %d", __func__, __LINE__, rc);
+
     if (rc == 0) {
-        ALOGD("%s: (bt): line %d, call of mm_stream_set_fmt()", __func__, __LINE__);
         rc = mm_stream_set_fmt(my_obj);
-        ALOGD("%s: (bt): line %d, mm_stream_set_fmt()-rc: %d", __func__, __LINE__, rc);
     }
     CDBG("%s: X, rc: %d", __func__, rc);
     return rc;
@@ -1326,9 +1321,7 @@ int32_t mm_stream_set_parm(mm_stream_t *my_obj,
     int32_t rc = -1;
     int32_t value = 0;
     if (in_value != NULL) {
-        ALOGD("%s: (bt): line %d, call of mm_camera_util_s_ctrl(%d)", __func__, __LINE__, my_obj->fd);
         rc = mm_camera_util_s_ctrl(my_obj->fd, CAM_PRIV_STREAM_PARM, &value);
-        ALOGD("%s: (bt): line %d, mm_camera_util_s_ctrl()-rc: %d", __func__, __LINE__, rc);
     }
     return rc;
 }
@@ -1382,9 +1375,7 @@ int32_t mm_stream_do_action(mm_stream_t *my_obj,
     int32_t rc = -1;
     int32_t value = 0;
     if (in_value != NULL) {
-        ALOGD("%s: (bt): line %d, call of mm_camera_util_s_ctrl(%d)", __func__, __LINE__, my_obj->fd);
         rc = mm_camera_util_s_ctrl(my_obj->fd, CAM_PRIV_STREAM_PARM, &value);
-        ALOGD("%s: (bt): line %d, mm_camera_util_s_ctrl()-rc: %d", __func__, __LINE__, rc);
     }
     return rc;
 }
@@ -3412,16 +3403,10 @@ int32_t mm_stream_sync_info(mm_stream_t *my_obj)
     int32_t rc = 0;
     int32_t value = 0;
     my_obj->stream_info->stream_svr_id = my_obj->server_stream_id;
-    ALOGD("%s: (bt): line %d, call of mm_stream_calc_offset()", __func__, __LINE__);
     rc = mm_stream_calc_offset(my_obj);
-    ALOGD("%s: (bt): line %d, mm_stream_calc_offset()-rc: %d", __func__, __LINE__, rc);
 
     if (rc == 0) {
-        ALOGD("%s: (bt): line %d, call of mm_camera_util_s_ctrl(%d)", __func__, __LINE__, my_obj->fd);
-        rc = mm_camera_util_s_ctrl(my_obj->fd,
-                                   CAM_PRIV_STREAM_INFO_SYNC, /* 0x8000012 */
-                                   &value);
-        ALOGD("%s: (bt): line %d, mm_camera_util_s_ctrl()-rc: %d", __func__, __LINE__, rc);
+        rc = mm_camera_util_s_ctrl(my_obj->fd, CAM_PRIV_STREAM_INFO_SYNC, &value);
     }
     return rc;
 }

@@ -687,27 +687,32 @@ service secd /system/bin/secd
     socket secd_devsec_sock stream 0660 system oem_2996
     socket secd_credmgr_sock stream 0660 system oem_2996
 
-#service audioserver /system/bin/audioserver
-#    class main
-#    user audioserver
-#    group audio camera drmrpc inet media mediadrm net_bt net_bt_admin net_bw_acct oem_2993
-#    ioprio rt 4
-#    writepid /dev/cpuset/foreground/tasks /dev/stune/foreground/tasks
-#    onrestart restart audio-hal-2-0
+service audioserver /system/bin/audioserver
+    class main
+    user audioserver
+    group audio camera drmrpc inet media mediadrm net_bt net_bt_admin net_bw_acct oem_2993
+    ioprio rt 4
+    writepid /dev/cpuset/foreground/tasks /dev/stune/foreground/tasks
+    onrestart restart audio-hal-2-0
 
-#service media /system/bin/mediaserver
-#    class main
-#    user media
-#    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm oem_2996
-#    ioprio rt 4
-#    writepid /dev/cpuset/foreground/tasks /dev/stune/foreground/tasks
+on property:vts.native_server.on=1
+    stop audioserver
+on property:vts.native_server.on=0
+    start audioserver
 
-#service mediadrm /system/bin/mediadrmserver
-#    class main
-#    user media
-#    group mediadrm drmrpc oem_2993
-#    ioprio rt 4
-#    writepid /dev/cpuset/foreground/tasks
+service media /system/bin/mediaserver
+    class main
+    user media
+    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm oem_2996
+    ioprio rt 4
+    writepid /dev/cpuset/foreground/tasks /dev/stune/foreground/tasks
+
+service mediadrm /system/bin/mediadrmserver
+    class main
+    user media
+    group mediadrm drmrpc oem_2993
+    ioprio rt 4
+    writepid /dev/cpuset/foreground/tasks
 
 #service camera-provider-2-4 /vendor/bin/hw/android.hardware.camera.provider@2.4-service
 #    class hal
@@ -717,12 +722,12 @@ service secd /system/bin/secd
 #    capabilities SYS_NICE
 #    writepid /dev/cpuset/camera-daemon/tasks /dev/stune/top-app/tasks
 
-#service cameraserver /system/bin/cameraserver
-#    class main
-#    user cameraserver
-#    group audio camera input drmrpc oem_2996 oem_2993
-#    ioprio rt 4
-#    writepid /dev/cpuset/camera-daemon/tasks /dev/stune/top-app/tasks
+service cameraserver /system/bin/cameraserver
+    class main
+    user cameraserver
+    group audio camera input drmrpc oem_2996 oem_2993
+    ioprio rt 4
+    writepid /dev/cpuset/camera-daemon/tasks /dev/stune/top-app/tasks
 
 service iddd /system/bin/iddd
     class core

@@ -238,7 +238,11 @@ int32_t QCameraChannel::config()
     int32_t rc = NO_ERROR;
     for (size_t i = 0; i < mStreams.size(); ++i) {
         if ( mStreams[i]->isDeffered() ) {
+            ALOGD("%s: (bt): line %d, call of mStreams[%d]->configStream()",
+                  __func__, __LINE__, i);
             rc = mStreams[i]->configStream();
+            ALOGD("%s: (bt): line %d, mStreams[%d]->configStream()-rc: %d",
+                  __func__, __LINE__, i, rc);
             if (rc != NO_ERROR) {
                 break;
             }
@@ -321,7 +325,11 @@ int32_t QCameraChannel::start()
                     memset(&param, 0, sizeof(cam_stream_parm_buffer_t));
                     param.type = CAM_STREAM_PARAM_TYPE_SET_BUNDLE_INFO;
                     param.bundleInfo = bundleInfo;
+                    ALOGD("%s: (bt): line %d, call of pStream->setParameter()",
+                          __func__, __LINE__);
                     rc = pStream->setParameter(param);
+                    ALOGD("%s: (bt): line %d, pStream->setParameter()-rc: %d",
+                          __func__, __LINE__, rc);
                     if (rc != NO_ERROR) {
                         ALOGE("%s: stream setParameter for set bundle failed", __func__);
                         return rc;
