@@ -78,11 +78,6 @@ BOARD_HAVE_BLUETOOTH_BCM := true
 # Camera
 TARGET_USES_MEDIA_EXTENSIONS := true
 
-# Force camera module to be compiled only in 32-bit mode on 64-bit systems
-# Once camera module can run in the native mode of the system (either
-# 32-bit or 64-bit), the following line should be deleted
-BOARD_QTI_CAMERA_32BIT_ONLY := true
-
 # Charger
 BOARD_CHARGER_ENABLE_SUSPEND := true
 BOARD_CHARGER_SHOW_PERCENTAGE := true
@@ -159,6 +154,7 @@ BOARD_PROVIDES_LIBRIL := true
 
 # Shims
 TARGET_LD_SHIM_LIBS := \
+    /system/lib/hw/camera.qcom.so|/system/vendor/lib/camera.qcom_shim.so \
     /system/lib64/libsys-utils.so|libsensor.so \
     /system/lib/libcammw.so|libsensor.so \
     /system/vendor/lib/libizat_core.so|/system/vendor/lib/libshim_gps.so \
