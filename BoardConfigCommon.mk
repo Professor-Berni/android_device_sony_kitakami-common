@@ -77,7 +77,7 @@ BOARD_HAVE_BLUETOOTH_BCM := true
 
 # Camera
 TARGET_USES_MEDIA_EXTENSIONS := true
-
+ 
 # Charger
 BOARD_CHARGER_ENABLE_SUSPEND := true
 BOARD_CHARGER_SHOW_PERCENTAGE := true
@@ -154,7 +154,7 @@ BOARD_PROVIDES_LIBRIL := true
 
 # Shims
 TARGET_LD_SHIM_LIBS := \
-    /system/lib/hw/camera.qcom.so|/system/vendor/lib/camera.qcom_shim.so \
+    /system/vendor/lib/hw/camera.vendor.qcom.so|/system/vendor/lib/camera.qcom_shim.so \
     /system/lib64/libsys-utils.so|libsensor.so \
     /system/lib/libcammw.so|libsensor.so \
     /system/vendor/lib/libizat_core.so|/system/vendor/lib/libshim_gps.so \
