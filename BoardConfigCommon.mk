@@ -92,6 +92,7 @@ BOARD_HAVE_BLUETOOTH_BCM := true
 
 # Camera
 TARGET_USES_MEDIA_EXTENSIONS := true
+MALLOC_SVELTE_FOR_LIBC32 := true
 
 TARGET_PROCESS_SDK_VERSION_OVERRIDE := \
     /system/bin/cameraserver=25 \
