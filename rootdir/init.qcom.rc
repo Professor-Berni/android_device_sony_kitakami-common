@@ -700,27 +700,27 @@ on property:vts.native_server.on=1
 on property:vts.native_server.on=0
     start audioserver
 
-service media /system/bin/mediaserver
-    class main
-    user media
-    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm oem_2996
-    ioprio rt 4
-    writepid /dev/cpuset/foreground/tasks /dev/stune/foreground/tasks
-
-service mediadrm /system/bin/mediadrmserver
-    class main
-    user media
-    group mediadrm drmrpc oem_2993
-    ioprio rt 4
-    writepid /dev/cpuset/foreground/tasks
-
-#service camera-provider-2-4 /vendor/bin/hw/android.hardware.camera.provider@2.4-service
-#    class hal
-#    user cameraserver
-#    group audio camera input drmrpc oem_2996 oem_2993
+#service media /system/bin/mediaserver
+#    class main
+#    user media
+#    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm oem_2996
 #    ioprio rt 4
-#    capabilities SYS_NICE
-#    writepid /dev/cpuset/camera-daemon/tasks /dev/stune/top-app/tasks
+#    writepid /dev/cpuset/foreground/tasks /dev/stune/foreground/tasks
+
+#service mediadrm /system/bin/mediadrmserver
+#    class main
+#    user media
+#    group mediadrm drmrpc oem_2993
+#    ioprio rt 4
+#    writepid /dev/cpuset/foreground/tasks
+
+service camera-provider-2-4 /vendor/bin/hw/android.hardware.camera.provider@2.4-service
+    class hal
+    user cameraserver
+    group audio camera input drmrpc oem_2996 oem_2993
+    ioprio rt 4
+    capabilities SYS_NICE
+    writepid /dev/cpuset/camera-daemon/tasks /dev/stune/top-app/tasks
 
 service cameraserver /system/bin/cameraserver
     class main
