@@ -37,7 +37,7 @@
     </hal>
     <hal format="hidl">
         <name>android.hardware.camera.provider</name>
-        <transport arch="32+64">passthrough</transport>
+        <transport arch="32">passthrough</transport>
         <version>2.4</version>
         <interface>
             <name>ICameraProvider</name>
@@ -58,8 +58,8 @@
             <instance>default</instance>
             <instance>widevine</instance>
         </interface>
-        <fqname>@1.1::ICryptoFactory/widevine</fqname>
-        <fqname>@1.1::IDrmFactory/widevine</fqname>        
+        <fqname>@1.3::ICryptoFactory/widevine</fqname>
+        <fqname>@1.3::IDrmFactory/widevine</fqname>        
     </hal>
     <hal format="hidl">
         <name>android.hardware.gatekeeper</name>
