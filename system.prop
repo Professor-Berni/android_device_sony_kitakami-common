@@ -59,6 +59,9 @@ dalvik.vm.boot-dex2oat-threads=4
 dalvik.vm.dex2oat-threads=2
 dalvik.vm.image-dex2oat-threads=4
 
+# Dalvik dex2oat
+dalvik.vm.dex2oat64.enabled=true
+
 # lmkd options
 ro.lmk.low=1001
 ro.lmk.medium=800
