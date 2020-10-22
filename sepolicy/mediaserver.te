@@ -1,8 +1,11 @@
 allow mediaserver hal_configstore_ISurfaceFlingerConfigs:hwservice_manager find;
 allow mediaserver sensorservice_service:service_manager find;
 allow mediaserver sysfs_graphics:file { getattr open read };
-allow mediaserver system_server:unix_stream_socket read;
+allow mediaserver system_server:unix_stream_socket {read write};
 allow mediaserver hal_configstore_default:binder call;
 allow mediaserver qcamerasvr:unix_dgram_socket sendto;
 allow mediaserver secd_socket:sock_file write;
 allow mediaserver ta_data_file:dir search;
+allow mediaserver qcamerasvr:unix_stream_socket connectto;
+allow mediaserver sysfs_camera_torch:dir search;
+allow mediaserver sysfs_camera_torch:lnk_file read;
