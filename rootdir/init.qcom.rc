@@ -95,7 +95,6 @@ on fs
     symlink /rca /mnt/rca
 
 on boot
-
     # execute script to set initial CPU settings
     # don't run as a service to avoid race conditions
     exec - root system -- /system/bin/init.qcom.power.sh
@@ -664,13 +663,6 @@ service ppd /system/vendor/bin/mm-pp-daemon
     socket pps stream 0660 system system
     group system graphics
 
-# brcm-uim-sysfs (BT/FM/ANT+)
-#service uim /system/bin/brcm-uim-sysfs
-#    class late_start
-#    user root
-#    group bluetooth net_bt_admin net_bt
-#    writepid /dev/cpuset/system-background/tasks
-
 on property:persist.radio.multisim.config=dsds
     enable ril-daemon2
 
@@ -686,48 +678,6 @@ service secd /system/bin/secd
     socket secd_ebl_sock stream 0660 system oem_2996
     socket secd_devsec_sock stream 0660 system oem_2996
     socket secd_credmgr_sock stream 0660 system oem_2996
-
-service audioserver /system/bin/audioserver
-    class main
-    user audioserver
-    group audio camera drmrpc inet media mediadrm net_bt net_bt_admin net_bw_acct oem_2993
-    ioprio rt 4
-    writepid /dev/cpuset/foreground/tasks /dev/stune/foreground/tasks
-    onrestart restart audio-hal-2-0
-
-on property:vts.native_server.on=1
-    stop audioserver
-on property:vts.native_server.on=0
-    start audioserver
-
-#service media /system/bin/mediaserver
-#    class main
-#    user media
-#    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm oem_2996
-#    ioprio rt 4
-#    writepid /dev/cpuset/foreground/tasks /dev/stune/foreground/tasks
-
-#service mediadrm /system/bin/mediadrmserver
-#    class main
-#    user media
-#    group mediadrm drmrpc oem_2993
-#    ioprio rt 4
-#    writepid /dev/cpuset/foreground/tasks
-
-#service camera-provider-2-4 /vendor/bin/hw/android.hardware.camera.provider@2.4-service
-#    class hal
-#    user cameraserver
-#    group audio camera input drmrpc oem_2996 oem_2993
-#    ioprio rt 4
-#    capabilities SYS_NICE
-#    writepid /dev/cpuset/camera-daemon/tasks /dev/stune/top-app/tasks
-
-#service cameraserver /system/bin/cameraserver
-#    class main
-#    user cameraserver
-#    group audio camera input drmrpc oem_2996 oem_2993
-#    ioprio rt 4
-#    writepid /dev/cpuset/camera-daemon/tasks /dev/stune/top-app/tasks
 
 service iddd /system/bin/iddd
     class core

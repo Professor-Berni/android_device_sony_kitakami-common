@@ -1,6 +1,0 @@
-type hal_camera_wrapper, domain;
-hwbinder_use(hal_camera_wrapper)
-vndbinder_use(hal_camera_wrapper)
-
-type hal_camera_wrapper_exec, exec_type, vendor_file_type, file_type;
-init_daemon_domain(hal_camera_wrapper)
