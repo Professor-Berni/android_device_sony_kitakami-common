@@ -5,8 +5,10 @@ vendor/lib/libadsprpc.so
 vendor/lib/libfastcvopt.so
 
 # Audio
+lib/libaudioresampler.so
 lib/soundfx/libsonypostprocbundle.so
 lib/soundfx/libsonysweffect.so
+lib64/libaudioresampler.so
 vendor/lib/libacdb-fts.so
 vendor/lib/libacdbloader.so
 vendor/lib/libacdbrtac.so
