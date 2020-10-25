@@ -9,4 +9,4 @@ allow mediaserver ta_data_file:dir search;
 allow mediaserver qcamerasvr:unix_stream_socket connectto;
 allow mediaserver sysfs_camera_torch:dir search;
 allow mediaserver sysfs_camera_torch:lnk_file read;
-allow mediaserver sysfs_camera_torch:file read;
+allow mediaserver sysfs_camera_torch:file { open read write };
