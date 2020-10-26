@@ -19,16 +19,22 @@
 <resources>
 
     <!-- Restart preview for back camera onPictureTaken -->
-    <bool name="back_camera_restart_preview_onPictureTaken">true</bool>
+    <bool name="back_camera_restart_preview_onPictureTaken">false</bool>
 
     <!-- Restart preview for front camera onPictureTaken -->
-    <bool name="front_camera_restart_preview_onPictureTaken">true</bool>
+    <bool name="front_camera_restart_preview_onPictureTaken">false</bool>
+
+    <!-- Enable support for camera api v2 -->
+    <bool name="support_camera_api_v2">false</bool>
 
     <!-- Opens back camera using openLegacy() and forces api v1 -->
-    <bool name="back_camera_open_legacy">true</bool>
+    <bool name="back_camera_open_legacy">false</bool>
 
     <!-- Opens front camera using openLegacy() and forces api v1 -->
-    <bool name="front_camera_open_legacy">true</bool>
+    <bool name="front_camera_open_legacy">false</bool>
+
+    <!-- Force use a specific preview-size Example: 1920x1080 -->
+    <string name="preview_size_for_photo">1280x720</string>
 
     <!-- Use following iso parameter.-->
     <string name="key_iso">sony-iso</string>
