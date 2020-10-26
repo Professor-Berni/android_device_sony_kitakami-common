@@ -1,2 +1,0 @@
-allow installd device:file { open write };
-allow installd secd_exec:file { getattr read };

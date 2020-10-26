@@ -1,1 +1,0 @@
-allow apexd secd_exec:file { getattr read };

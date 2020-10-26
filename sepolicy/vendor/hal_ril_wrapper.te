@@ -1,6 +1,0 @@
-type hal_ril_wrapper, domain;
-hwbinder_use(hal_ril_wrapper)
-vndbinder_use(hal_ril_wrapper)
-
-type hal_ril_wrapper_exec, exec_type, vendor_file_type, file_type;
-init_daemon_domain(hal_ril_wrapper)

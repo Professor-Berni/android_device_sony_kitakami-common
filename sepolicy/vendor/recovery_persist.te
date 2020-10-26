@@ -1,1 +1,0 @@
-allow recovery_persist secd_exec:file { getattr read };

@@ -1,1 +1,0 @@
-allow wificond secd_exec:file { getattr read };
