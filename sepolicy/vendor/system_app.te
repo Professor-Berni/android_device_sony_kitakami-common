@@ -1,5 +1,6 @@
 allow system_app default_android_service:service_manager find;
 allow system_app hal_power_default:binder call;
+allow system_app hal_dumpstate_impl:binder call;
 allow system_app init:binder call;
 allow system_app installd:binder call;
 allow system_app iorapd:binder call;

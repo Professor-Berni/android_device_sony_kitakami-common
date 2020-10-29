@@ -1,6 +1,10 @@
 allow hwservicemanager hal_drm_clearkey:dir search;
 allow hwservicemanager hal_drm_clearkey:file { open read };
 allow hwservicemanager hal_drm_clearkey:process getattr;
+allow hwservicemanager hal_dumpstate_impl:dir rw_dir_perms;
+allow hwservicemanager hal_dumpstate_impl:file rw_file_perms;
+allow hwservicemanager hal_dumpstate_impl:binder { call transfer };
+allow hwservicemanager hal_dumpstate_impl:process getattr;
 allow hwservicemanager init:dir search;
 allow hwservicemanager init:file { open read };
 allow hwservicemanager init:process getattr;
