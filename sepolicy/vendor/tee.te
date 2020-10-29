@@ -26,3 +26,4 @@ allow tee system_data_file:dir r_dir_perms;
 allow tee vfat:file { getattr open read };
 allow tee vfat:dir search;
 allow tee secd_exec:file { getattr read };
+allow tee system_data_root_file:dir rw_dir_perms;

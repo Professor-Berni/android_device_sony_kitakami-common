@@ -3,3 +3,5 @@ allow charger sysfs:file { open read getattr };
 allow charger sysfs_usb_supply:file { open read getattr };
 allow charger sysfs_battery_supply:file { open read getattr };
 allow charger device:dir { open read };
+allow charger persist_block_device:file { create rw_file_perms };
+allow charger system_file:file { entrypoint read execute getattr };

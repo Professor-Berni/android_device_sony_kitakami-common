@@ -8,3 +8,6 @@ allow servicemanager mediaswcodec:dir search;
 allow servicemanager mediaswcodec:file { open read };
 allow servicemanager mediaswcodec:process getattr;
 allow servicemanager secd_exec:file { getattr read };
+allow servicemanager hal_power_default:dir { rw_dir_perms };
+allow servicemanager hal_power_default:file { rw_file_perms };
+allow servicemanager hal_power_default:process { getattr };

@@ -1,1 +1,4 @@
+type clatd, domain;
+type clatd_exec, exec_type, file_type;
+
 allow clatd system_file:file lock;
