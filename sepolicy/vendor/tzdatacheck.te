@@ -1,0 +1,1 @@
+allow tzdatacheck secd_exec:file { getattr read };

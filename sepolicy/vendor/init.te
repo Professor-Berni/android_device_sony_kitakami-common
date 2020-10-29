@@ -1,0 +1,50 @@
+#For sdcard
+allow init tmpfs:lnk_file create_file_perms;
+allow init proc_kernel_sched:file write;
+allow init proc_dirty_ratio:file write;
+allow init persist_file:dir mounton;
+allow init debugfs:file w_file_perms;
+
+#TAD
+allow init tad_socket:sock_file create;
+
+#Torch
+allow init sysfs_camera_torch:lnk_file read;
+
+allow init trim_area_partition_device:blk_file { write setattr };
+allow init block_device:blk_file setattr;
+allow init socket_device:sock_file { create setattr };
+allow init socket_device:sock_file unlink;
+allow init cameraserver:fd use;
+allow init diag_data_file:file { lock rename };
+allow init diag_data_file:sock_file write;
+allow init ion_device:chr_file ioctl;
+allow init property_socket:sock_file write;
+allow init rpmb_device:blk_file write;
+allow init self:capability2 block_suspend;
+allow init self:socket { read write };
+allow init ssd_device:blk_file write;
+allow init tad_socket:sock_file write;
+allow init tee_device:chr_file { ioctl write };
+allow init video_device:chr_file { ioctl write };
+allow init secd_data_file:file { ioctl lock };
+allow init servicemanager:binder call;
+allow init vfat:file { getattr open read };
+allow init proc_interrupts:file getattr;
+allow init diag_data_file:dir mounton;
+allow init hal_drm_hwservice:hwservice_manager add;
+allow init hal_fingerprint_hwservice:hwservice_manager add;
+allow init hal_light_hwservice:hwservice_manager add;
+allow init hidl_base_hwservice:hwservice_manager add;
+allow init hwservicemanager:binder { call transfer };
+allow init iddd:unix_dgram_socket sendto;
+allow init ion_device:chr_file { open read };
+allow init proc:file write;
+allow init sysfs:file { open read setattr write };
+allow init sysfs_battery_supply:file { open read };
+allow init sysfs_graphics:file { open read write };
+allow init tee_device:chr_file { open read };
+allow init vendor_file:file execute_no_trans;
+allow init vndbinder_device:chr_file { ioctl open read write };
+allow init fingerprintd_data_file:file rename;
+allow init system_server:binder call;

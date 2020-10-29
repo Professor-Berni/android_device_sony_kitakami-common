@@ -1,0 +1,1 @@
+allow gpuservice secd_exec:file { getattr read };

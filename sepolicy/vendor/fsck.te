@@ -1,0 +1,5 @@
+allow fsck diag_partition_device:blk_file { read write };
+allow fsck self:capability { dac_override dac_read_search };
+allow fsck secd_exec:file { getattr read };
+allow fsck tmpfs:blk_file getattr;
+allow fsck persist_file:dir getattr;

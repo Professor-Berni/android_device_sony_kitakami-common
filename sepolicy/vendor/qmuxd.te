@@ -1,0 +1,3 @@
+allow qmuxd diag_device:chr_file { ioctl open read write };
+allow qmuxd sysfs:file read;
+allow qmuxd secd_exec:file { getattr read };

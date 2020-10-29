@@ -1,0 +1,2 @@
+allow gatekeeperd tee_prop:file { getattr open read };
+allow gatekeeperd secd_exec:file { getattr read };

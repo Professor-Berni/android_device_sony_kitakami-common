@@ -1,0 +1,5 @@
+allow charger self:capability { dac_override dac_read_search };
+allow charger sysfs:file { open read getattr };
+allow charger sysfs_usb_supply:file { open read getattr };
+allow charger sysfs_battery_supply:file { open read getattr };
+allow charger device:dir { open read };
