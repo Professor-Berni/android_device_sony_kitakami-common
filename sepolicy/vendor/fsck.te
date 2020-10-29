@@ -3,3 +3,5 @@ allow fsck self:capability { dac_override dac_read_search };
 allow fsck secd_exec:file { getattr read };
 allow fsck tmpfs:blk_file getattr;
 allow fsck persist_file:dir getattr;
+allow fsck persist_file:dir rw_dir_perms;
+allow fsck tmpfs:blk_file rw_file_perms;
