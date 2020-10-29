@@ -35,6 +35,9 @@
 /data/etc                                                  u:object_r:ta_data_file:s0
 /data/etc(/.*)                                             u:object_r:ta_data_file:s0
 
+# Fingerprint
+/(vendor|system/vendor)/bin/hw/android\.hardware\.biometrics\.fingerprint@2\.0-service.kitakami u:object_r:hal_fingerprint_default_exec:s0
+
 # Fingerprint sensor SPI device
 /data/fpc(/.*)?                                            u:object_r:fpc_data_file:s0
 /data/fpcd(/.*)?                                           u:object_r:fpc_data_file:s0

@@ -16,3 +16,7 @@ allow hal_fingerprint_default firmware_file:lnk_file read;
 allow hal_fingerprint_default fpc_data_file:dir search;
 allow hal_fingerprint_default input_device:dir search;
 allow hal_fingerprint_default diag_data_file:dir search;
+allow hal_fingerprint_default fingerprintd_data_file:dir create_dir_perms;
+allow hal_fingerprint_default sysfs_battery_supply:dir create_dir_perms;
+allow hal_fingerprint_default fingerprintd_data_file:file create_file_perms;
+allow hal_fingerprint_default sysfs_battery_supply:file create_file_perms;
