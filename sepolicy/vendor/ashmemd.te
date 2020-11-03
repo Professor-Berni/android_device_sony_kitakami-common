@@ -1,1 +1,0 @@
-allow ashmemd secd_exec:file { getattr read };
