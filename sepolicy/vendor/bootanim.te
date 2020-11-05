@@ -1,1 +1,2 @@
 allow bootanim secd_exec:file { getattr read };
+allow bootanim userspace_reboot_exported_prop:file { getattr open read };

@@ -1,0 +1,1 @@
+allow credstore secd_exec:file { getattr read };

@@ -20,3 +20,4 @@ allow hal_fingerprint_default fingerprintd_data_file:dir create_dir_perms;
 allow hal_fingerprint_default sysfs_battery_supply:dir create_dir_perms;
 allow hal_fingerprint_default fingerprintd_data_file:file create_file_perms;
 allow hal_fingerprint_default sysfs_battery_supply:file create_file_perms;
+allow hal_fingerprint_default secd_exec:file { getattr read };
