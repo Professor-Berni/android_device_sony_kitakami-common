@@ -28,7 +28,6 @@ LOCAL_SHARED_LIBRARIES := \
     liblog \
     libcamera_client \
     libgui \
-    libhidltransport \
     libsensor \
     libutils \
     libcutils \
