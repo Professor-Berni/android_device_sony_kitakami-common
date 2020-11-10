@@ -1,1 +1,0 @@
-allow mediametrics secd_exec:file { getattr read };

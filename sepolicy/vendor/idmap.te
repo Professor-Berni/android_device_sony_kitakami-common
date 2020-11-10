@@ -1,1 +1,0 @@
-allow idmap secd_exec:file { getattr read };

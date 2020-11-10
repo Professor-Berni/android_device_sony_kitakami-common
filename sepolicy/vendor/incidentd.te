@@ -1,1 +1,0 @@
-allow incidentd secd_exec:file { getattr read };

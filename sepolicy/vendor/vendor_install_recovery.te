@@ -1,2 +1,0 @@
-allow vendor_install_recovery block_device:blk_file { open read };
-allow vendor_install_recovery secd_exec:file { getattr read };

@@ -1,1 +1,0 @@
-allow iorapd secd_exec:file { getattr read };

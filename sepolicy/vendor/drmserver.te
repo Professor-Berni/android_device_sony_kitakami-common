@@ -1,1 +1,0 @@
-allow drmserver secd_exec:file { getattr read };

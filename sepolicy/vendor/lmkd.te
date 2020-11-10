@@ -1,1 +1,0 @@
-allow lmkd secd_exec:file { getattr read };

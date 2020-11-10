@@ -1,1 +1,0 @@
-allow adsprpcd secd_exec:file { getattr read };

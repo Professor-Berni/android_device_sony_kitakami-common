@@ -1,3 +1,0 @@
-allow perfd sysfs_memory:dir search;
-allow perfd sysfs_memory:file { open read write };
-allow perfd secd_exec:file { getattr read };

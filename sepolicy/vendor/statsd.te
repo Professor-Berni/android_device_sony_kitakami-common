@@ -1,1 +1,0 @@
-allow statsd secd_exec:file { getattr read };
