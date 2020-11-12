@@ -48,3 +48,4 @@ allow init vendor_file:file execute_no_trans;
 allow init vndbinder_device:chr_file { ioctl open read write };
 allow init fingerprintd_data_file:file rename;
 allow init system_server:binder call;
+allow init sysfs_livedisplay_tuneable:file setattr;
