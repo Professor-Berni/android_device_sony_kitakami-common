@@ -65,6 +65,7 @@
 
 # Misc
 /system/bin/adsprpcd                                       u:object_r:adsprpcd_exec:s0
+/system/bin/clean_scratch_files                            u:object_r:clean_scratch_files_exec:s0
 /system/bin/iddd                                           u:object_r:iddd_exec:s0
 /system/bin/init\.qcom\.power\.sh                          u:object_r:init-power-sh_exec:s0
 /system/bin/irsc_util                                      u:object_r:irsc_util_exec:s0
