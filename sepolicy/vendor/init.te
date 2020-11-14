@@ -28,6 +28,7 @@ allow init sysfs_msm_perf:file { open write };
 allow init sysfs_thermal:file write;
 allow init sysfs_wake_lock:file { append open };
 allow init system_data_file:file { ioctl lock };
+allow init system_file:dir relabelfrom;
 allow init system_file:file execute_no_trans;
 allow init tee_device:chr_file { ioctl open read write };
 allow init trim_area_partition_device:blk_file setattr;

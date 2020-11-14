@@ -1,1 +1,2 @@
 allow fsck block_device:blk_file { read write };
+allow fsck diag_partition_device:blk_file rw_file_perms;
