@@ -1,9 +1,0 @@
-type loc_launcher, domain;
-type loc_launcher_exec, exec_type, file_type;
-
-# Started by init
-init_daemon_domain(loc_launcher)
-
-allow loc_launcher location_data_file:dir { add_name remove_name search write };
-allow loc_launcher location_data_file:sock_file { create setattr unlink };
-allow loc_launcher self:capability setuid;

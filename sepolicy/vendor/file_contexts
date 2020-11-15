@@ -69,7 +69,6 @@
 /system/bin/iddd                                           u:object_r:iddd_exec:s0
 /system/bin/init\.qcom\.power\.sh                          u:object_r:init-power-sh_exec:s0
 /system/bin/irsc_util                                      u:object_r:irsc_util_exec:s0
-/system/bin/loc_launcher                                   u:object_r:loc_launcher_exec:s0
 /system/bin/mlog_qmi_service                               u:object_r:mlog_qmi_service_exec:s0
 /system/bin/mm-qcamera-daemon                              u:object_r:qcamerasvr_exec:s0
 /system/bin/msm_irqbalance                                 u:object_r:msm_irqbalance_exec:s0

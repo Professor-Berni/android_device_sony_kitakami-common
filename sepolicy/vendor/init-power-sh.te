@@ -15,7 +15,7 @@ allow init-power-sh sysfs_cpu_boost:file rw_file_perms;
 allow init-power-sh sysfs_devices_system_cpu:file w_file_perms;
 allow init-power-sh sysfs_kgsl:file rw_file_perms;
 allow init-power-sh sysfs_msm_perf:dir search;
-allow init-power-sh sysfs_msm_perf:file { open write };
+allow init-power-sh sysfs_msm_perf:file rw_file_perms;
 allow init-power-sh sysfs_performance:dir r_dir_perms;
 allow init-power-sh sysfs_performance:file w_file_perms;
 allow init-power-sh sysfs_thermal:dir r_dir_perms;

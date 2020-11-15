@@ -1,5 +1,5 @@
-allow servicemanager hal_power_default:dir search;
-allow servicemanager hal_power_default:file { open read };
+allow servicemanager hal_power_default:dir rw_dir_perms;
+allow servicemanager hal_power_default:file rw_file_perms;
 allow servicemanager hal_power_default:process getattr;
 allow servicemanager init:binder transfer;
 allow servicemanager init:dir search;
