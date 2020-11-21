@@ -1,2 +1,1 @@
-allow healthd sysfs:file { getattr open read };
-allow healthd secd_exec:file { getattr read };
+allow healthd sysfs:file r_file_perms;

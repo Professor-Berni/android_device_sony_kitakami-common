@@ -9,6 +9,5 @@ unix_socket_connect(taimport, tad, tad)
 
 allow updatemiscta socket_device:sock_file write;
 allow updatemiscta tad:unix_stream_socket connectto;
-allow updatemiscta ta_prop:file { getattr open read };
 allow updatemiscta tad_socket:sock_file write;
-allow updatemiscta secd_exec:file { getattr read };
+allow updatemiscta ta_prop:file r_file_perms;

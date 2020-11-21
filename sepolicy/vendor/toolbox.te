@@ -1,6 +1,3 @@
-allow toolbox diag_data_file:dir { getattr open read remove_name rmdir write };
+allow toolbox diag_data_file:dir create_dir_perms;
+allow toolbox firmware_file:dir create_dir_perms;
 allow toolbox self:capability dac_override;
-allow toolbox diag_data_file:dir search;
-allow toolbox firmware_file:dir { open read rmdir write };
-allow toolbox firmware_file:dir search;
-allow toolbox secd_exec:file { getattr read };

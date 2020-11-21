@@ -1,1 +1,0 @@
-allow tombstoned secd_exec:file { getattr read };

@@ -1,3 +1,2 @@
-allow hal_audio_default tad_socket:sock_file { create_file_perms write };
-allow hal_audio_default secd_exec:file { getattr read };
+allow hal_audio_default tad_socket:sock_file create_file_perms;
 allow hal_audio_default tad:unix_stream_socket connectto;

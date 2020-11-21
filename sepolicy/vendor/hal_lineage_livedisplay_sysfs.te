@@ -1,2 +1,1 @@
 allow hal_lineage_livedisplay_sysfs ppd:unix_stream_socket connectto;
-allow hal_lineage_livedisplay_sysfs secd_exec:file { getattr read };

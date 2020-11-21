@@ -1,1 +1,0 @@
-allow vndservicemanager secd_exec:file { getattr read };

@@ -19,6 +19,10 @@
 /sys/devices/platform/bcmdhd_wlan/macaddr                  u:object_r:sysfs_addrsetup:s0
 /sys/devices(/soc\.0)?/bcmdhd_wlan.83/macaddr              u:object_r:sysfs_addrsetup:s0
 
+# DRM
+/(vendor|system/vendor)/bin/hw/android\.hardware\.drm@1\.2-service.clearkey u:object_r:hal_drm_clearkey_exec:s0
+/(vendor|system/vendor)/bin/hw/android\.hardware\.drm@1\.1-service.widevine u:object_r:hal_drm_widevine_exec:s0
+
 # Camera
 /sys/devices(/soc\.0)?/pmi8994-flash-27(/.*)?              u:object_r:sysfs_camera_torch:s0
 
@@ -35,6 +39,9 @@
 # Fingerprint sensor SPI device
 /data/fpc(/.*)?                                            u:object_r:fpc_data_file:s0
 /data/fpcd(/.*)?                                           u:object_r:fpc_data_file:s0
+
+# Fingerprint
+/(vendor|system/vendor)/bin/hw/android\.hardware\.biometrics\.fingerprint@2\.1-service.kitakami u:object_r:hal_fingerprint_default_exec:s0
 
 # TA
 /dev/socket/tad                                            u:object_r:tad_socket:s0

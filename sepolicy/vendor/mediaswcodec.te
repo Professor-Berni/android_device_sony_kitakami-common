@@ -1,2 +1,1 @@
 allow mediaswcodec servicemanager:binder call;
-allow mediaswcodec secd_exec:file { getattr read };

@@ -1,2 +1,1 @@
-allow netd device:file { open write };
-allow netd secd_exec:file { getattr read };
+allow netd device:file rw_file_perms;

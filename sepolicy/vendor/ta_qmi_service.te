@@ -13,12 +13,10 @@ allow ta_qmi_service self:capability { net_raw setgid setuid };
 
 # Allow ta_qmi_service to create self:socket
 allow ta_qmi_service self:socket create_socket_perms;
-allow ta_qmi_service self:socket { create read write };
 allowxperm ta_qmi_service self:socket ioctl msm_sock_ipc_ioctls;
 
 allow ta_qmi_service self:capability2 block_suspend;
 allow ta_qmi_service socket_device:sock_file write;
-allow ta_qmi_service sysfs_wake_lock:file { append open };
+allow ta_qmi_service sysfs_wake_lock:file w_file_perms;
 allow ta_qmi_service tad:unix_stream_socket connectto;
 allow ta_qmi_service tad_socket:sock_file write;
-allow ta_qmi_service secd_exec:file { getattr read };

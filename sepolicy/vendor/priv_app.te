@@ -1,7 +1,13 @@
+allow priv_app alarm_boot_prop:file r_file_perms;
+allow priv_app alarm_handled_prop:file r_file_perms;
+allow priv_app alarm_instance_prop:file r_file_perms;
+allow priv_app apexd_prop:file r_file_perms;
+allow priv_app bg_boot_complete_prop:file open;
 allow priv_app device:dir open;
-allow priv_app proc_interrupts:file open;
-allow priv_app alarm_boot_prop:file open;
-allow priv_app alarm_instance_prop:file getattr;
+allow priv_app hal_memtrack_default:binder call;
+allow priv_app hal_memtrack_hwservice:hwservice_manager find;
+allow priv_app kgsl_debugfs:file read;
 allow priv_app proc:file open;
+allow priv_app proc_interrupts:file open;
 allow priv_app sysfs_android_usb:file open;
-allow priv_app secd_exec:file { getattr read };
+allow priv_app sysfs:file open;
