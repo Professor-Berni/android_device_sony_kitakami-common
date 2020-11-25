@@ -1,2 +1,3 @@
+allow zygote device:file rw_file_perms;
 allow zygote exported_camera_prop:file r_file_perms;
 allow zygote proc_cmdline:file rw_file_perms;
