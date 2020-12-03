@@ -360,10 +360,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_SOONG_NAMESPACES += \
     device/sony/kitakami-common
 
-# SurfaceFlinger
-PRODUCT_PACKAGES += \
-    android.hardware.configstore@1.1-service
-
 # Tethering
 PRODUCT_PACKAGES += \
     TetheringConfigOverlay \
