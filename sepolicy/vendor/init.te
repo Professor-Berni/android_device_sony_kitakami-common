@@ -8,6 +8,7 @@ allow init fingerprintd_data_file:file rename;
 allow init hal_drm_hwservice:hwservice_manager add;
 allow init hal_fingerprint_hwservice:hwservice_manager add;
 allow init hal_light_hwservice:hwservice_manager add;
+allow init hci_attach_dev:chr_file rw_file_perms;
 allow init hidl_base_hwservice:hwservice_manager add;
 allow init hwservicemanager:binder { call transfer };
 allow init iddd:unix_dgram_socket sendto;
