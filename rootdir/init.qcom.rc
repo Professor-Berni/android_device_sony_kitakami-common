@@ -492,8 +492,8 @@ on property:ro.data.large_tcp_window_size=true
 on property:sys.sysctl.tcp_adv_win_scale=*
     write /proc/sys/net/ipv4/tcp_adv_win_scale ${sys.sysctl.tcp_adv_win_scale}
 
-service wpa_supplicant /vendor/bin/hw/wpa_supplicant \
-    -O/data/vendor/wifi/wpa/sockets -puse_p2p_group_interface \
+service wpa_supplicant /system/vendor/bin/hw/wpa_supplicant \
+    -O/data/vendor/wifi/wpa/sockets -puse_p2p_group_interface=1 \
     -g@android:wpa_wlan0
     interface android.hardware.wifi.supplicant@1.0::ISupplicant default
     interface android.hardware.wifi.supplicant@1.1::ISupplicant default
@@ -538,7 +538,7 @@ on property:sys.listeners.registered=*
     setprop sys.keymaster.loaded ${vendor.sys.listeners.registered}
     setprop vendor.sys.keymaster.loaded ${vendor.sys.listeners.registered}
 
-service perfd /vendor/bin/perfd
+service perfd /system/vendor/bin/perfd
     class main
     user root
     group system
@@ -596,7 +596,7 @@ service rmt_storage /system/bin/rmt_storage
     shutdown critical
 
 # DSDS second ril
-service ril-daemon2 /vendor/bin/hw/rild -c 2
+service ril-daemon2 /system/vendor/bin/hw/rild -c 2
     class main
     socket rild2 stream 660 root radio
     socket sap_uim_socket2 stream 660 bluetooth bluetooth
@@ -605,7 +605,7 @@ service ril-daemon2 /vendor/bin/hw/rild -c 2
     group radio cache inet misc audio log readproc wakelock oem_2993
     disabled
 
-service ril-daemon /vendor/bin/hw/rild
+service ril-daemon /system/vendor/bin/hw/rild
     class main
     socket rild stream 660 root radio
     socket sap_uim_socket1 stream 660 bluetooth bluetooth
