@@ -338,11 +338,13 @@ PRODUCT_PACKAGES += \
 
 # Wifi
 PRODUCT_PACKAGES += \
-    android.hardware.wifi@1.0-service.legacy \
+    android.hardware.wifi@1.0-service \
     hostapd \
     libwifi-hal-bcm \
     libwpa_client \
     wpa_supplicant \
     wpa_supplicant.conf
 
-$(call inherit-product, hardware/broadcom/wlan/bcmdhd/config/config-bcm.mk)
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/wpa_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wpa_supplicant_overlay.conf
+
