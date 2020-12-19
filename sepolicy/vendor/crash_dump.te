@@ -1,3 +1,4 @@
 allow crash_dump camera_prop:file r_file_perms;
+allow crash_dump hwservicemanager_prop:file r_file_perms;
 allow crash_dump init:process ptrace;
 allow crash_dump keystore:process ptrace;
