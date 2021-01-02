@@ -78,13 +78,13 @@ PRODUCT_COPY_FILES += \
 
 # Audio
 PRODUCT_PACKAGES += \
-    audiod \
-    audio.a2dp.default \
     android.hardware.audio@2.0-impl \
     android.hardware.audio@4.0-impl \
     android.hardware.audio@2.0-service \
     android.hardware.audio.effect@2.0-impl \
     android.hardware.audio.effect@4.0-impl \
+    audiod \
+    audio.a2dp.default \
     audio.primary.msm8994 \
     audio.r_submix.default \
     audio.usb.default \
@@ -157,18 +157,20 @@ PRODUCT_PACKAGES += \
     android.hardware.graphics.composer@2.1-impl \
     android.hardware.graphics.mapper@2.0-impl-2.1 \
     android.hardware.memtrack@1.0-impl \
-    android.hardware.memtrack@1.0-service \
+    android.hardware.memtrack@1.0-service
+
+PRODUCT_PACKAGES += \
     copybit.msm8994 \
     gralloc.msm8994 \
     hwcomposer.msm8994 \
-    libtinyxml \
-    memtrack.msm8994
+    memtrack.msm8994 \
+    libtinyxml
 
 # FM
 PRODUCT_PACKAGES += \
     FMRadio \
     brcm-uim-sysfs \
-   libfmradio.v4l2-fm
+    libfmradio.v4l2-fm
 
 # Fingerprint
 PRODUCT_COPY_FILES += \
@@ -227,8 +229,8 @@ PRODUCT_PACKAGES += \
 
 # Lights
 PRODUCT_PACKAGES += \
-    android.hardware.light@2.0-service \
     android.hardware.light@2.0-impl \
+    android.hardware.light@2.0-service \
     lights.msm8994
 
 # LiveDisplay
