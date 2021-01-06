@@ -8,3 +8,4 @@ allow hal_drm_clearkey hal_drm_hwservice:hwservice_manager { add find };
 allow hal_drm_clearkey hidl_base_hwservice:hwservice_manager add;
 allow hal_drm_clearkey hwservicemanager:binder { call transfer };
 allow hal_drm_clearkey hwservicemanager_prop:file r_file_perms;
+allow hal_drm_clearkey mediadrmserver:binder { call transfer };
