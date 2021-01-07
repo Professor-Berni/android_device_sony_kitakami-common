@@ -2,3 +2,5 @@ allow hal_drm_widevine hal_drm_hwservice:hwservice_manager { add find };
 allow hal_drm_widevine hidl_base_hwservice:hwservice_manager add;
 allow hal_drm_widevine hwservicemanager:binder { call transfer };
 allow hal_drm_widevine hwservicemanager_prop:file r_file_perms;
+allow hal_drm_widevine mediadrm_vendor_data_file:dir create_dir_perms;
+allow hal_drm_widevine mediadrm_vendor_data_file:file create_file_perms;
