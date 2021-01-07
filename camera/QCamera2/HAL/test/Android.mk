@@ -1,4 +1,3 @@
-ifneq ($(TARGET_USES_AOSP),true)
 LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
@@ -58,7 +57,4 @@ endif
 
 ifeq (1,$(filter 1,$(shell echo "$$(( $(PLATFORM_SDK_VERSION) <= 22 ))" )))
 LOCAL_CFLAGS += -DUSE_L_MR1
-endif
-
-include $(BUILD_EXECUTABLE)
 endif
