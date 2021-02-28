@@ -18,7 +18,6 @@ vendor/lib64/libidl.so
 vendor/lib64/liblqe.so
 vendor/lib64/libmdmdetect.so
 vendor/lib64/libnetmgr.so
-vendor/lib64/libperipheral_client.so
 vendor/lib64/libprotobuf-cpp-N.so|bf79dcb10368db44dc42ac62a8bbd749453f8ad5
 vendor/lib64/libqcci_legacy.so
 vendor/lib64/libqdi.so
