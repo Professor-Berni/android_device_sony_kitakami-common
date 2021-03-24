@@ -463,7 +463,7 @@ on post-fs-data
     chown system system /sys/module/qpnp_smbcharger_extension/parameters/id_polling_state
 
     # Wifi firmware reload path
-    chown wifi wifi /sys/module/bcmdhd/parameters/firmware_path
+    chown wifi wifi /sys/module/wlan/parameters/firmware_path
 
     setprop vold.post_fs_data_done 1
 
