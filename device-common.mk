@@ -218,6 +218,11 @@ PRODUCT_PACKAGES += \
     libhwbinder \
     libhwbinder.vendor
 
+# IMS
+PRODUCT_PACKAGES += \
+    libshims_ims \
+    libshims_boringssl
+
 # Init
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/fstab.qcom:$(TARGET_COPY_OUT_ROOT)/fstab.qcom \

@@ -1,0 +1,8 @@
+allow radio gpuservice:binder call;
+allow radio system_app_data_file:dir getattr;
+
+# Grant access to ims socket that is created by ims_qmid, ims_datad
+allow radio ims_socket:sock_file write;
+
+# Connect to ims service.
+allow radio ims:unix_stream_socket connectto;

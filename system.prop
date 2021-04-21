@@ -128,3 +128,5 @@ persist.traced.enable=0
 
 # Wifi
 wifi.interface=wlan0
+persist.data.iwlan.enable=true
+

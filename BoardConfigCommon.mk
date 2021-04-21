@@ -202,7 +202,9 @@ TARGET_LD_SHIM_LIBS := \
      /system/lib64/libsys-utils.so|libsensor.so \
      /system/lib/libcammw.so|libsensor.so \
      /system/bin/secd|/system/lib64/lib-preload64.so \
-     /system/vendor/lib64/libril-qc-qmi-1.so|libaudioclient_shim.so
+     /system/vendor/lib64/libril-qc-qmi-1.so|libaudioclient_shim.so \
+     /system/vendor/lib64/lib-imsvt.so|libshims_ims.so \
+     /system/vendor/lib64/lib-imsdpl.so|libshims_boringssl.so
 
 # SELinux
 include device/qcom/sepolicy-legacy/sepolicy.mk

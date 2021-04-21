@@ -89,6 +89,9 @@
 /system/bin/taimport                                       u:object_r:taimport_exec:s0
 /system/bin/ta_qmi_service                                 u:object_r:ta_qmi_service_exec:s0
 /system/bin/updatemiscta                                   u:object_r:updatemiscta_exec:s0
+/system/vendor/bin/imsdatadaemon                           u:object_r:ims_exec:s0
+/system/vendor/bin/imsqmidaemon                            u:object_r:ims_exec:s0
+/system/vendor/bin/ims_rtp_daemon                          u:object_r:ims_exec:s0
 /system/vendor/bin/mm-pp-daemon                            u:object_r:ppd_exec:s0
 /system/vendor/bin/perfd                                   u:object_r:perfd_exec:s0
 /system/vendor/bin/timekeep                                u:object_r:timekeep_exec:s0

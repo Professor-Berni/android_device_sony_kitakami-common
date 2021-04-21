@@ -1,1 +1,2 @@
 com.sony.timekeep                                          u:object_r:timekeep_service:s0
+rcs                                                        u:object_r:radio_service:s0

@@ -57,3 +57,35 @@ LOCAL_SHARED_LIBRARIES := libaudioclient
 LOCAL_VENDOR_MODULE := true
 
 include $(BUILD_SHARED_LIBRARY)
+
+include $(CLEAR_VARS)
+
+LOCAL_SRC_FILES := libshim_mediabuffer.cpp
+
+LOCAL_SHARED_LIBRARIES := libstagefright_foundation libui libgui libmedia
+
+LOCAL_MODULE := libshims_ims
+LOCAL_MODULE_TAGS := optional
+LOCAL_MULTILIB := 64
+LOCAL_VENDOR_MODULE := true
+
+include $(BUILD_SHARED_LIBRARY)
+
+include $(CLEAR_VARS)
+
+LOCAL_SRC_FILES := \
+    boringssl/p_dec.c \
+    boringssl/p_open.c \
+    boringssl/cipher.c \
+    boringssl/e_des.c \
+    boringssl/cleanup.c \
+    boringssl/ctrl.c
+
+LOCAL_CFLAGS += -std=c99
+LOCAL_C_INCLUDES := boringssl
+LOCAL_SHARED_LIBRARIES := libcrypto
+LOCAL_MODULE := libshims_boringssl
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE_CLASS := SHARED_LIBRARIES
+
+include $(BUILD_SHARED_LIBRARY)
