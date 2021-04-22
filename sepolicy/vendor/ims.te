@@ -1,1 +1,4 @@
+allow ims hal_imsrtp_hwservice:hwservice_manager { add find };
+allow ims hidl_base_hwservice:hwservice_manager { add find };
+allow ims ion_device:chr_file rw_file_perms;
 allow ims system_prop:property_service set;

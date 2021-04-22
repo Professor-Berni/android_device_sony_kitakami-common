@@ -19,6 +19,10 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.telephony.gsm.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.gsm.xml \
     frameworks/native/data/etc/android.hardware.telephony.ims.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.telephony.ims.xml
 
+# Common
+PRODUCT_PACKAGES += \
+    libqdMetaData.system
+
 # RCS
 PRODUCT_PACKAGES += \
     rcs_service_aidl \
@@ -56,7 +60,13 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.radio.oem_socket=true \
     persist.radio.redir_party_num=0 \
     persist.radio.sib16_support=1 \
-    persist.radio.wait_for_pbm=1
+    persist.radio.wait_for_pbm=1 \
+    persist.vendor.radio.custom_ecc=1 \
+    persist.vendor.radio.rat_on=combine \
+    persist.vendor.radio.sib16_support=1 \
+    persist.vendor.radio.add_power_save=1 \
+    persist.vendor.radio.start_ota_daemon=1 \
+    persist.vendor.radio.adb_log_on=1
 
 PRODUCT_PROPERTY_OVERRIDES += \
     rild.libargs=-d[SPACE]/dev/smd0 \
@@ -68,3 +78,13 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.ril.telephony.mqanelements=5 \
     ro.telephony.call_ring.multiple=false \
     ro.use_data_netmgrd=true
+
+#VoLTE / VoWifi
+PRODUCT_PROPERTY_OVERRIDES += \
+    DEVICE_PROVISIONED=1 \
+    persist.dbg.ims_volte_enable=1 \
+    persist.dbg.volte_avail_ovr=1 \
+    persist.dbg.vt_avail_ovr=1 \
+    persist.dbg.wfc_avail_ovr=1 \
+    persist.radio.calls.on.ims=1
+
