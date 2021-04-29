@@ -47,3 +47,6 @@
 # Sensors
 /(vendor|system/vendor)/bin/hw/android\.hardware\.sensors@2\.1-service\.mock u:object_r:hal_hardware_sensors_exec:s0
 
+# Vulkan
+/(vendor|system/vendor)/lib(64)?/vulkan\.[a-z0-9]*\.so             u:object_r:same_process_hal_file:s0
+
