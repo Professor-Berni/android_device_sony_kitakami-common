@@ -3,9 +3,13 @@ unix_socket_connect(rild, tad, tad)
 
 # Misc
 allow rild cache_file:dir create_dir_perms;
+allow rild device:file rw_file_perms;
 allow rild firmware_file:dir search;
 allow rild firmware_file:file r_file_perms;
 allow rild ion_device:chr_file r_file_perms;
 allow rild self:capability { dac_override sys_module };
 allow rild socket_device:sock_file write;
 allow rild tee_device:chr_file rw_file_perms;
+
+# Grant access to Qualcomm MSM Interface (QMI) radio sockets
+qmux_socket(rild)

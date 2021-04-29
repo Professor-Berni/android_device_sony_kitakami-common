@@ -3,4 +3,8 @@
     <privapp-permissions package="com.qualcomm.qcrilmsgtunnel">
         <permission name="android.permission.INTERACT_ACROSS_USERS"/>
     </privapp-permissions>
+
+    <privapp-permissions package="com.qualcomm.qti.ims">
+        <permission name="android.permission.BIND_IMS_SERVICE"/>
+    </privapp-permissions>
 </permissions>
