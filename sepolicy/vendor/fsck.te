@@ -1,2 +1,4 @@
 allow fsck block_device:blk_file rw_file_perms;
 allow fsck diag_partition_device:blk_file rw_file_perms;
+allow fsck media_rw_data_file:dir getattr;
+allow fsck tmpfs:blk_file rw_file_perms;

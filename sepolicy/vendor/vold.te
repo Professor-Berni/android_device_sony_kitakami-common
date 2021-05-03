@@ -1,3 +1,4 @@
+allow vold block_device:blk_file getattr;
 allow vold diag_data_file:dir r_file_perms;
 allow vold hal_bootctl_hwservice:hwservice_manager find;
 allow vold sysfs_mmc_host:file write;
