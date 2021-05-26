@@ -153,7 +153,7 @@ bin/pm-service
 vendor/lib64/libperipheral_client.so|5cf2eab39bacead0334deaf7a904d8e53c4f80bb
 
 # Postprocessing
-bin/mm-pp-daemon:vendor/bin/mm-pp-daemon
+bin/mm-pp-daemon:vendor/bin/mm-pp-daemon|87908dd6de07b2867ea8619aa53b7ed11be0b359
 vendor/lib/libdisp-aba.so
 vendor/lib/libmm-abl-oem.so
 vendor/lib/libmm-abl.so
