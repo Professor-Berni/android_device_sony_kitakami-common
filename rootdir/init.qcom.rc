@@ -597,7 +597,7 @@ on property:sys.listeners.registered=*
     setprop sys.keymaster.loaded ${vendor.sys.listeners.registered}
     setprop vendor.sys.keymaster.loaded ${vendor.sys.listeners.registered}
 
-service perfd /system/vendor/bin/perfd
+service vendor.perfd /system/vendor/bin/perfd
     class main
     user root
     group system
@@ -755,6 +755,10 @@ service iddd /system/bin/iddd
     user oem_2987
     group oem_2987 log inet oem_2993
     disabled
+
+on property:sys.boot_completed=1
+    rm /data/system/perfd/default_values
+    start vendor.perfd
 
 on property:service.usb.otg.switch=check
     write /sys/module/qpnp_smbcharger_extension/parameters/start_id_polling 1
