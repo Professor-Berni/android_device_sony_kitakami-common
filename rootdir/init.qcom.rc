@@ -499,6 +499,54 @@ on post-fs-data
 
     setprop vold.post_fs_data_done 1
 
+on enable-low-power
+    # some files in /sys/devices/system/cpu are created after the restorecon of
+    # /sys/. These files receive the default label "sysfs".
+    restorecon -R /sys/devices/system/cpu
+
+    chown root system /sys/devices/system/cpu/cpu4/online
+    chmod 0664 /sys/devices/system/cpu/cpu4/online
+    chown root system /sys/devices/system/cpu/cpu5/online
+    chmod 0664 /sys/devices/system/cpu/cpu5/online
+    chown root system /sys/devices/system/cpu/cpu6/online
+    chmod 0664 /sys/devices/system/cpu/cpu6/online
+    chown root system /sys/devices/system/cpu/cpu7/online
+    chmod 0664 /sys/devices/system/cpu/cpu7/online
+
+    # ensure at most one A57 is online when thermal hotplug is disabled
+    write /sys/devices/system/cpu/cpu4/online 1
+    write /sys/devices/system/cpu/cpu5/online 0
+    write /sys/devices/system/cpu/cpu6/online 0
+    write /sys/devices/system/cpu/cpu7/online 0
+
+    # files in /sys/devices/system/cpu4 are created after enabling cpu4.
+    # These files receive the default label "sysfs".
+    # Restorecon again to give new files the correct label.
+    restorecon -R /sys/devices/system/cpu
+
+    # plugin remaining A57s
+    write /sys/devices/system/cpu/cpu5/online 1
+    write /sys/devices/system/cpu/cpu6/online 1
+    write /sys/devices/system/cpu/cpu7/online 1
+
+    chown root system /sys/devices/system/cpu/cpu4/core_ctl/*
+    chmod 0664 /sys/devices/system/cpu/cpu4/core_ctl/*
+
+    # Enable core control
+    write /sys/devices/system/cpu/cpu4/core_ctl/max_cpus 4
+    write /sys/devices/system/cpu/cpu4/core_ctl/min_cpus 0
+    write /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres 60
+    write /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres 30
+    write /sys/devices/system/cpu/cpu4/core_ctl/offline_delay_ms  100
+    write /sys/devices/system/cpu/cpu4/core_ctl/task_thres 4
+    write /sys/devices/system/cpu/cpu4/core_ctl/is_big_cluster 1
+    chown system system /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+    chown system system /sys/devices/system/cpu/cpu4/core_ctl/max_cpus
+
+    # Schedule workqueues on awake CPUs
+    chmod 0664 /sys/module/workqueue/parameters/power_efficient
+    write /sys/module/workqueue/parameters/power_efficient Y
+
 service vendor.imsqmidaemon /system/vendor/bin/imsqmidaemon
     class main
     user system
@@ -759,6 +807,7 @@ service iddd /system/bin/iddd
 on property:sys.boot_completed=1
     rm /data/system/perfd/default_values
     start vendor.perfd
+    trigger enable-low-power
 
 on property:service.usb.otg.switch=check
     write /sys/module/qpnp_smbcharger_extension/parameters/start_id_polling 1
