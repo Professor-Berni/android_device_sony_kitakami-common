@@ -7,8 +7,8 @@ init_daemon_domain(secd)
 allow secd firmware_file:dir search;
 allow secd firmware_file:file r_file_perms;
 allow secd ion_device:chr_file r_file_perms;
-allow secd secd_data_file:dir search;
-allow secd secd_data_file:file rw_file_perms;
+allow secd secd_data_file:dir rw_dir_perms;
+allow secd secd_data_file:file create_file_perms;
 allow secd system_data_file:file rw_file_perms;
 allow secd tad:unix_stream_socket connectto;
 allow secd tad_socket:sock_file write;
