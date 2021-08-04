@@ -1,5 +1,4 @@
-allow vold diag_data_file:dir { read open ioctl };
-allow vold tee_prop:file { read open getattr };
-
+allow vold diag_data_file:dir r_dir_perms;
 allow vold firmware_file:dir search;
-allow vold firmware_file:file { getattr open read };
+allow vold firmware_file:file r_file_perms;
+allow vold tee_prop:file r_file_perms;

@@ -9,10 +9,6 @@ unix_socket_connect(addrsetup, tad, tad)
 
 allow addrsetup bluetooth_data_file:dir rw_dir_perms;
 allow addrsetup bluetooth_data_file:file create_file_perms;
-
 allow addrsetup sysfs_addrsetup:file rw_file_perms;
-
+allow addrsetup tad_socket:sock_file write;
 allow addrsetup urandom_device:file read;
-allow addrsetup tad_socket:sock_file { write };
-
-

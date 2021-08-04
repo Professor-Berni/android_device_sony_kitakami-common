@@ -4,5 +4,6 @@ type updatemiscta_exec, exec_type, file_type;
 # Started by init
 init_daemon_domain(updatemiscta)
 
+allow taimport tad_socket:sock_file write;
+
 unix_socket_connect(taimport, tad, tad)
-allow taimport tad_socket:sock_file { write };

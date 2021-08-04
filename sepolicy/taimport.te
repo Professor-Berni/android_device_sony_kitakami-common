@@ -4,11 +4,10 @@ type taimport_exec, exec_type, file_type;
 # Started by init
 init_daemon_domain(taimport)
 
-unix_socket_connect(taimport, tad, tad)
-allow taimport tad_socket:sock_file { write };
-allow taimport self:capability setgid;
 allow taimport self:capability dac_override;
-allow taimport ta_data_file:dir { read search write add_name create remove_name };
-allow taimport ta_data_file:file { read write create getattr open unlink};
+allow taimport self:capability setgid;
+allow taimport ta_data_file:dir create_dir_perms;
+allow taimport ta_data_file:file create_file_perms;
+allow taimport tad_socket:sock_file write;
 
-
+unix_socket_connect(taimport, tad, tad)
