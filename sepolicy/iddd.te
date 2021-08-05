@@ -9,3 +9,4 @@ allow iddd diag_data_file:dir create_dir_perms;
 allow iddd diag_data_file:file create_file_perms;
 allow iddd diag_data_file:sock_file create_file_perms;
 allow iddd tad_socket:sock_file create_file_perms;
+allow iddd tad:unix_stream_socket connectto;

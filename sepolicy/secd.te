@@ -7,6 +7,7 @@ init_daemon_domain(secd)
 allow secd diag_data_file:dir search;
 allow secd diag_data_file:sock_file write;
 allow secd diag_partition_device:dir search;
+allow secd iddd:unix_dgram_socket sendto;
 allow secd secd_data_file:dir rw_dir_perms;
 allow secd secd_data_file:file create_file_perms;
 allow secd tad_socket:sock_file write;
