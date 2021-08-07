@@ -1,2 +1,3 @@
 allow thermal-engine diag_data_file:dir search;
+allow thermal-engine diag_data_file:sock_file write;
 allow thermal-engine ta_data_file:dir search;
