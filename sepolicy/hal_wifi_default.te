@@ -1,6 +1,6 @@
-allow hal_wifi_default firmware_file:file { open read };
-allow hal_wifi_default sysfs:file write;
-allow hal_wifi_default system_data_file:file { open read };
-allow hal_wifi_default ta_data_file:dir search;
-allow hal_wifi_default ta_data_file:file { open read };
 allow hal_wifi_default firmware_file:dir search;
+allow hal_wifi_default firmware_file:file r_file_perms;
+allow hal_wifi_default sysfs:file write;
+allow hal_wifi_default system_data_file:file r_file_perms;
+allow hal_wifi_default ta_data_file:dir search;
+allow hal_wifi_default ta_data_file:file r_file_perms;

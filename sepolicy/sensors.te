@@ -1,6 +1,6 @@
-allow sensors device:dir { write add_name };
-allow sensors input_device:chr_file { relabelfrom getattr link };
+allow sensors device:dir ra_dir_perms;
+allow sensors input_device:chr_file { getattr link relabelfrom };
 allow sensors input_device:dir search;
+allow sensors sysfs:file r_file_perms;
+allow sensors tad_socket:sock_file rw_file_perms;
 allow sensors tmpfs:file rw_file_perms;
-allow sensors tad_socket:sock_file { write };
-allow sensors sysfs:file { open read };

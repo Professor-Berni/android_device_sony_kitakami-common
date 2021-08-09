@@ -1,8 +1,8 @@
-allow thermal-engine ta_data_file:dir search;
-allow thermal-engine ta_data_file:file r_file_perms;
-allow thermal-engine diag_partition_device:dir search;
 allow thermal-engine diag_data_file:dir search;
 allow thermal-engine diag_data_file:sock_file write;
-allow thermal-engine socket_device:sock_file { create setattr };
-allow thermal-engine init:unix_dgram_socket sendto;
+allow thermal-engine diag_partition_device:dir search;
 allow thermal-engine iddd:unix_dgram_socket sendto;
+allow thermal-engine init:unix_dgram_socket sendto;
+allow thermal-engine socket_device:sock_file create_file_perms;
+allow thermal-engine ta_data_file:dir search;
+allow thermal-engine ta_data_file:file r_file_perms;

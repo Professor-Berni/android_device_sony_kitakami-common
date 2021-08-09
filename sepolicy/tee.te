@@ -1,7 +1,7 @@
 # tee starts as root, and drops privileges
 allow tee self:capability {
-    setuid
     setgid
+    setuid
 };
 
 # allow tee to load firmware images
@@ -14,14 +14,9 @@ qmux_socket(tee);
 
 set_prop(tee, tee_prop)
 
-# Need to directly manipulate certain block devices
-# for anti-rollback protection
 allow tee block_device:dir r_dir_perms;
 allow tee rpmb_device:blk_file rw_file_perms;
-
-# Provide tee access to ssd partition for HW FDE
 allow tee ssd_device:blk_file rw_file_perms;
-
 allow tee system_data_file:dir r_dir_perms;
-allow tee vfat:file { getattr open read };
 allow tee vfat:dir search;
+allow tee vfat:file r_file_perms;

@@ -1,2 +1,2 @@
 allow perfd sysfs_memory:dir search;
-allow perfd sysfs_memory:file { open read write };
+allow perfd sysfs_memory:file rw_file_perms;
