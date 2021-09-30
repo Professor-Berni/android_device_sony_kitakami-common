@@ -15,6 +15,5 @@ allow rild servicemanager:binder call;
 allow rild socket_device:sock_file write;
 allow rild tad_socket:sock_file write;
 allow rild tad:unix_stream_socket connectto;
-allow rild tee_device:chr_file ioctl;
 allow rild tee_device:chr_file rw_file_perms;
 allow rild vendor_file:file ioctl;

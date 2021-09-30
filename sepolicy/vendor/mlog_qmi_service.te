@@ -7,7 +7,6 @@ init_daemon_domain(mlog_qmi_service)
 
 # Allow mlog_qmi_service to create self:socket
 allow mlog_qmi_service self:socket create_socket_perms;
-allow mlog_qmi_service self:socket { create read write };
 allowxperm mlog_qmi_service self:socket ioctl msm_sock_ipc_ioctls;
 
 # Allow mlog_qmi_service to use net_raw capability

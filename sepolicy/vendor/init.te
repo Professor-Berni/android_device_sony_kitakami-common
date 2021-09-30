@@ -2,7 +2,7 @@ allow init block_device:blk_file setattr;
 allow init cameraserver:fd use;
 allow init debugfs:file w_file_perms;
 allow init diag_data_file:dir mounton;
-allow init diag_data_file:file { lock rename };
+allow init diag_data_file:file create_file_perms;
 allow init diag_data_file:sock_file write;
 allow init fingerprintd_data_file:file rename;
 allow init hal_drm_hwservice:hwservice_manager add;

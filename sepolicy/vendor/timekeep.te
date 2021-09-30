@@ -16,9 +16,9 @@ allow timekeep self:capability {
     dac_override
     dac_read_search
 };
-allow timekeep timekeep_data_file:file create_file_perms;
-allow timekeep timekeep_data_file:dir create_dir_perms;
-allow timekeep time_data_file:dir create_dir_perms;
-allow timekeep time_data_file:file create_file_perms;
 allow timekeep sysfs:file r_file_perms;
 allow timekeep sysfs_rtc:dir search;
+allow timekeep time_data_file:dir create_dir_perms;
+allow timekeep time_data_file:file create_file_perms;
+allow timekeep timekeep_data_file:dir create_dir_perms;
+allow timekeep timekeep_data_file:file create_file_perms;

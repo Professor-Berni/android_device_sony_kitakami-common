@@ -16,5 +16,4 @@ allow hal_fingerprint_default sysfs_battery_supply:dir search;
 allow hal_fingerprint_default sysfs_battery_supply:file r_file_perms;
 allow hal_fingerprint_default system_data_file:dir create_dir_perms;
 allow hal_fingerprint_default system_data_file:sock_file create_file_perms;
-allow hal_fingerprint_default tee_device:chr_file ioctl;
 allow hal_fingerprint_default tee_device:chr_file rw_file_perms;

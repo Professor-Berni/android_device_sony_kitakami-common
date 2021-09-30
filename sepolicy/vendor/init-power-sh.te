@@ -1,3 +1,4 @@
+# init-power-sh service
 type init-power-sh, domain;
 type init-power-sh_exec, exec_type, file_type;
 

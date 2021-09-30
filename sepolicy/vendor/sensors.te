@@ -2,5 +2,5 @@ allow sensors device:dir w_dir_perms;
 allow sensors input_device:chr_file { relabelfrom getattr link };
 allow sensors input_device:dir search;
 allow sensors sysfs:file r_file_perms;
-allow sensors tad_socket:sock_file { write };
+allow sensors tad_socket:sock_file write;
 allow sensors tmpfs:file rw_file_perms;
