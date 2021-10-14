@@ -23,6 +23,9 @@ qcom.hw.aac.encoder=true
 ro.config.notification_sound=Notification.ogg
 ro.config.ringtone=CyanTone.ogg
 
+# BPF
+ro.kernel.ebpf.supported=false
+
 # Camera
 ro.qc.sdk.gestures.camera=false
 ro.qc.sdk.camera.facialproc=false
