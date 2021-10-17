@@ -23,6 +23,7 @@
         <!-- USB OTG Switch -->
         <service android:name=".UsbOtgSwitch" android:icon="@drawable/ic_usb_otg_on"
             android:label="@string/usb_otg_label"
+            android:exported="true"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
