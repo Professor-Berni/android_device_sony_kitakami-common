@@ -100,3 +100,12 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_VENDOR_MODULE := true
 
 include $(BUILD_SHARED_LIBRARY)
+
+include $(CLEAR_VARS)
+
+LOCAL_SRC_FILES := libshim_sensors.cpp
+LOCAL_MODULE := libshim_sensors
+LOCAL_MODULE_TAGS := optional
+LOCAL_MULTILIB := both
+
+include $(BUILD_SHARED_LIBRARY)

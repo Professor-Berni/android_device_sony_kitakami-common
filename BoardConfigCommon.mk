@@ -213,7 +213,10 @@ TARGET_LD_SHIM_LIBS := \
      /system/lib64/libsys-utils.so|libsensor.so \
      /system/lib/libcammw.so|libsensor.so \
      /system/bin/secd|/system/lib64/lib-preload64.so \
-     /system/vendor/lib64/libril-qc-qmi-1.so|libaudioclient_shim.so
+     /system/vendor/lib64/libril-qc-qmi-1.so|libaudioclient_shim.so \
+     /system/lib/libsys-utils.so|libshim_sensors.so \
+     /system/lib64/libsys-utils.so|libshim_sensors.so \
+     /system/lib/libcammw.so|libshim_sensors.so \
 
 ifneq ($(BOARD_HAVE_RADIO),false)
   TARGET_LD_SHIM_LIBS += \
