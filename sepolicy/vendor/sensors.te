@@ -1,0 +1,1 @@
+allow sensors unlabeled:dir create_dir_perms;
