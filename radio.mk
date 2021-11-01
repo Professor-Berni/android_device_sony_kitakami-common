@@ -48,8 +48,8 @@ PRODUCT_PACKAGES += \
     qti_telephony_hidl_wrapper.xml \
     telephony-ext
 
-PRODUCT_BOOT_JARS += \
-    telephony-ext
+#PRODUCT_BOOT_JARS += \
+#    telephony-ext
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/qti_whitelist.xml:$(TARGET_COPY_OUT_SYSTEM)/etc/sysconfig/qti_whitelist.xml
@@ -79,8 +79,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.vendor.radio.adb_log_on=1
 
 PRODUCT_PROPERTY_OVERRIDES += \
-    rild.libargs=-d[SPACE]/dev/smd0 \
-    rild.libpath=/vendor/lib64/libril-wrapper.so \
+    vendor.rild.libargs=-d[SPACE]/dev/smd0 \
+    vendor.rild.libpath=/vendor/lib64/libril-wrapper.so \
     ril.subscription.types=NV,RUIM
 
 PRODUCT_PROPERTY_OVERRIDES += \
