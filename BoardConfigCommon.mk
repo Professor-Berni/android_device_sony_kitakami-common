@@ -193,12 +193,13 @@ TARGET_USERIMAGES_USE_EXT4 := true
 
 # Shims
 TARGET_LD_SHIM_LIBS := \
-     /system/vendor/lib/hw/camera.vendor.msm8994.so|/system/vendor/lib/camera.qcom_shim.so \
-     /system/lib64/libsys-utils.so|libsensor.so \
-     /system/lib/libcammw.so|libsensor.so \
-     /system/vendor/lib/libizat_core.so|/system/vendor/lib/libshim_gps.so \
-     /system/vendor/lib64/libizat_core.so|/system/vendor/lib64/libshim_gps.so \
-     /system/bin/secd|/system/lib64/lib-preload64.so
+    /system/vendor/lib/hw/camera.vendor.msm8994.so|/system/vendor/lib/camera.qcom_shim.so \
+    /system/lib64/libsys-utils.so|libsensor.so \
+    /system/lib/libcammw.so|libsensor.so \
+    /system/vendor/lib/libizat_core.so|/system/vendor/lib/libshim_gps.so \
+    /system/vendor/lib64/libizat_core.so|/system/vendor/lib64/libshim_gps.so \
+    /system/bin/secd|/system/lib64/lib-preload64.so \
+    /system/vendor/lib64/libmm-abl.so|libshims_postproc.so
 
 # SELinux
 include device/qcom/sepolicy-legacy/sepolicy.mk
