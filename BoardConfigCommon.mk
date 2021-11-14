@@ -213,7 +213,8 @@ TARGET_LD_SHIM_LIBS := \
     /system/vendor/lib64/libril-qc-qmi-1.so|libaudioclient_shim.so \
     /system/lib/libsys-utils.so|libshim_sensors.so \
     /system/lib64/libsys-utils.so|libshim_sensors.so \
-    /system/lib/libcammw.so|libshim_sensors.so
+    /system/lib/libcammw.so|libshim_sensors.so \
+    /system/vendor/lib64/libmm-abl.so|libshims_postproc.so
 
 # SELinux
 include device/qcom/sepolicy-legacy/sepolicy.mk
