@@ -34,11 +34,11 @@ PRODUCT_PACKAGES += \
     rcs_service_api.xml
 
 # RIL
-PRODUCT_PACKAGES += \
-    android.hardware.radio@1.5.vendor \
-    android.hardware.radio.config@1.2.vendor \
-    android.hardware.radio.deprecated@1.0.vendor \
-    android.hardware.secure_element@1.2.vendor
+#PRODUCT_PACKAGES += \
+#		android.hardware.radio@1.2-service \
+#		android.hardware.radio.config@1.0-service \
+#		android.hardware.radio.deprecated@1.0-service \
+#		android.hardware.secure_element@1.2
 
 # Telephony
 PRODUCT_PACKAGES += \

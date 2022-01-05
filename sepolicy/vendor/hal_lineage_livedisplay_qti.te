@@ -1,1 +1,0 @@
-allow hal_lineage_livedisplay_qti ppd:unix_stream_socket connectto;

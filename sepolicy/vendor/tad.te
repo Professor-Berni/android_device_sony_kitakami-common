@@ -5,5 +5,3 @@ type tad_exec, exec_type, file_type;
 init_daemon_domain(tad)
 
 allow tad block_device:blk_file rw_file_perms;
-allow tad block_device:dir search;
-allow tad trim_area_partition_device:blk_file rw_file_perms;

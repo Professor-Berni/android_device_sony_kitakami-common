@@ -1,1 +1,0 @@
-allow bootanim userspace_reboot_exported_prop:file r_file_perms;

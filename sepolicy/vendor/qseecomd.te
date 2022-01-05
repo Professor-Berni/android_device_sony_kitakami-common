@@ -1,0 +1,16 @@
+type qseecomd, domain;
+type qseecomd_exec, exec_type, file_type;
+
+# Started by init
+init_daemon_domain(qseecomd)
+
+allow qseecomd block_device:blk_file rw_file_perms;
+allow qseecomd block_device:dir getattr;
+allow qseecomd device:chr_file rw_file_perms;
+allow qseecomd init:unix_stream_socket connectto;
+allow qseecomd ion_device:chr_file r_file_perms;
+allow qseecomd property_socket:sock_file write;
+allow qseecomd self:capability { setgid setuid };
+allow qseecomd sysfs:file r_file_perms;
+allow qseecomd system_prop:property_service set;
+allow qseecomd vfat:file r_file_perms;

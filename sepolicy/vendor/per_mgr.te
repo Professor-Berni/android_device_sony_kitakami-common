@@ -1,4 +1,11 @@
-allow per_mgr init:binder call;
-allow per_mgr per_proxy:binder call;
+type per_mgr, domain;
+type per_mgr_exec, exec_type, file_type;
+
+# Started by init
+init_daemon_domain(per_mgr)
+
 allow per_mgr self:capability net_raw;
-allow per_mgr subsys_modem_device:chr_file rw_file_perms;
+allow per_mgr self:socket create_socket_perms;
+allow per_mgr servicemanager:binder { call transfer };
+allow per_mgr sysfs:dir r_dir_perms;
+allow per_mgr sysfs:file r_file_perms;

@@ -1,7 +1,6 @@
-allow ims hal_imsrtp_hwservice:hwservice_manager { add find };
-allow ims hidl_base_hwservice:hwservice_manager { add find };
-allow ims ion_device:chr_file rw_file_perms;
-allow ims system_prop:property_service set;
+type ims, domain;
+type ims_exec, exec_type, file_type;
 
-# Grant access to Qualcomm MSM Interface (QMI) radio sockets
-qmux_socket(ims)
+# Started by init
+init_daemon_domain(ims)
+

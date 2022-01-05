@@ -1,1 +1,6 @@
-allow sensors unlabeled:dir create_dir_perms;
+type sensors, domain;
+type sensors_exec, exec_type, file_type;
+
+# Started by init
+init_daemon_domain(sensors)
+

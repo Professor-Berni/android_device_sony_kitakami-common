@@ -1,3 +1,6 @@
-allow thermal-engine diag_data_file:dir search;
-allow thermal-engine diag_data_file:sock_file write;
-allow thermal-engine ta_data_file:dir search;
+type thermal-engine, domain;
+type thermal-engine_exec, exec_type, file_type;
+
+# Started by init
+init_daemon_domain(thermal-engine)
+

@@ -1,2 +1,8 @@
-allow hal_drm_widevine mediadrm_vendor_data_file:dir create_dir_perms;
-allow hal_drm_widevine mediadrm_vendor_data_file:file create_file_perms;
+type hal_drm_widevine, domain;
+type hal_drm_widevine_exec, exec_type, file_type;
+
+# Started by init
+init_daemon_domain(hal_drm_widevine)
+
+allow hal_drm_widevine hwservicemanager:binder { call transfer };
+allow hal_drm_widevine hwservicemanager_prop:file r_file_perms;

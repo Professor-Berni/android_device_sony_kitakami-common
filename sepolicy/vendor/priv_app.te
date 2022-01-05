@@ -1,8 +1,0 @@
-allow priv_app alarm_boot_prop:file open;
-allow priv_app alarm_instance_prop:file getattr;
-allow priv_app device:dir open;
-allow priv_app proc:file open;
-allow priv_app proc_interrupts:file open;
-allow priv_app rootfs:dir { rmdir write };
-allow priv_app rootfs:file { create write };
-allow priv_app sysfs_android_usb:file open;
