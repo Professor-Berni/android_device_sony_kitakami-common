@@ -1,5 +1,6 @@
 allow toolbox file_contexts_file:file r_file_perms;
 allow toolbox init:fifo_file rw_file_perms;
+allow toolbox ram_device:blk_file rw_file_perms;
 allow toolbox rootfs:dir r_dir_perms;
 allow toolbox self:capability dac_override;
 allow toolbox sysfs:file r_file_perms;

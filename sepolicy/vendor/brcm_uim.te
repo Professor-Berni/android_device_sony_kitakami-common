@@ -4,3 +4,9 @@ type brcm_uim_exec, exec_type, file_type;
 # Started by init
 init_daemon_domain(brcm_uim)
 
+allow brcm_uim default_prop:file r_file_perms;
+allow brcm_uim device:chr_file rw_file_perms;
+allow brcm_uim exported_bluetooth_prop:file r_file_perms;
+allow brcm_uim self:capability net_admin;
+allow brcm_uim sysfs:file rw_file_perms;
+allow brcm_uim system_data_file:file r_file_perms;

@@ -1,0 +1,6 @@
+type perfd, domain;
+type perfd_exec, exec_type, file_type;
+
+# Started by init
+init_daemon_domain(perfd)
+

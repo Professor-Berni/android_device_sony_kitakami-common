@@ -4,3 +4,22 @@ type ims_exec, exec_type, file_type;
 # Started by init
 init_daemon_domain(ims)
 
+allow ims default_android_hwservice:hwservice_manager add;
+allow ims default_android_service:service_manager add;
+allow ims default_prop:file r_file_perms;
+allow ims device:chr_file rw_file_perms;
+allow ims hidl_base_hwservice:hwservice_manager add;
+allow ims hwservicemanager:binder { call transfer };
+allow ims hwservicemanager_prop:file r_file_perms;
+allow ims init:unix_stream_socket connectto;
+allow ims ion_device:chr_file { open read };
+allow ims property_socket:sock_file write;
+allow ims self:capability net_bind_service;
+allow ims self:socket { bind create ioctl read write };
+allow ims self:udp_socket { create ioctl };
+allow ims servicemanager:binder { call transfer };
+allow ims socket_device:dir { add_name write };
+allow ims socket_device:sock_file create;
+allow ims sysfs:dir { open read };
+allow ims sysfs:file { getattr open read };
+allow ims vendor_default_prop:property_service set;

@@ -47,6 +47,7 @@
 /(vendor|system/vendor)/bin/imsqmidaemon                   u:object_r:ims_exec:s0
 /(vendor|system/vendor)/bin/imsrcsd                        u:object_r:ims_exec:s0
 /(vendor|system/vendor)/bin/ims_rtp_daemon                 u:object_r:ims_exec:s0
+/(vendor|system/vendor)/bin/perfd                          u:object_r:perfd_exec:s0
 
 # Power Stats
 /(vendor|system/vendor)/bin/hw/android\.hardware\.power\.stats@1\.0-service\.mock u:object_r:hal_power_stats_default_exec:s0

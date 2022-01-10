@@ -4,3 +4,9 @@ type qmuxd_exec, exec_type, file_type;
 # Started by init
 init_daemon_domain(qmuxd)
 
+allow qmuxd default_prop:file r_file_perms;
+allow qmuxd device:chr_file rw_file_perms;
+allow qmuxd radio_prop:file r_file_perms;
+allow qmuxd sysfs:dir r_dir_perms;
+allow qmuxd sysfs:file rw_file_perms;
+allow qmuxd sysfs_wake_lock:file w_file_perms;

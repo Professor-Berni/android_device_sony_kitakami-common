@@ -4,3 +4,6 @@ type updatemiscta_exec, exec_type, file_type;
 # Started by init
 init_daemon_domain(updatemiscta)
 
+allow updatemiscta default_prop:file r_file_perms;
+allow updatemiscta socket_device:sock_file write;
+allow updatemiscta tad:unix_stream_socket connectto;

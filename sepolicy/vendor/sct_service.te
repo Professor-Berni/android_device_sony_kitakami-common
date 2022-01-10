@@ -4,3 +4,5 @@ type sct_service_exec, exec_type, file_type;
 # Started by init
 init_daemon_domain(sct_service)
 
+allow sct_service self:capability net_raw;
+allow sct_service self:socket create_socket_perms;

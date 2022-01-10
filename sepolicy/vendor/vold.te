@@ -1,1 +1,2 @@
+allow vold hal_bootctl_hwservice:hwservice_manager find;
 allow vold rootfs:dir create_dir_perms;

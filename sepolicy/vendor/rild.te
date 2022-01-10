@@ -1,0 +1,8 @@
+allow rild default_prop:file r_file_perms;
+allow rild device:chr_file rw_file_perms;
+allow rild radio_core_data_file:dir rw_dir_perms;
+allow rild radio_core_data_file:file create_file_perms;
+allow rild self:capability { chown dac_override };
+allow rild self:socket ioctl;
+allow rild socket_device:dir rw_dir_perms;
+allow rild socket_device:sock_file create_file_perms;

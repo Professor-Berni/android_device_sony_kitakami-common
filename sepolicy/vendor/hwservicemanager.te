@@ -1,0 +1,2 @@
+allow hwservicemanager hal_hardware_sensors:binder transfer;
+allow hwservicemanager ims:binder call;

@@ -1,0 +1,1 @@
+allow radio default_android_hwservice:hwservice_manager find;
