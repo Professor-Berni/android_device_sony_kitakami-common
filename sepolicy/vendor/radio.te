@@ -1,1 +1,2 @@
 allow radio default_android_hwservice:hwservice_manager find;
+allow radio device:chr_file rw_file_perms;

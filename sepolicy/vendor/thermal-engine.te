@@ -6,6 +6,7 @@ init_daemon_domain(thermal-engine)
 
 allow thermal-engine default_prop:file r_file_perms;
 allow thermal-engine device:chr_file rw_file_perms;
+allow thermal-engine qmuxd:unix_stream_socket connectto;
 allow thermal-engine self:capability dac_override;
 allow thermal-engine self:socket create_socket_perms;
 allow thermal-engine socket_device:dir w_dir_perms;

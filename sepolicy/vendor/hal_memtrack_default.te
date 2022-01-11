@@ -1,3 +1,5 @@
 allow hal_memtrack_default debugfs:file r_file_perms;
+allow hal_memtrack_default servicemanager:dir search;
+allow hal_memtrack_default servicemanager:file r_file_perms;
 allow hal_memtrack_default system_app:dir search;
 allow hal_memtrack_default system_app:file r_file_perms;
