@@ -1,1 +1,2 @@
+allow audioserver rild:binder call;
 allow audioserver vendor_default_prop:file r_file_perms;

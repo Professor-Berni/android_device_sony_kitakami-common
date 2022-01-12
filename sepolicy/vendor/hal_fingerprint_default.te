@@ -5,3 +5,4 @@ allow hal_fingerprint_default input_device:dir r_dir_perms;
 allow hal_fingerprint_default sysfs:file write;
 allow hal_fingerprint_default system_data_file:dir w_dir_perms;
 allow hal_fingerprint_default system_data_file:sock_file create_file_perms;
+allow hal_fingerprint_default vfat:dir search;
