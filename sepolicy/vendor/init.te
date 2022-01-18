@@ -1,6 +1,8 @@
 allow init block_device:blk_file create_file_perms;
 allow init debugfs:file write;
 allow init device:chr_file rw_file_perms;
+allow init hal_dumpstate_hwservice:hwservice_manager { add find };
+allow init hidl_base_hwservice:hwservice_manager add;
 allow init hwservicemanager:binder { call transfer };
 allow init ion_device:chr_file r_file_perms;
 allow init proc:file write;

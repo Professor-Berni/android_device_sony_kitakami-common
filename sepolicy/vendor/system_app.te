@@ -1,1 +1,2 @@
 allow system_app device:chr_file rw_file_perms;
+allow system_app init:binder call;

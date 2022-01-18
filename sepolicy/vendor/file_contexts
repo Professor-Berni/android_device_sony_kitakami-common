@@ -17,6 +17,9 @@
 /(vendor|system/vendor)/bin/hw/android\.hardware\.drm@1\.[0-9]-service.clearkey u:object_r:hal_drm_clearkey_exec:s0
 /(vendor|system/vendor)/bin/hw/android\.hardware\.drm@1\.[0-9]-service.widevine u:object_r:hal_drm_widevine_exec:s0
 
+# Dumpstate HAL
+/(vendor|system/vendor)/bin/hw/android\.hardware\.dumpstate@1\.1-service-kitakami u:object_r:hal_dumpstate_impl_exec:s0
+
 # FM
 /(vendor|system/vendor)/bin/brcm-uim-sysfs                 u:object_r:brcm_uim_exec:s0
 
@@ -42,11 +45,6 @@
 /system/bin/ta_qmi_service                                 u:object_r:ta_qmi_service_exec:s0
 /system/bin/updatemiscta                                   u:object_r:updatemiscta_exec:s0
 /(vendor|system/vendor)/bin/thermal-engine                 u:object_r:thermal-engine_exec:s0
-/(vendor|system/vendor)/bin/imscmservice                   u:object_r:ims_exec:s0
-/(vendor|system/vendor)/bin/imsdatadaemon                  u:object_r:ims_exec:s0
-/(vendor|system/vendor)/bin/imsqmidaemon                   u:object_r:ims_exec:s0
-/(vendor|system/vendor)/bin/imsrcsd                        u:object_r:ims_exec:s0
-/(vendor|system/vendor)/bin/ims_rtp_daemon                 u:object_r:ims_exec:s0
 /(vendor|system/vendor)/bin/perfd                          u:object_r:perfd_exec:s0
 
 # Power Stats
