@@ -11,6 +11,7 @@ allow qseecomd init:unix_stream_socket connectto;
 allow qseecomd ion_device:chr_file r_file_perms;
 allow qseecomd property_socket:sock_file write;
 allow qseecomd self:capability { setgid setuid };
+allow qseecomd sysfs:dir r_dir_perms;
 allow qseecomd sysfs:file r_file_perms;
 allow qseecomd system_prop:property_service set;
 allow qseecomd vfat:file r_file_perms;

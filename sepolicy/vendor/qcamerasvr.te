@@ -5,8 +5,11 @@ type qcamerasvr_exec, exec_type, file_type;
 # Started by init
 init_daemon_domain(qcamerasvr)
 
+allow qcamerasvr camera_data_file:dir rw_dir_perms;
+allow qcamerasvr camera_data_file:sock_file create_file_perms;
 allow qcamerasvr default_prop:file r_file_perms;
 allow qcamerasvr device:chr_file rw_file_perms;
+allow qcamerasvr hal_camera_default:fd use;
 allow qcamerasvr ion_device:chr_file r_file_perms;
 allow qcamerasvr sysfs:file r_file_perms;
 allow qcamerasvr video_device:chr_file rw_file_perms;
