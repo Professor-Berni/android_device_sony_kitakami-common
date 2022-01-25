@@ -124,3 +124,6 @@ ro.qc.sdk.sensors.gestures=true
 
 # Wifi
 wifi.interface=wlan0
+
+# Additional Vendor Default Properties
+ro.vndk.version=31
