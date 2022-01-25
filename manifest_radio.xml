@@ -8,6 +8,7 @@
             <instance>slot1</instance>
             <instance>slot2</instance>
         </interface>
+        <fqname>@1.2::IRadio/default</fqname>
         <interface>
             <name>ISap</name>
             <instance>slot1</instance>
