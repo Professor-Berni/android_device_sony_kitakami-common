@@ -115,6 +115,11 @@ on init
     mkdir /dev/stune/background
     mkdir /dev/stune/top-app
     mkdir /dev/stune/rt
+    write /dev/stune/tasks 0
+    write /dev/stune/foreground/tasks 0
+    write /dev/stune/background/tasks 0
+    write /dev/stune/top-app/tasks 0
+    write /dev/stune/rt/tasks 0
     chown system system /dev/stune
     chown system system /dev/stune/foreground
     chown system system /dev/stune/background
@@ -125,11 +130,6 @@ on init
     chown system system /dev/stune/background/tasks
     chown system system /dev/stune/top-app/tasks
     chown system system /dev/stune/rt/tasks
-    write /dev/stune/tasks 0
-    write /dev/stune/foreground/tasks 0
-    write /dev/stune/background/tasks 0
-    write /dev/stune/top-app/tasks 0
-    write /dev/stune/rt/tasks 0
     chmod 0664 /dev/stune/tasks
     chmod 0664 /dev/stune/foreground/tasks
     chmod 0664 /dev/stune/background/tasks
