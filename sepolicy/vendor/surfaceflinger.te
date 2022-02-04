@@ -1,1 +1,2 @@
 allow surfaceflinger device:chr_file rw_file_perms;
+allow surfaceflinger device:file rw_file_perms;
