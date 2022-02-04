@@ -41,8 +41,6 @@ on early-init
     write /sys/module/msm_performance/parameters/managed_cpus 4-7
 
 on init
-    mkdir /persist/data 0700 system system
-
     wait /dev/block/mmcblk0p1
     chown oem_2997 oem_2997 /dev/block/mmcblk0p1
     chmod 0770 /dev/block/mmcblk0p1
@@ -111,10 +109,11 @@ on init
     write /proc/sys/vm/page-cluster 0
 
     # Create energy-aware scheduler tuning nodes
-    mkdir /dev/stune/foreground
-    mkdir /dev/stune/background
-    mkdir /dev/stune/top-app
-    mkdir /dev/stune/rt
+    mkdir /dev/stune 0775 system system
+    mkdir /dev/stune/foreground 0775 system system
+    mkdir /dev/stune/background 0775 system system
+    mkdir /dev/stune/top-app 0775 system system
+    mkdir /dev/stune/rt 0775 system system
     write /dev/stune/tasks 0
     write /dev/stune/foreground/tasks 0
     write /dev/stune/background/tasks 0
@@ -152,8 +151,6 @@ on fs
     chmod 0751 /iddA
     exec /system/bin/rm -r /idd/lost+found
     symlink /idd /mnt/idd
-    chown oem_2987 oem_2987 /rca
-    chmod 0750 /rca
     exec /system/bin/rm -r /rca/lost+found
     symlink /rca /mnt/rca
 
@@ -260,9 +257,6 @@ on boot
     chown system system /sys/devices/virtual/graphics/fb0/rgb
     chmod 0660 /sys/devices/virtual/graphics/fb0/rgb
 
-    #Remove SUID bit for iproute2 ip tool
-    chmod 0755 /system/bin/ip
-
     chmod 0444 /sys/devices/platform/msm_hsusb/gadget/usb_state
 
 #   Assign TCP buffer thresholds to be ceiling value of technology maximums
@@ -325,8 +319,6 @@ on post-fs-data
     mkdir /idd/socket 0711 oem_2987 oem_2987
     mkdir /idd/startup-prober 0700 root root
     restorecon_recursive /idd
-    mkdir /rca/plugins 0750 oem_2987 oem_2987
-    restorecon_recursive /rca
 
     # KSM options
     write /sys/kernel/mm/ksm/pages_to_scan 100
