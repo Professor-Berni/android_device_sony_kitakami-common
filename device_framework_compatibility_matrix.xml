@@ -1,0 +1,22 @@
+<compatibility-matrix version="1.0" type="framework"> 
+        <hal format="hidl" optional="true">
+        <name>vendor.qti.hardware.radio.qcrilhook</name> 
+        <transport>hwbinder</transport> 
+        <version>1.0</version> 
+        <interface>
+            <name>IQtiOemHook</name> 
+            <instance>oemhook1</instance> 
+            <instance>oemhook2</instance>
+        </interface>
+     </hal> 
+    <hal format="hidl" optional="true">
+    <name>vendor.qti.hardware.radio.qtiradio</name>
+        <transport>hwbinder</transport> 
+        <version>1.0</version> 
+        <interface>
+            <name>IQtiRadio</name> 
+            <instance>slot1</instance> 
+            <instance>slot2</instance>
+        </interface>
+        </hal>
+</compatibility-matrix>
