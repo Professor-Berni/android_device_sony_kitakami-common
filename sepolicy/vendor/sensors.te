@@ -1,1 +1,2 @@
 allow sensors unlabeled:dir create_dir_perms;
+allow sensors unlabeled:file { getattr unlink };
