@@ -5,6 +5,8 @@ allow system_server hal_hardware_sensors:binder { call transfer };
 allow system_server qmuxd:unix_stream_socket connectto;
 allow system_server self:socket ioctl;
 allow system_server sensors:unix_stream_socket connectto;
+allow system_server sensors_device:chr_file r_file_perms;
 allow system_server socket_device:dir w_dir_perms;
 allow system_server socket_device:sock_file create_file_perms;
 allow system_server vendor_default_prop:file r_file_perms;
+allow system_server vendor_security_patch_level_prop:file r_file_perms;

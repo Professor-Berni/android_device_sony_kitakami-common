@@ -14,3 +14,5 @@ allow thermal-engine socket_device:sock_file create_file_perms;
 allow thermal-engine sysfs:dir r_dir_perms;
 allow thermal-engine sysfs:file rw_file_perms;
 allow thermal-engine tmp_root_mount_file:dir search;
+allow thermal-engine tmp_root_mount_file:sock_file write;
+allow thermal-engine unlabeled:sock_file write;
