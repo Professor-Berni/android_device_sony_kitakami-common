@@ -1,1 +1,5 @@
+typeattribute priv_app mlstrustedsubject;
+
+allow priv_app privapp_data_file:dir rw_dir_perms;
+allow priv_app privapp_data_file:file create_file_perms;
 allow priv_app device:chr_file rw_file_perms;

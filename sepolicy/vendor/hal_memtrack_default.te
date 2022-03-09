@@ -5,6 +5,8 @@ allow hal_memtrack_default hal_fingerprint_default:dir search;
 allow hal_memtrack_default hal_fingerprint_default:file r_file_perms;
 allow hal_memtrack_default hal_gatekeeper_default:dir search;
 allow hal_memtrack_default hal_gatekeeper_default:file r_file_perms;
+allow hal_memtrack_default hal_keymaster_default:dir search;
+allow hal_memtrack_default hal_keymaster_default:file r_file_perms;
 allow hal_memtrack_default hal_light_default:dir search;
 allow hal_memtrack_default hal_light_default:file r_file_perms;
 allow hal_memtrack_default hal_lineage_livedisplay_sysfs:dir search;
