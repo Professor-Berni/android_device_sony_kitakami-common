@@ -30,6 +30,7 @@ ro.kernel.ebpf.supported=false
 ro.qc.sdk.gestures.camera=false
 ro.qc.sdk.camera.facialproc=false
 camera.disable_zsl_mode=1
+vendor.camera.aux.packagelist=org.codeaurora.snapcam,com.android.camera
 
 # Charger
 ro.charger.enable_suspend=true
