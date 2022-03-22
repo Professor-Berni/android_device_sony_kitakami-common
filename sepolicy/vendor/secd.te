@@ -11,3 +11,4 @@ allow secd system_data_file:dir create_dir_perms;
 allow secd system_data_file:file create_file_perms;
 allow secd tad:unix_stream_socket connectto;
 allow secd tee_device:chr_file rw_file_perms;
+allow secd tmp_root_mount_file:sock_file write;

@@ -3,3 +3,4 @@ typeattribute platform_app mlstrustedsubject;
 allow platform_app app_data_file:dir rw_dir_perms;
 allow platform_app app_data_file:file create_file_perms;
 allow platform_app device:chr_file rw_file_perms;
+allow platform_app vendor_persist_camera_prop:file r_file_perms;
