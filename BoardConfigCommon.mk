@@ -95,6 +95,11 @@ BOARD_HAVE_BLUETOOTH_BCM := true
 # Camera
 BOARD_QTI_CAMERA_32BIT_ONLY := true
 TARGET_USES_MEDIA_EXTENSIONS := true
+USE_DEVICE_SPECIFIC_CAMERA := true
+DEVICE_SPECIFIC_CAMERA_PATH := $(VENDOR_PATH)/camera
+BOARD_QTI_CAMERA_V2 := true
+TARGET_SUPPORT_HAL1 := false
+TARGET_USES_MEDIA_EXTENSIONS := true
 
 TARGET_PROCESS_SDK_VERSION_OVERRIDE := \
     /system/bin/cameraserver=25 \
@@ -206,7 +211,6 @@ TARGET_USERIMAGES_USE_EXT4 := true
 
 # Shims
 TARGET_LD_SHIM_LIBS := \
-    /system/vendor/lib/hw/camera.vendor.msm8994.so|/system/vendor/lib/camera.qcom_shim.so \
     /system/lib64/libsys-utils.so|libsensor.so \
     /system/lib/libcammw.so|libsensor.so \
     /system/bin/secd|/system/lib64/lib-preload64.so \
