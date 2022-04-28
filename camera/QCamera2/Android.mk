@@ -4,9 +4,6 @@ LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
 
-# Too many clang warnings/errors, see b/23163853.
-LOCAL_CLANG := false
-
 LOCAL_SRC_FILES := \
         util/QCameraCmdThread.cpp \
         util/QCameraQueue.cpp \
@@ -91,7 +88,10 @@ endif
 #LOCAL_STATIC_LIBRARIES := libqcamera2_util
 LOCAL_C_INCLUDES += \
         $(call project-path-for,qcom-display)/libqservice
-LOCAL_SHARED_LIBRARIES := liblog libhardware libutils libcutils libdl
+LOCAL_SHARED_LIBRARIES := \
+	libcamera_client liblog libhardware libutils libcutils libdl libsensor \
+	android.hidl.token@1.0-utils \
+	android.hardware.graphics.bufferqueue@1.0
 LOCAL_SHARED_LIBRARIES += libmmcamera_interface libmmjpeg_interface libui libcamera_metadata
 LOCAL_SHARED_LIBRARIES += libqdMetaData libqservice libbinder
 ifeq ($(TARGET_TS_MAKEUP),true)
