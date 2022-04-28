@@ -34,7 +34,7 @@ LOCAL_SRC_FILES += \
         HAL/QCameraParameters.cpp \
         HAL/QCameraThermalAdapter.cpp
 
-LOCAL_CFLAGS := -Wall -Wextra -Werror
+LOCAL_CFLAGS := -Wall -Wextra -Wno-error -Wformat
 LOCAL_CFLAGS += -DHAS_MULTIMEDIA_HINTS
 
 LOCAL_CFLAGS += -DVANILLA_HAL
@@ -92,7 +92,7 @@ LOCAL_SHARED_LIBRARIES := \
 	libcamera_client liblog libhardware libutils libcutils libdl libsensor \
 	android.hidl.token@1.0-utils \
 	android.hardware.graphics.bufferqueue@1.0
-LOCAL_SHARED_LIBRARIES += libmmcamera_interface libmmjpeg_interface libui libcamera_metadata
+LOCAL_SHARED_LIBRARIES += libmmcamera_interface libmmjpeg_interface libui libcamera_metadata libcamera_client
 LOCAL_SHARED_LIBRARIES += libqdMetaData libqservice libbinder
 ifeq ($(TARGET_TS_MAKEUP),true)
 LOCAL_SHARED_LIBRARIES += libts_face_beautify_hal libts_detected_face_hal

@@ -490,11 +490,9 @@ int QCamera3HeapMemory::allocate(uint32_t count, size_t size, bool queueAll)
                     MAP_SHARED,
                     mMemInfo[i].fd, 0);
         if (vaddr == MAP_FAILED) {
-            for (int32_t j = (int32_t)(i - 1); j >= 0; j --) {
-                munmap(mPtr[j], mMemInfo[j].size);
-                rc = NO_MEMORY;
-                break;
-            }
+            munmap(mPtr[1], mMemInfo[1].size);
+            rc = NO_MEMORY;
+            break;
         } else
             mPtr[i] = vaddr;
     }
