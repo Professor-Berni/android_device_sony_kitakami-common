@@ -1,0 +1,2 @@
+type ffs_prop, property_type, core_property_type;
+type system_radio_prop, property_type, core_property_type;

@@ -1,11 +1,8 @@
-type thermal-engine, domain;
-type thermal-engine_exec, exec_type, file_type;
-
-# Started by init
-init_daemon_domain(thermal-engine)
-
 allow thermal-engine default_prop:file r_file_perms;
 allow thermal-engine device:chr_file rw_file_perms;
+allow thermal-engine diag_data_file:dir search;
+allow thermal-engine diag_data_file:sock_file create_file_perms;
+allow thermal-engine init:unix_stream_socket connectto;
 allow thermal-engine qmuxd:unix_stream_socket connectto;
 allow thermal-engine self:capability dac_override;
 allow thermal-engine self:socket create_socket_perms;
@@ -13,6 +10,8 @@ allow thermal-engine socket_device:dir w_dir_perms;
 allow thermal-engine socket_device:sock_file create_file_perms;
 allow thermal-engine sysfs:dir r_dir_perms;
 allow thermal-engine sysfs:file rw_file_perms;
+allow thermal-engine ta_data_file:dir search;
+allow thermal-engine ta_data_file:file r_file_perms;
 allow thermal-engine tmp_root_mount_file:dir search;
 allow thermal-engine tmp_root_mount_file:sock_file write;
 allow thermal-engine unlabeled:sock_file write;

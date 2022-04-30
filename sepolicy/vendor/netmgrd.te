@@ -1,9 +1,3 @@
-type netmgrd, domain;
-type netmgrd_exec, exec_type, file_type;
-
-# Started by init
-init_daemon_domain(netmgrd)
-
 allow netmgrd default_prop:file r_file_perms;
 allow netmgrd device:chr_file rw_file_perms;
 allow netmgrd dnsresolver_service:service_manager find;

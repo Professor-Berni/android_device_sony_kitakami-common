@@ -1,0 +1,1 @@
+allow logd device:file rw_file_perms;

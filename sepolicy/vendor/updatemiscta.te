@@ -9,4 +9,5 @@ allow updatemiscta default_prop:property_service set;
 allow updatemiscta init:unix_stream_socket connectto;
 allow updatemiscta property_socket:sock_file write;
 allow updatemiscta socket_device:sock_file write;
+allow updatemiscta tad_socket:sock_file write;
 allow updatemiscta tad:unix_stream_socket connectto;

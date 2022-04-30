@@ -9,4 +9,5 @@ allow ta_qmi_service self:capability2 block_suspend;
 allow ta_qmi_service self:socket create_socket_perms;
 allow ta_qmi_service socket_device:sock_file write;
 allow ta_qmi_service sysfs_wake_lock:file w_file_perms;
+allow ta_qmi_service tad_socket:sock_file write;
 allow ta_qmi_service tad:unix_stream_socket connectto;

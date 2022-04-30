@@ -1,7 +1,1 @@
-type adsprpcd, domain;
-type adsprpcd_exec, exec_type, file_type;
-
-# Started by init
-init_daemon_domain(adsprpcd)
-
 allow adsprpcd device:chr_file r_file_perms;
