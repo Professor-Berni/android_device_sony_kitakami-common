@@ -216,7 +216,6 @@ TARGET_LD_SHIM_LIBS := \
 # SELinux
 include device/qcom/sepolicy-legacy/sepolicy.mk
 BOARD_VENDOR_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy/vendor
-#SELINUX_IGNORE_NEVERALLOWS := true
 
 # WiFi
 BOARD_WLAN_DEVICE           := bcmdhd
