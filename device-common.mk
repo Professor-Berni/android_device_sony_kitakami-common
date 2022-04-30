@@ -30,6 +30,7 @@ DEVICE_PACKAGE_OVERLAYS += \
 ifneq ($(BOARD_HAVE_RADIO),false)
     DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay-radio
     $(call inherit-product, $(LOCAL_PATH)/radio.mk)
+    PRODUCT_COPY_FILES += $(LOCAL_PATH)/qcril.db:$(TARGET_COPY_OUT_VENDOR)/qcril.db
 endif
 
 PRODUCT_ENFORCE_RRO_TARGETS := *
