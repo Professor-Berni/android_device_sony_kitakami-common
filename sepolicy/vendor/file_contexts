@@ -22,8 +22,8 @@
 
 # DRM
 /data/vendor/mediadrm(/.*)?                                u:object_r:mediadrm_vendor_data_file:s0
-/(vendor|system/vendor)/bin/hw/android\.hardware\.drm@1\.[0-9]-service.clearkey u:object_r:hal_drm_clearkey_exec:s0
-/(vendor|system/vendor)/bin/hw/android\.hardware\.drm@1\.[0-9]-service.widevine u:object_r:hal_drm_widevine_exec:s0
+/(system|system/vendor)/bin/hw/android\.hardware\.drm@1\.[0-9]-service.clearkey u:object_r:hal_drm_clearkey_exec:s0
+/(system|system/vendor)/bin/hw/android\.hardware\.drm@1\.[0-9]-service.widevine u:object_r:hal_drm_widevine_exec:s0
 
 # BRCM BT FM
 /sys/bus/platform/drivers/bcm_ldisc/bcmbt_ldisc(/.*)?      u:object_r:brcm_ldisc_sysfs:s0
@@ -32,7 +32,7 @@
 /sys/devices(/soc\.0)?/pmi8994-flash-27(/.*)?              u:object_r:sysfs_camera_torch:s0
 
 # Dumpstate HAL
-/(vendor|system/vendor)/bin/hw/android\.hardware\.dumpstate@1\.1-service-kitakami u:object_r:hal_dumpstate_impl_exec:s0
+/(system|system/vendor)/bin/hw/android\.hardware\.dumpstate@1\.1-service-kitakami u:object_r:hal_dumpstate_impl_exec:s0
 
 # HCI
 /dev/ttyHS0                                                u:object_r:hci_attach_dev:s0
@@ -49,7 +49,7 @@
 /data/fpcd(/.*)?                                           u:object_r:fpc_data_file:s0
 
 # FM
-/(vendor|system/vendor)/bin/brcm-uim-sysfs                 u:object_r:brcm_uim_exec:s0
+/(system|system/vendor)/bin/brcm-uim-sysfs                 u:object_r:brcm_uim_exec:s0
 
 # TA
 /dev/socket/tad                                            u:object_r:tad_socket:s0
@@ -66,7 +66,7 @@
 /data/time(/.*)                                            u:object_r:timekeep_data_file:s0
 
 # Power Stats
-/(vendor|system/vendor)/bin/hw/android\.hardware\.power\.stats@1\.0-service\.mock u:object_r:hal_power_stats_default_exec:s0
+/(system|system/vendor)/bin/hw/android\.hardware\.power\.stats@1\.0-service\.mock u:object_r:hal_power_stats_default_exec:s0
 
 # Misc
 /system/bin/adsprpcd                                       u:object_r:adsprpcd_exec:s0
