@@ -38,6 +38,7 @@ allow init servicemanager:binder { call transfer };
 allow init smd_device:chr_file rw_file_perms;
 allow init socket_device:sock_file create_file_perms;
 allow init ssd_device:blk_file write;
+allow init sysfs_boot_adsp:file open;
 allow init sysfs_camera_torch:lnk_file read;
 allow init sysfs_cpu_boost:file rw_file_perms;
 allow init sysfs_devices_system_cpu:file write;
