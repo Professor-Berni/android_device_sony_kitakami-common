@@ -1,3 +1,4 @@
+allow init app_data_file:file { getattr relabelfrom };
 allow init binder_per_mgr_service:service_manager add;
 allow init block_device:blk_file create_file_perms;
 allow init debugfs:file write;
@@ -53,7 +54,8 @@ allow init sysfs_uio_file:file r_file_perms;
 allow init sysfs_uio:lnk_file read;
 allow init sysfs_wake_lock:file ra_file_perms;
 allow init system_data_file:file w_file_perms;
-allow init system_file:file { execute_no_trans mounton };
+allow init system_file:dir relabelfrom;
+allow init system_file:file { execute_no_trans mounton relabelfrom};
 allow init tad_socket:sock_file write;
 allow init tee_device:chr_file rw_file_perms;
 allow init tmpfs:lnk_file create;
