@@ -728,7 +728,6 @@ service ppd /system/vendor/bin/mm-pp-daemon
     socket pps stream 0660 system system
     group system graphics
     writepid /dev/cpuset/system-background/tasks
-    disabled
 
 # brcm-uim-sysfs (BT/FM/ANT+)
 service uim /system/vendor/bin/brcm-uim-sysfs
