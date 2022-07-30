@@ -757,16 +757,14 @@ service iddd /system/bin/iddd
     group oem_2987 log inet oem_2993
     disabled
 
-# Override camera service for secd groups
-service vendor.camera-provider-2-4 /vendor/bin/hw/android.hardware.camera.provider@2.4-service
+service cameraserver /system/bin/cameraserver_kitakami
     override
-    interface android.hardware.camera.provider@2.4::ICameraProvider legacy/0
-    class hal
+    class main
     user cameraserver
-    group audio camera input drmrpc oem_2996 oem_2993 oem_2987
+    group audio camera input drmrpc
     ioprio rt 4
-    capabilities SYS_NICE
-    task_profiles CameraServiceCapacity MaxPerformance
+    writepid /dev/cpuset/camera-daemon/tasks /dev/stune/top-app/tasks
+    rlimit rtprio 10 10
 
 on property:sys.boot_completed=1
     rm /data/system/perfd/default_values
