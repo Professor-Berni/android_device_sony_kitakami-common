@@ -3,6 +3,7 @@
 
 # Camera
 /sys/devices(/soc\.0)?/pmi8994-flash-27(/.*)?              u:object_r:sysfs_camera_torch:s0
+/(system|system/vendor)/bin/cameraserver_kitakami          u:object_r:cameraserver_exec:s0
 
 # DRM
 /(system|system/vendor)/bin/hw/android\.hardware\.drm@1\.[0-9]-service.clearkey u:object_r:hal_drm_clearkey_exec:s0
