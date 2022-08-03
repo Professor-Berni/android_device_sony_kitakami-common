@@ -27,8 +27,6 @@ allow hal_memtrack_default idmap:dir search;
 allow hal_memtrack_default idmap:file r_file_perms;
 allow hal_memtrack_default per_mgr:dir search;
 allow hal_memtrack_default per_mgr:file r_file_perms;
-allow hal_memtrack_default per_proxy:dir search;
-allow hal_memtrack_default per_proxy:file r_file_perms;
 allow hal_memtrack_default secd:dir search;
 allow hal_memtrack_default secd:file r_file_perms;
 allow hal_memtrack_default servicemanager:dir search;
