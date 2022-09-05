@@ -26,7 +26,7 @@ ro.config.ringtone=CyanTone.ogg
 # Camera
 ro.qc.sdk.gestures.camera=false
 ro.qc.sdk.camera.facialproc=false
-camera.disable_zsl_mode=1
+camera.disable_zsl_mode=0
 
 # Charger
 ro.charger.enable_suspend=true
