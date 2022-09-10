@@ -132,10 +132,6 @@ PRODUCT_PACKAGES += \
     cameraserver_kitakami \
     vendor.qti.hardware.camera.device@1.0
 
-# CryptfsHW TODO: Still needed? Not yet ported to Android T!
-#PRODUCT_PACKAGES += \
-#    vendor.qti.hardware.cryptfshw@1.0
-
 # Data services
 PRODUCT_PACKAGES += \
     librmnetctl
