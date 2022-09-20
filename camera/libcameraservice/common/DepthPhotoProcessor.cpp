@@ -42,10 +42,6 @@
 #include <xmpmeta/xmp_data.h>
 #include <xmpmeta/xmp_writer.h>
 
-#ifndef __unused
-#define __unused __attribute__((__unused__))
-#endif
-
 using dynamic_depth::Camera;
 using dynamic_depth::Cameras;
 using dynamic_depth::CameraParams;

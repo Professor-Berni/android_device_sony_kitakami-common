@@ -75,7 +75,7 @@ struct HidlCameraService final : public HCameraService {
     static sp<HidlCameraService> getInstance(android::CameraService *cs);
 
 private:
-    HidlCameraService(android::CameraService *cs);
+    HidlCameraService(android::CameraService *cs) : mAidlICameraService(cs) { };
 
     sp<hardware::ICameraServiceListener> searchListenerCacheLocked(
         sp<HCameraServiceListener> listener, /*removeIfFound*/ bool shouldRemove = false);
@@ -95,7 +95,6 @@ private:
     using HIListeners =
         std::pair<sp<HCameraServiceListener>, sp<ICameraServiceListener>>;
     std::list<HIListeners> mListeners;
-    int mVndkVersion = -1;
 };
 
 }  // namespace implementation

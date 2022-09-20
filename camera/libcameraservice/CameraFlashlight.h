@@ -23,6 +23,8 @@
 #include <utils/SortedVector.h>
 #include "common/CameraProviderManager.h"
 #include "common/CameraDeviceBase.h"
+#include "device1/CameraHardwareInterface.h"
+
 
 namespace android {
 
@@ -44,14 +46,6 @@ class FlashControlBase : public virtual VirtualLightRefBase {
         // set the torch mode to on or off.
         virtual status_t setTorchMode(const String8& cameraId,
                     bool enabled) = 0;
-
-        // Change the brightness level of the torch. If the torch is OFF and
-        // torchStrength >= 1, then the torch will also be turned ON.
-        virtual status_t turnOnTorchWithStrengthLevel(const String8& cameraId,
-                    int32_t torchStrength) = 0;
-
-        // Returns the torch strength level.
-        virtual status_t getTorchStrengthLevel(const String8& cameraId, int32_t* torchStrength) = 0;
 };
 
 /**
@@ -74,12 +68,6 @@ class CameraFlashlight : public virtual VirtualLightRefBase {
 
         // set the torch mode to on or off.
         status_t setTorchMode(const String8& cameraId, bool enabled);
-
-        // Change the torch strength level of the flash unit in torch mode.
-        status_t turnOnTorchWithStrengthLevel(const String8& cameraId, int32_t torchStrength);
-
-        // Get the torch strength level
-        status_t getTorchStrengthLevel(const String8& cameraId, int32_t* torchStrength);
 
         // Notify CameraFlashlight that camera service is going to open a camera
         // device. CameraFlashlight will free the resources that may cause the
@@ -129,11 +117,62 @@ class ProviderFlashControl : public FlashControlBase {
         // FlashControlBase
         status_t hasFlashUnit(const String8& cameraId, bool *hasFlash);
         status_t setTorchMode(const String8& cameraId, bool enabled);
-        status_t turnOnTorchWithStrengthLevel(const String8& cameraId, int32_t torchStrength);
-        status_t getTorchStrengthLevel(const String8& cameraId, int32_t* torchStrength);
 
     private:
         sp<CameraProviderManager> mProviderManager;
+
+        Mutex mLock;
+};
+
+/**
+ * Flash control for camera module <= v2.3 and camera HAL v1
+ */
+class CameraHardwareInterfaceFlashControl : public FlashControlBase {
+    public:
+        CameraHardwareInterfaceFlashControl(
+                sp<CameraProviderManager> manager,
+                CameraProviderManager::StatusListener* callbacks);
+        virtual ~CameraHardwareInterfaceFlashControl();
+
+        // FlashControlBase
+        status_t setTorchMode(const String8& cameraId, bool enabled);
+        status_t hasFlashUnit(const String8& cameraId, bool *hasFlash);
+
+    private:
+        // connect to a camera device
+        status_t connectCameraDevice(const String8& cameraId);
+
+        // disconnect and free mDevice
+        status_t disconnectCameraDevice();
+
+        // initialize the preview window
+        status_t initializePreviewWindow(const sp<CameraHardwareInterface>& device,
+                int32_t width, int32_t height);
+
+        // start preview and enable torch
+        status_t startPreviewAndTorch();
+
+        // get the smallest surface
+        status_t getSmallestSurfaceSize(int32_t *width, int32_t *height);
+
+        // protected by mLock
+        // If this function opens camera device in order to check if it has a flash unit, the
+        // camera device will remain open if keepDeviceOpen is true and the camera device will be
+        // closed if keepDeviceOpen is false. If camera device is already open when calling this
+        // function, keepDeviceOpen is ignored.
+        status_t hasFlashUnitLocked(const String8& cameraId, bool *hasFlash, bool keepDeviceOpen);
+
+        sp<CameraProviderManager> mProviderManager;
+        CameraProviderManager::StatusListener* mCallbacks;
+        sp<CameraHardwareInterface> mDevice;
+        String8 mCameraId;
+        CameraParameters mParameters;
+        bool mTorchEnabled;
+
+        sp<IGraphicBufferProducer> mProducer;
+        sp<IGraphicBufferConsumer>  mConsumer;
+        sp<GLConsumer> mSurfaceTexture;
+        sp<Surface> mSurface;
 
         Mutex mLock;
 };

@@ -40,8 +40,7 @@ class NotificationListener : public virtual RefBase {
     // Required for API 1 and 2
     virtual void notifyError(int32_t errorCode,
                              const CaptureResultExtras &resultExtras) = 0;
-    // May return an error since it checks appops
-    virtual status_t notifyActive(float maxPreviewFps) = 0;
+    virtual status_t notifyActive() = 0; // May return an error since it checks appops
     virtual void notifyIdle(int64_t requestCount, int64_t resultError, bool deviceError,
             const std::vector<hardware::CameraStreamStats>& streamStats) = 0;
 

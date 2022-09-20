@@ -29,7 +29,6 @@
 #include <android/hardware/camera2/ICameraDeviceUser.h>
 #include <android/hardware/graphics/bufferqueue/1.0/IGraphicBufferProducer.h>
 #include <android/hardware/ICameraService.h>
-#include <camera/CameraMetadata.h>
 #include <fmq/MessageQueue.h>
 #include <hardware/camera.h>
 #include <hidl/MQDescriptor.h>
@@ -96,8 +95,6 @@ hidl_vec<HPhysicalCaptureResultInfo> convertToHidl(
     std::shared_ptr<CaptureResultMetadataQueue> &captureResultMetadataQueue);
 
 HStatus B2HStatus(const binder::Status &bStatus);
-
-status_t filterVndkKeys(int vndk_version, CameraMetadata &metadata, bool isStatic = true);
 
 } // conversion
 } // utils

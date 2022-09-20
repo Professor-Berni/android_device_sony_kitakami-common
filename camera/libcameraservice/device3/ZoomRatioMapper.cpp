@@ -20,7 +20,7 @@
 #include <algorithm>
 
 #include "device3/ZoomRatioMapper.h"
-#include "utils/SessionConfigurationUtilsHost.h"
+#include "utils/SessionConfigurationUtils.h"
 
 namespace android {
 

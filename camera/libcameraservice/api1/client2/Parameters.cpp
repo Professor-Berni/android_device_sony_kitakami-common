@@ -50,7 +50,7 @@ Parameters::Parameters(int cameraId,
 Parameters::~Parameters() {
 }
 
-status_t Parameters::initialize(CameraDeviceBase *device) {
+status_t Parameters::initialize(CameraDeviceBase *device, int deviceVersion) {
     status_t res;
     if (device == nullptr) {
         ALOGE("%s: device is null!", __FUNCTION__);
@@ -63,6 +63,7 @@ status_t Parameters::initialize(CameraDeviceBase *device) {
         return BAD_VALUE;
     }
     Parameters::info = &info;
+    mDeviceVersion = deviceVersion;
 
     res = buildFastInfo(device);
     if (res != OK) return res;
@@ -74,43 +75,23 @@ status_t Parameters::initialize(CameraDeviceBase *device) {
     // Treat the H.264 max size as the max supported video size.
     MediaProfiles *videoEncoderProfiles = MediaProfiles::getInstance();
     Vector<video_encoder> encoders = videoEncoderProfiles->getVideoEncoders();
-    int32_t minVideoWidth = MAX_PREVIEW_WIDTH;
-    int32_t minVideoHeight = MAX_PREVIEW_HEIGHT;
     int32_t maxVideoWidth = 0;
     int32_t maxVideoHeight = 0;
     for (size_t i = 0; i < encoders.size(); i++) {
-        int w0 = videoEncoderProfiles->getVideoEncoderParamByName(
-                "enc.vid.width.min", encoders[i]);
-        int h0 = videoEncoderProfiles->getVideoEncoderParamByName(
-                "enc.vid.height.min", encoders[i]);
-        int w1 = videoEncoderProfiles->getVideoEncoderParamByName(
+        int width = videoEncoderProfiles->getVideoEncoderParamByName(
                 "enc.vid.width.max", encoders[i]);
-        int h1 = videoEncoderProfiles->getVideoEncoderParamByName(
+        int height = videoEncoderProfiles->getVideoEncoderParamByName(
                 "enc.vid.height.max", encoders[i]);
-        // Assume the min size is 0 if it's not reported by encoder
-        if (w0 == -1) {
-            w0 = 0;
-        }
-        if (h0 == -1) {
-            h0 = 0;
-        }
         // Treat width/height separately here to handle the case where different
-        // profile might report min/max size of different aspect ratio
-        if (w0 < minVideoWidth) {
-            minVideoWidth = w0;
+        // profile might report max size of different aspect ratio
+        if (width > maxVideoWidth) {
+            maxVideoWidth = width;
         }
-        if (h0 < minVideoHeight) {
-            minVideoHeight = h0;
-        }
-        if (w1 > maxVideoWidth) {
-            maxVideoWidth = w1;
-        }
-        if (h1 > maxVideoHeight) {
-            maxVideoHeight = h1;
+        if (height > maxVideoHeight) {
+            maxVideoHeight = height;
         }
     }
-    // These are upper/lower bounds and may not be an actually valid video size
-    const Size VIDEO_SIZE_LOWER_BOUND = {minVideoWidth, minVideoHeight};
+    // This is just an upper bound and may not be an actually valid video size
     Size videoSizeUpperBound = {maxVideoWidth, maxVideoHeight};
 
     if (fastInfo.supportsPreferredConfigs) {
@@ -118,10 +99,9 @@ status_t Parameters::initialize(CameraDeviceBase *device) {
         videoSizeUpperBound = getMaxSize(getPreferredVideoSizes());
     }
 
-    res = getFilteredSizes(Size{0, 0}, maxPreviewSize, &availablePreviewSizes);
+    res = getFilteredSizes(maxPreviewSize, &availablePreviewSizes);
     if (res != OK) return res;
-    res = getFilteredSizes(
-        VIDEO_SIZE_LOWER_BOUND, videoSizeUpperBound, &availableVideoSizes);
+    res = getFilteredSizes(videoSizeUpperBound, &availableVideoSizes);
     if (res != OK) return res;
 
     // Select initial preview and video size that's under the initial bound and
@@ -884,6 +864,7 @@ status_t Parameters::initialize(CameraDeviceBase *device) {
 
     if (fabs(maxDigitalZoom.data.f[0] - 1.f) > 0.00001f) {
         params.set(CameraParameters::KEY_ZOOM, zoom);
+        params.set(CameraParameters::KEY_MAX_ZOOM, NUM_ZOOM_STEPS - 1);
 
         {
             String8 zoomRatios;
@@ -891,34 +872,18 @@ status_t Parameters::initialize(CameraDeviceBase *device) {
             float zoomIncrement = (maxDigitalZoom.data.f[0] - zoom) /
                     (NUM_ZOOM_STEPS-1);
             bool addComma = false;
-            int previousZoom = -1;
-            size_t zoomSteps = 0;
-            for (size_t i = 0; i < NUM_ZOOM_STEPS; i++) {
-                int currentZoom = static_cast<int>(zoom * 100);
-                if (previousZoom == currentZoom) {
-                    zoom += zoomIncrement;
-                    continue;
-                }
+            for (size_t i=0; i < NUM_ZOOM_STEPS; i++) {
                 if (addComma) zoomRatios += ",";
                 addComma = true;
-                zoomRatios += String8::format("%d", currentZoom);
+                zoomRatios += String8::format("%d", static_cast<int>(zoom * 100));
                 zoom += zoomIncrement;
-                previousZoom = currentZoom;
-                zoomSteps++;
             }
-
-            if (zoomSteps > 0) {
-                params.set(CameraParameters::KEY_ZOOM_RATIOS, zoomRatios);
-                params.set(CameraParameters::KEY_ZOOM_SUPPORTED,
-                        CameraParameters::TRUE);
-                params.set(CameraParameters::KEY_MAX_ZOOM, zoomSteps - 1);
-                zoomAvailable = true;
-            } else {
-                params.set(CameraParameters::KEY_ZOOM_SUPPORTED,
-                        CameraParameters::FALSE);
-            }
+            params.set(CameraParameters::KEY_ZOOM_RATIOS, zoomRatios);
         }
 
+        params.set(CameraParameters::KEY_ZOOM_SUPPORTED,
+                CameraParameters::TRUE);
+        zoomAvailable = true;
     } else {
         params.set(CameraParameters::KEY_ZOOM_SUPPORTED,
                 CameraParameters::FALSE);
@@ -1075,8 +1040,7 @@ status_t Parameters::buildFastInfo(CameraDeviceBase *device) {
     if (fastInfo.supportsPreferredConfigs) {
         previewSizeBound = getMaxSize(getPreferredPreviewSizes());
     }
-    status_t res = getFilteredSizes(
-        Size{0, 0}, previewSizeBound, &supportedPreviewSizes);
+    status_t res = getFilteredSizes(previewSizeBound, &supportedPreviewSizes);
     if (res != OK) return res;
     for (size_t i=0; i < availableFpsRanges.count; i += 2) {
         if (!isFpsSupported(supportedPreviewSizes,
@@ -3019,8 +2983,7 @@ int Parameters::arrayYToNormalizedWithCrop(int y,
     }
 }
 
-status_t Parameters::getFilteredSizes(const Size &lower, const Size &upper,
-        Vector<Size> *sizes) {
+status_t Parameters::getFilteredSizes(Size limit, Vector<Size> *sizes) {
     if (info == NULL) {
         ALOGE("%s: Static metadata is not initialized", __FUNCTION__);
         return NO_INIT;
@@ -3036,8 +2999,7 @@ status_t Parameters::getFilteredSizes(const Size &lower, const Size &upper,
         const StreamConfiguration &sc = scs[i];
         if (sc.isInput == ANDROID_SCALER_AVAILABLE_STREAM_CONFIGURATIONS_OUTPUT &&
                 sc.format == HAL_PIXEL_FORMAT_IMPLEMENTATION_DEFINED &&
-                ((sc.width * sc.height) >= (lower.width * lower.height)) &&
-                ((sc.width * sc.height) <= (upper.width * upper.height))) {
+                ((sc.width * sc.height) <= (limit.width * limit.height))) {
             int64_t minFrameDuration = getMinFrameDurationNs(
                     {sc.width, sc.height}, HAL_PIXEL_FORMAT_IMPLEMENTATION_DEFINED);
             if (minFrameDuration > MAX_PREVIEW_RECORD_DURATION_NS) {

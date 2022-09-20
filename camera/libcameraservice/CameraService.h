@@ -47,7 +47,6 @@
 #include "media/RingBuffer.h"
 #include "utils/AutoConditionLock.h"
 #include "utils/ClientManager.h"
-#include "utils/IPCTransport.h"
 
 #include <set>
 #include <string>
@@ -73,6 +72,7 @@ class CameraService :
     public virtual CameraProviderManager::StatusListener
 {
     friend class BinderService<CameraService>;
+    friend class CameraClient;
     friend class CameraOfflineSessionClient;
 public:
     class Client;
@@ -107,19 +107,19 @@ public:
     // HAL Callbacks - implements CameraProviderManager::StatusListener
 
     virtual void        onDeviceStatusChanged(const String8 &cameraId,
-            CameraDeviceStatus newHalStatus) override;
+            hardware::camera::common::V1_0::CameraDeviceStatus newHalStatus) override;
     virtual void        onDeviceStatusChanged(const String8 &cameraId,
             const String8 &physicalCameraId,
-            CameraDeviceStatus newHalStatus) override;
+            hardware::camera::common::V1_0::CameraDeviceStatus newHalStatus) override;
     // This method may hold CameraProviderManager::mInterfaceMutex as a part
     // of calling getSystemCameraKind() internally. Care should be taken not to
     // directly / indirectly call this from callers who also hold
     // mInterfaceMutex.
     virtual void        onTorchStatusChanged(const String8& cameraId,
-            TorchModeStatus newStatus) override;
+            hardware::camera::common::V1_0::TorchModeStatus newStatus) override;
     // Does not hold CameraProviderManager::mInterfaceMutex.
     virtual void        onTorchStatusChanged(const String8& cameraId,
-            TorchModeStatus newStatus,
+            hardware::camera::common::V1_0::TorchModeStatus newStatus,
             SystemCameraKind kind) override;
     virtual void        onNewProviderRegistered() override;
 
@@ -141,6 +141,12 @@ public:
     virtual binder::Status     connect(const sp<hardware::ICameraClient>& cameraClient,
             int32_t cameraId, const String16& clientPackageName,
             int32_t clientUid, int clientPid, int targetSdkVersion,
+            /*out*/
+            sp<hardware::ICamera>* device);
+
+    virtual binder::Status     connectLegacy(const sp<hardware::ICameraClient>& cameraClient,
+            int32_t cameraId, int32_t halVersion,
+            const String16& clientPackageName, int32_t clientUidclientPid, int clientPid,
             /*out*/
             sp<hardware::ICamera>* device);
 
@@ -172,12 +178,6 @@ public:
 
     virtual binder::Status    setTorchMode(const String16& cameraId, bool enabled,
             const sp<IBinder>& clientBinder);
-
-    virtual binder::Status    turnOnTorchWithStrengthLevel(const String16& cameraId,
-            int32_t torchStrength, const sp<IBinder>& clientBinder);
-
-    virtual binder::Status    getTorchStrengthLevel(const String16& cameraId,
-            int32_t* torchStrength);
 
     virtual binder::Status    notifySystemEvent(int32_t eventId,
             const std::vector<int32_t>& args);
@@ -243,7 +243,7 @@ public:
 
     /////////////////////////////////////////////////////////////////////
     // CameraDeviceFactory functionality
-    std::pair<int, IPCTransport>    getDeviceVersion(const String8& cameraId, int* facing = nullptr,
+    int                 getDeviceVersion(const String8& cameraId, int* facing = nullptr,
             int* orientation = nullptr);
 
     /////////////////////////////////////////////////////////////////////
@@ -286,10 +286,6 @@ public:
         virtual status_t dump(int fd, const Vector<String16>& args);
         // Internal dump method to be called by CameraService
         virtual status_t dumpClient(int fd, const Vector<String16>& args) = 0;
-
-        virtual status_t startWatchingTags(const String8 &tags, int outFd);
-        virtual status_t stopWatchingTags(int outFd);
-        virtual status_t dumpWatchedEventsToVector(std::vector<std::string> &out);
 
         // Return the package name for this client
         virtual String16 getPackageName() const;
@@ -339,19 +335,10 @@ public:
         // Set/reset camera mute
         virtual status_t setCameraMute(bool enabled) = 0;
 
-        // The injection camera session to replace the internal camera
-        // session.
-        virtual status_t injectCamera(const String8& injectedCamId,
-                sp<CameraProviderManager> manager) = 0;
-
-        // Stop the injection camera and restore to internal camera session.
-        virtual status_t stopInjection() = 0;
-
     protected:
         BasicClient(const sp<CameraService>& cameraService,
                 const sp<IBinder>& remoteCallback,
                 const String16& clientPackageName,
-                bool nativeClient,
                 const std::optional<String16>& clientFeatureId,
                 const String8& cameraIdStr,
                 int cameraFacing,
@@ -374,7 +361,6 @@ public:
         const int                       mCameraFacing;
         const int                       mOrientation;
         String16                        mClientPackageName;
-        bool                            mSystemNativeClient;
         std::optional<String16>         mClientFeatureId;
         pid_t                           mClientPid;
         const uid_t                     mClientUid;
@@ -462,7 +448,6 @@ public:
         Client(const sp<CameraService>& cameraService,
                 const sp<hardware::ICameraClient>& cameraClient,
                 const String16& clientPackageName,
-                bool systemNativeClient,
                 const std::optional<String16>& clientFeatureId,
                 const String8& cameraIdStr,
                 int api1CameraId,
@@ -546,15 +531,14 @@ public:
          */
         static DescriptorPtr makeClientDescriptor(const String8& key, const sp<BasicClient>& value,
                 int32_t cost, const std::set<String8>& conflictingKeys, int32_t score,
-                int32_t ownerId, int32_t state, int oomScoreOffset, bool systemNativeClient);
+                int32_t ownerId, int32_t state, int oomScoreOffset);
 
         /**
          * Make a ClientDescriptor object wrapping the given BasicClient strong pointer with
          * values intialized from a prior ClientDescriptor.
          */
         static DescriptorPtr makeClientDescriptor(const sp<BasicClient>& value,
-                const CameraService::DescriptorPtr& partial, int oomScoreOffset,
-                bool systemNativeClient);
+                const CameraService::DescriptorPtr& partial, int oomScoreOffset);
 
     }; // class CameraClientManager
 
@@ -562,6 +546,8 @@ public:
     int32_t updateAudioRestrictionLocked();
 
 private:
+
+    typedef hardware::camera::common::V1_0::CameraDeviceStatus CameraDeviceStatus;
 
     /**
      * Typesafe version of device status, containing both the HAL-layer and the service interface-
@@ -662,12 +648,6 @@ private:
         bool removeUnavailablePhysicalId(const String8& physicalId);
 
         /**
-         * Set and get client package name.
-         */
-        void setClientPackage(const String8& clientPackage);
-        String8 getClientPackage() const;
-
-        /**
          * Return the unavailable physical ids for this device.
          *
          * This method acquires mStatusLock.
@@ -679,7 +659,6 @@ private:
         const int mCost;
         std::set<String8> mConflicting;
         std::set<String8> mUnavailablePhysicalIds;
-        String8 mClientPackage;
         mutable Mutex mStatusLock;
         CameraParameters mShimParams;
         const SystemCameraKind mSystemCameraKind;
@@ -699,13 +678,11 @@ private:
         bool isUidActive(uid_t uid, String16 callingPackage);
         int32_t getProcState(uid_t uid);
 
-        // IUidObserver
-        void onUidGone(uid_t uid, bool disabled) override;
-        void onUidActive(uid_t uid) override;
-        void onUidIdle(uid_t uid, bool disabled) override;
+        void onUidGone(uid_t uid, bool disabled);
+        void onUidActive(uid_t uid);
+        void onUidIdle(uid_t uid, bool disabled);
         void onUidStateChanged(uid_t uid, int32_t procState, int64_t procStateSeq,
-                int32_t capability) override;
-        void onUidProcAdjChanged(uid_t uid) override;
+                int32_t capability);
 
         void addOverrideUid(uid_t uid, String16 callingPackage, bool active);
         void removeOverrideUid(uid_t uid, String16 callingPackage);
@@ -720,18 +697,13 @@ private:
         int32_t getProcStateLocked(uid_t uid);
         void updateOverrideUid(uid_t uid, String16 callingPackage, bool active, bool insert);
 
-        struct MonitoredUid {
-            int32_t procState;
-            size_t refCount;
-        };
-
         Mutex mUidLock;
         bool mRegistered;
         ActivityManager mAm;
         wp<CameraService> mService;
         std::unordered_set<uid_t> mActiveUids;
-        // Monitored uid map
-        std::unordered_map<uid_t, MonitoredUid> mMonitoredUids;
+        // Monitored uid map to cached procState and refCount pair
+        std::unordered_map<uid_t, std::pair<int32_t, size_t>> mMonitoredUids;
         std::unordered_map<uid_t, bool> mOverrideUids;
     }; // class UidPolicy
 
@@ -747,10 +719,9 @@ private:
             void unregisterSelf();
 
             bool isSensorPrivacyEnabled();
-            bool isCameraPrivacyEnabled();
+            bool isCameraPrivacyEnabled(userid_t userId);
 
-            binder::Status onSensorPrivacyChanged(int toggleType, int sensor,
-                                                  bool enabled);
+            binder::Status onSensorPrivacyChanged(bool enabled);
 
             // IBinder::DeathRecipient implementation
             virtual void binderDied(const wp<IBinder> &who);
@@ -796,7 +767,7 @@ private:
     // Only call with with mServiceLock held.
     status_t handleEvictionsLocked(const String8& cameraId, int clientPid,
         apiLevel effectiveApiLevel, const sp<IBinder>& remoteCallback, const String8& packageName,
-        int scoreOffset, bool systemNativeClient,
+        int scoreOffset,
         /*out*/
         sp<BasicClient>* client,
         std::shared_ptr<resource_policy::ClientDescriptor<String8, sp<BasicClient>>>* partial);
@@ -828,7 +799,7 @@ private:
     // Single implementation shared between the various connect calls
     template<class CALLBACK, class CLIENT>
     binder::Status connectHelper(const sp<CALLBACK>& cameraCb, const String8& cameraId,
-            int api1CameraId, const String16& clientPackageName, bool systemNativeClient,
+            int api1CameraId, int halVersion, const String16& clientPackageName,
             const std::optional<String16>& clientFeatureId, int clientUid, int clientPid,
             apiLevel effectiveApiLevel, bool shimUpdateOnly, int scoreOffset, int targetSdkVersion,
             /*out*/sp<CLIENT>& device);
@@ -860,14 +831,6 @@ private:
     // Circular buffer for storing event logging for dumps
     RingBuffer<String8> mEventLog;
     Mutex mLogLock;
-
-    // set of client package names to watch. if this set contains 'all', then all clients will
-    // be watched. Access should be guarded by mLogLock
-    std::set<String16> mWatchedClientPackages;
-    // cache of last monitored tags dump immediately before the client disconnects. If a client
-    // re-connects, its entry is not updated until it disconnects again. Access should be guarded
-    // by mLogLock
-    std::map<String16, std::string> mWatchedClientsDumpCache;
 
     // The last monitored tags set by client
     String8 mMonitorTags;
@@ -905,7 +868,7 @@ private:
      * This method must be called with mServiceLock held.
      */
     void finishConnectLocked(const sp<BasicClient>& client, const DescriptorPtr& desc,
-            int oomScoreOffset, bool systemNativeClient);
+            int oomScoreOffset);
 
     /**
      * Returns the underlying camera Id string mapped to a camera id int
@@ -1000,8 +963,6 @@ private:
      * Dump the event log to an FD
      */
     void dumpEventLog(int fd);
-
-    void cacheClientTagDumpIfNeeded(const char *cameraId, BasicClient *client);
 
     /**
      * This method will acquire mServiceLock
@@ -1113,7 +1074,7 @@ private:
     // guard mTorchUidMap
     Mutex                mTorchUidMapMutex;
     // camera id -> torch status
-    KeyedVector<String8, TorchModeStatus>
+    KeyedVector<String8, hardware::camera::common::V1_0::TorchModeStatus>
             mTorchStatusMap;
     // camera id -> torch client binder
     // only store the last client that turns on each camera's torch mode
@@ -1127,16 +1088,16 @@ private:
     // handle torch mode status change and invoke callbacks. mTorchStatusMutex
     // should be locked.
     void onTorchStatusChangedLocked(const String8& cameraId,
-            TorchModeStatus newStatus,
+            hardware::camera::common::V1_0::TorchModeStatus newStatus,
             SystemCameraKind systemCameraKind);
 
     // get a camera's torch status. mTorchStatusMutex should be locked.
     status_t getTorchStatusLocked(const String8 &cameraId,
-             TorchModeStatus *status) const;
+             hardware::camera::common::V1_0::TorchModeStatus *status) const;
 
     // set a camera's torch status. mTorchStatusMutex should be locked.
     status_t setTorchStatusLocked(const String8 &cameraId,
-            TorchModeStatus status);
+            hardware::camera::common::V1_0::TorchModeStatus status);
 
     // notify physical camera status when the physical camera is public.
     // Expects mStatusListenerLock to be locked.
@@ -1195,42 +1156,8 @@ private:
     // Set the camera mute state
     status_t handleSetCameraMute(const Vector<String16>& args);
 
-    // Handle 'watch' command as passed through 'cmd'
-    status_t handleWatchCommand(const Vector<String16> &args, int inFd, int outFd);
-
-    // Enable tag monitoring of the given tags in provided clients
-    status_t startWatchingTags(const Vector<String16> &args, int outFd);
-
-    // Disable tag monitoring
-    status_t stopWatchingTags(int outFd);
-
-    // Clears mWatchedClientsDumpCache
-    status_t clearCachedMonitoredTagDumps(int outFd);
-
-    // Print events of monitored tags in all cached and attached clients
-    status_t printWatchedTags(int outFd);
-
-    // Print events of monitored tags in all attached clients as they are captured. New events are
-    // fetched every `refreshMillis` ms
-    // NOTE: This function does not terminate until user passes '\n' to inFd.
-    status_t printWatchedTagsUntilInterrupt(const Vector<String16> &args, int inFd, int outFd);
-
-    // Parses comma separated clients list and adds them to mWatchedClientPackages.
-    // Does not acquire mLogLock before modifying mWatchedClientPackages. It is the caller's
-    // responsibility to acquire mLogLock before calling this function.
-    void parseClientsToWatchLocked(String8 clients);
-
     // Prints the shell command help
     status_t printHelp(int out);
-
-    // Returns true if client should monitor tags based on the contents of mWatchedClientPackages.
-    // Acquires mLogLock before querying mWatchedClientPackages.
-    bool isClientWatched(const BasicClient *client);
-
-    // Returns true if client should monitor tags based on the contents of mWatchedClientPackages.
-    // Does not acquire mLogLock before querying mWatchedClientPackages. It is the caller's
-    // responsibility to acquire mLogLock before calling this functions.
-    bool isClientWatchedLocked(const BasicClient *client);
 
     /**
      * Get the current system time as a formatted string.
@@ -1239,34 +1166,28 @@ private:
 
     static binder::Status makeClient(const sp<CameraService>& cameraService,
             const sp<IInterface>& cameraCb, const String16& packageName,
-            bool systemNativeClient, const std::optional<String16>& featureId,
-            const String8& cameraId, int api1CameraId, int facing, int sensorOrientation,
-            int clientPid, uid_t clientUid, int servicePid,
-            std::pair<int, IPCTransport> deviceVersionAndIPCTransport, apiLevel effectiveApiLevel,
-            bool overrideForPerfClass, /*out*/sp<BasicClient>* client);
+            const std::optional<String16>& featureId, const String8& cameraId, int api1CameraId,
+            int facing, int sensorOrientation, int clientPid, uid_t clientUid, int servicePid,
+            int halVersion, int deviceVersion, apiLevel effectiveApiLevel, bool overrideForPerfClass,
+            /*out*/sp<BasicClient>* client);
 
     status_t checkCameraAccess(const String16& opPackageName);
 
     static String8 toString(std::set<userid_t> intSet);
-    static int32_t mapToInterface(TorchModeStatus status);
-    static StatusInternal mapToInternal(CameraDeviceStatus status);
+    static int32_t mapToInterface(hardware::camera::common::V1_0::TorchModeStatus status);
+    static StatusInternal mapToInternal(hardware::camera::common::V1_0::CameraDeviceStatus status);
     static int32_t mapToInterface(StatusInternal status);
 
 
     void broadcastTorchModeStatus(const String8& cameraId,
-            TorchModeStatus status, SystemCameraKind systemCameraKind);
-
-    void broadcastTorchStrengthLevel(const String8& cameraId, int32_t newTorchStrengthLevel);
+            hardware::camera::common::V1_0::TorchModeStatus status,
+            SystemCameraKind systemCameraKind);
 
     void disconnectClient(const String8& id, sp<BasicClient> clientToDisconnect);
 
     // Regular online and offline devices must not be in conflict at camera service layer.
     // Use separate keys for offline devices.
     static const String8 kOfflineDevice;
-
-    // Sentinel value to be stored in `mWatchedClientsPackages` to indicate that all clients should
-    // be watched.
-    static const String16 kWatchAllClientsFlag;
 
     // TODO: right now each BasicClient holds one AppOpsManager instance.
     // We can refactor the code so all of clients share this instance
@@ -1295,7 +1216,7 @@ private:
 
             void addListener(const sp<hardware::camera2::ICameraInjectionCallback>& callback);
             void removeListener();
-            void notifyInjectionError(String8 injectedCamId, status_t err);
+            void notifyInjectionError(int errorCode);
 
             // IBinder::DeathRecipient implementation
             virtual void binderDied(const wp<IBinder>& who);
@@ -1322,22 +1243,7 @@ private:
             wp<CameraService> mParent;
     };
 
-    // When injecting the camera, it will check whether the injecting camera status is unavailable.
-    // If it is, the disconnect function will be called to to prevent camera access on the device.
-    status_t checkIfInjectionCameraIsPresent(const String8& externalCamId,
-            sp<BasicClient> clientSp);
-
-    void clearInjectionParameters();
-
-    // This is the existing camera id being replaced.
-    String8 mInjectionInternalCamId;
-    // This is the external camera Id replacing the internalId.
-    String8 mInjectionExternalCamId;
-    bool mInjectionInitPending = false;
-    // Guard mInjectionInternalCamId and mInjectionInitPending.
-    Mutex mInjectionParametersLock;
-
-    void updateTorchUidMapLocked(const String16& cameraId, int uid);
+    void stopInjectionImpl();
 };
 
 } // namespace android

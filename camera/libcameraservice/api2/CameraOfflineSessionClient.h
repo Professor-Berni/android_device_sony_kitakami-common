@@ -54,8 +54,7 @@ public:
             CameraService::BasicClient(
                     cameraService,
                     IInterface::asBinder(remoteCallback),
-                    // (v)ndk doesn't have offline session support
-                    clientPackageName, /*overridePackageName*/false, clientFeatureId,
+                    clientPackageName, clientFeatureId,
                     cameraIdStr, cameraFacing, sensorOrientation, clientPid, clientUid, servicePid),
             mRemoteCallback(remoteCallback), mOfflineSession(session),
             mCompositeStreamMap(offlineCompositeStreamMap) {}
@@ -71,10 +70,6 @@ public:
     status_t dump(int /*fd*/, const Vector<String16>& /*args*/) override;
 
     status_t dumpClient(int /*fd*/, const Vector<String16>& /*args*/) override;
-
-    status_t startWatchingTags(const String8 &tags, int outFd) override;
-    status_t stopWatchingTags(int outFd) override;
-    status_t dumpWatchedEventsToVector(std::vector<std::string> &out) override;
 
     status_t initialize(sp<CameraProviderManager> /*manager*/,
             const String8& /*monitorTags*/) override;
@@ -94,7 +89,7 @@ public:
     // NotificationListener API
     void notifyError(int32_t errorCode, const CaptureResultExtras& resultExtras) override;
     void notifyShutter(const CaptureResultExtras& resultExtras, nsecs_t timestamp) override;
-    status_t notifyActive(float maxPreviewFps) override;
+    status_t notifyActive() override;
     void notifyIdle(int64_t requestCount, int64_t resultErrorCount, bool deviceError,
             const std::vector<hardware::CameraStreamStats>& streamStats) override;
     void notifyAutoFocus(uint8_t newState, int triggerId) override;
@@ -103,9 +98,6 @@ public:
     void notifyPrepared(int streamId) override;
     void notifyRequestQueueEmpty() override;
     void notifyRepeatingRequestError(long lastFrameNumber) override;
-    status_t injectCamera(const String8& injectedCamId,
-            sp<CameraProviderManager> manager) override;
-    status_t stopInjection() override;
 
 private:
     mutable Mutex mBinderSerializationLock;

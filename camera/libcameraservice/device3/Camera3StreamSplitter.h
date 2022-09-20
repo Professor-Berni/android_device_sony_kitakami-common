@@ -19,8 +19,6 @@
 
 #include <unordered_set>
 
-#include <camera/CameraMetadata.h>
-
 #include <gui/IConsumerListener.h>
 #include <gui/IProducerListener.h>
 #include <gui/BufferItemConsumer.h>
@@ -57,8 +55,7 @@ public:
     // with output surfaces.
     status_t connect(const std::unordered_map<size_t, sp<Surface>> &surfaces,
             uint64_t consumerUsage, uint64_t producerUsage, size_t halMaxBuffers, uint32_t width,
-            uint32_t height, android::PixelFormat format, sp<Surface>* consumer,
-            int64_t dynamicRangeProfile);
+            uint32_t height, android::PixelFormat format, sp<Surface>* consumer);
 
     // addOutput adds an output BufferQueue to the splitter. The splitter
     // connects to outputQueue as a CPU producer, and any buffers queued
@@ -235,7 +232,6 @@ private:
     uint32_t mHeight = 0;
     android::PixelFormat mFormat = android::PIXEL_FORMAT_NONE;
     uint64_t mProducerUsage = 0;
-    int mDynamicRangeProfile = ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_STANDARD;
 
     // The attachBuffer call will happen on different thread according to mUseHalBufManager and have
     // different timing constraint.
@@ -254,9 +250,6 @@ private:
 
     //Map surface ids -> gbp outputs
     std::unordered_map<int, sp<IGraphicBufferProducer> > mOutputs;
-
-    //Map surface ids -> gbp outputs
-    std::unordered_map<int, sp<Surface>> mOutputSurfaces;
 
     //Map surface ids -> consumer buffer count
     std::unordered_map<int, size_t > mConsumerBufferCount;

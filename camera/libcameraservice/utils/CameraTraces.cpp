@@ -64,7 +64,7 @@ void CameraTraces::saveTrace() {
     ATRACE_END();
 }
 
-status_t CameraTraces::dump(int fd) {
+status_t CameraTraces::dump(int fd, const Vector<String16> &args __attribute__((unused))) {
     ALOGV("%s: fd = %d", __FUNCTION__, fd);
     Mutex::Autolock al(sImpl.tracesLock);
     List<ProcessCallStack>& pcsList = sImpl.pcsList;

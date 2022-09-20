@@ -22,7 +22,7 @@
 #include <cmath>
 
 #include "device3/DistortionMapper.h"
-#include "utils/SessionConfigurationUtilsHost.h"
+#include "utils/SessionConfigurationUtils.h"
 
 namespace android {
 

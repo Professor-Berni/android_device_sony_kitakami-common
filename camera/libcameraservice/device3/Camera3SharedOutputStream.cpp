@@ -32,15 +32,11 @@ Camera3SharedOutputStream::Camera3SharedOutputStream(int id,
         uint64_t consumerUsage, android_dataspace dataSpace,
         camera_stream_rotation_t rotation,
         nsecs_t timestampOffset, const String8& physicalCameraId,
-        const std::unordered_set<int32_t> &sensorPixelModesUsed, IPCTransport transport,
-        int setId, bool useHalBufManager, int64_t dynamicProfile,
-        int64_t streamUseCase, bool deviceTimeBaseIsRealtime, int timestampBase,
-        int mirrorMode) :
+        const std::unordered_set<int32_t> &sensorPixelModesUsed,
+        int setId, bool useHalBufManager) :
         Camera3OutputStream(id, CAMERA_STREAM_OUTPUT, width, height,
                             format, dataSpace, rotation, physicalCameraId, sensorPixelModesUsed,
-                            transport, consumerUsage, timestampOffset, setId,
-                            /*isMultiResolution*/false, dynamicProfile, streamUseCase,
-                            deviceTimeBaseIsRealtime, timestampBase, mirrorMode),
+                            consumerUsage, timestampOffset, setId),
         mUseHalBufManager(useHalBufManager) {
     size_t consumerCount = std::min(surfaces.size(), kMaxOutputs);
     if (surfaces.size() > consumerCount) {
@@ -71,7 +67,7 @@ status_t Camera3SharedOutputStream::connectStreamSplitterLocked() {
     }
 
     res = mStreamSplitter->connect(initialSurfaces, usage, mUsage, camera_stream::max_buffers,
-            getWidth(), getHeight(), getFormat(), &mConsumer, camera_stream::dynamic_range_profile);
+            getWidth(), getHeight(), getFormat(), &mConsumer);
     if (res != OK) {
         ALOGE("%s: Failed to connect to stream splitter: %s(%d)",
                 __FUNCTION__, strerror(-res), res);
@@ -251,7 +247,7 @@ status_t Camera3SharedOutputStream::configureQueueLocked() {
         return res;
     }
 
-    res = configureConsumerQueueLocked(false/*allowPreviewRespace*/);
+    res = configureConsumerQueueLocked();
     if (res != OK) {
         ALOGE("Failed to configureConsumerQueueLocked: %s(%d)", strerror(-res), res);
         return res;
@@ -392,15 +388,13 @@ status_t Camera3SharedOutputStream::updateStream(const std::vector<sp<Surface>> 
         bool sizeMismatch = ((static_cast<uint32_t>(infoIt.width) != getWidth()) ||
                                 (static_cast<uint32_t> (infoIt.height) != getHeight())) ?
                                 true : false;
-        bool dynamicRangeMismatch = dynamic_range_profile != infoIt.dynamicRangeProfile;
-        if ((imgReaderUsage && sizeMismatch) || dynamicRangeMismatch ||
+        if ((imgReaderUsage && sizeMismatch) ||
                 (infoIt.format != getOriginalFormat() && infoIt.format != getFormat()) ||
                 (infoIt.dataSpace != getDataSpace() &&
                  infoIt.dataSpace != getOriginalDataSpace())) {
-            ALOGE("%s: Shared surface parameters format: 0x%x dataSpace: 0x%x dynamic range 0x%"
-                    PRIx64 " don't match source stream format: 0x%x  dataSpace: 0x%x dynamic"
-                    " range 0x%" PRIx64 , __FUNCTION__, infoIt.format, infoIt.dataSpace,
-                    infoIt.dynamicRangeProfile, getFormat(), getDataSpace(), dynamic_range_profile);
+            ALOGE("%s: Shared surface parameters format: 0x%x dataSpace: 0x%x "
+                    " don't match source stream format: 0x%x  dataSpace: 0x%x", __FUNCTION__,
+                    infoIt.format, infoIt.dataSpace, getFormat(), getDataSpace());
             return BAD_VALUE;
         }
     }

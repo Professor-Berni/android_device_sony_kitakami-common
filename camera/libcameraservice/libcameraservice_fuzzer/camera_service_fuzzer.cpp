@@ -466,12 +466,6 @@ public:
         // No op
         return binder::Status::ok();
     }
-
-    virtual binder::Status onTorchStrengthLevelChanged(const String16& /*cameraId*/,
-            int32_t /*torchStrength*/) {
-        // No op
-        return binder::Status::ok();
-    }
 };
 
 class TestCameraDeviceCallbacks : public hardware::camera2::BnCameraDeviceCallbacks {
