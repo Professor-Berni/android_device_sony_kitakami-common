@@ -106,6 +106,9 @@ class Camera3Device :
     status_t initialize(sp<CameraProviderManager> manager, const String8& monitorTags) override;
     status_t disconnect() override;
     status_t dump(int fd, const Vector<String16> &args) override;
+    status_t startWatchingTags(const String8 &tags) override;
+    status_t stopWatchingTags() override;
+    status_t dumpWatchedEventsToVector(std::vector<std::string> &out) override;
     const CameraMetadata& info() const override;
     const CameraMetadata& infoPhysical(const String8& physicalId) const override;
 
@@ -192,11 +195,9 @@ class Camera3Device :
 
     status_t prepare(int maxCount, int streamId) override;
 
-    ssize_t getJpegBufferSize(const CameraMetadata &info, uint32_t width,
-            uint32_t height) const override;
-    ssize_t getPointCloudBufferSize(const CameraMetadata &info) const;
-    ssize_t getRawOpaqueBufferSize(const CameraMetadata &info, int32_t width, int32_t height,
-            bool maxResolution) const;
+    ssize_t getJpegBufferSize(uint32_t width, uint32_t height) const override;
+    ssize_t getPointCloudBufferSize() const;
+    ssize_t getRawOpaqueBufferSize(int32_t width, int32_t height, bool maxResolution) const;
 
     // Methods called by subclasses
     void             notifyStatus(bool idle); // updates from StatusTracker
@@ -299,7 +300,6 @@ class Camera3Device :
 
   private:
     status_t disconnectImpl();
-    static status_t removeFwkOnlyRegionKeys(CameraMetadata *request);
 
     // internal typedefs
     using RequestMetadataQueue = hardware::MessageQueue<uint8_t, hardware::kSynchronizedReadWrite>;
@@ -578,12 +578,17 @@ class Camera3Device :
         // overriding of ROTATE_AND_CROP value and adjustment of coordinates
         // in several other controls in both the request and the result
         bool                                mRotateAndCropAuto;
+        // Original value of TEST_PATTERN_MODE and DATA so that they can be
+        // restored when sensor muting is turned off
+        int32_t                             mOriginalTestPatternMode;
+        int32_t                             mOriginalTestPatternData[4];
 
         // Whether this capture request has its zoom ratio set to 1.0x before
         // the framework overrides it for camera HAL consumption.
         bool                                mZoomRatioIs1x;
         // The systemTime timestamp when the request is created.
         nsecs_t                             mRequestTimeNs;
+
 
         // Whether this capture request's distortion correction update has
         // been done.
@@ -1254,7 +1259,9 @@ class Camera3Device :
 
     void monitorMetadata(TagMonitor::eventSource source, int64_t frameNumber,
             nsecs_t timestamp, const CameraMetadata& metadata,
-            const std::unordered_map<std::string, CameraMetadata>& physicalMetadata);
+            const std::unordered_map<std::string, CameraMetadata>& physicalMetadata,
+            const camera_stream_buffer_t *outputBuffers, uint32_t numOutputBuffers,
+            int32_t inputStreamId);
 
     metadata_vendor_id_t mVendorTagId;
 
@@ -1378,17 +1385,26 @@ class Camera3Device :
         // when device is IDLE and request thread is paused.
         status_t injectCamera(
                 camera3::camera_stream_configuration& injectionConfig,
-                std::vector<uint32_t>& injectionBufferSizes);
+                const std::vector<uint32_t>& injectionBufferSizes);
 
         // Stop the injection camera and switch back to backup hal interface.
         status_t stopInjection();
 
         bool isInjecting();
 
+        bool isStreamConfigCompleteButNotInjected();
+
         const String8& getInjectedCamId() const;
 
         void getInjectionConfig(/*out*/ camera3::camera_stream_configuration* injectionConfig,
                 /*out*/ std::vector<uint32_t>* injectionBufferSizes);
+
+        // When the streaming configuration is completed and the camera device is active, but the
+        // injection camera has not yet been injected, the streaming configuration of the internal
+        // camera will be stored first.
+        void storeInjectionConfig(
+                const camera3::camera_stream_configuration& injectionConfig,
+                const std::vector<uint32_t>& injectionBufferSizes);
 
       private:
         // Configure the streams of injection camera, it need wait until the
@@ -1396,7 +1412,7 @@ class Camera3Device :
         // proceeding.
         status_t injectionConfigureStreams(
                 camera3::camera_stream_configuration& injectionConfig,
-                std::vector<uint32_t>& injectionBufferSizes);
+                const std::vector<uint32_t>& injectionBufferSizes);
 
         // Disconnect the injection camera and delete the hal interface.
         void injectionDisconnectImpl();
@@ -1414,8 +1430,22 @@ class Camera3Device :
         // Generated injection camera hal interface.
         sp<HalInterface> mInjectedCamHalInterface;
 
+        // Backup of the original camera hal result FMQ.
+        std::unique_ptr<ResultMetadataQueue> mBackupResultMetadataQueue;
+
+        // FMQ writes the result for the injection camera. Must be guarded by
+        // mProcessCaptureResultLock.
+        std::unique_ptr<ResultMetadataQueue> mInjectionResultMetadataQueue;
+
+        // The flag indicates that the stream configuration is complete, the camera device is
+        // active, but the injection camera has not yet been injected.
+        bool mIsStreamConfigCompleteButNotInjected = false;
+
         // Copy the configuration of the internal camera.
         camera3::camera_stream_configuration mInjectionConfig;
+
+        // Copy the streams of the internal camera.
+        Vector<camera3::camera_stream_t*> mInjectionStreams;
 
         // Copy the bufferSizes of the output streams of the internal camera.
         std::vector<uint32_t> mInjectionBufferSizes;

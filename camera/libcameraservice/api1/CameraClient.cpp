@@ -1074,14 +1074,14 @@ void CameraClient::handleRawPicture(const sp<IMemory>& mem) {
 
 // picture callback - compressed picture ready
 void CameraClient::handleCompressedPicture(const sp<IMemory>& mem) {
-/*    if (mBurstCnt)
+    if (mBurstCnt)
         mBurstCnt--;
 
     if (!mBurstCnt && !mLongshotEnabled) {
         LOG1("handleCompressedPicture mBurstCnt = %d", mBurstCnt);
         disableMsgType(CAMERA_MSG_COMPRESSED_IMAGE);
     }
-*/
+
     sp<hardware::ICameraClient> c = mRemoteCallback;
     mLock.unlock();
     if (c != 0) {

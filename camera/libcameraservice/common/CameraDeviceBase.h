@@ -97,26 +97,18 @@ class CameraDeviceBase : public virtual FrameProducer {
     virtual status_t disconnect() = 0;
 
     virtual status_t dump(int fd, const Vector<String16> &args) = 0;
+    virtual status_t startWatchingTags(const String8 &tags) = 0;
+    virtual status_t stopWatchingTags() = 0;
+    virtual status_t dumpWatchedEventsToVector(std::vector<std::string> &out) = 0;
 
     /**
-     * The physical camera device's static characteristics metadata buffer, or
-     * the logical camera's static characteristics if physical id is empty.
+     * The physical camera device's static characteristics metadata buffer
      */
     virtual const CameraMetadata& infoPhysical(const String8& physicalId) const = 0;
 
     struct PhysicalCameraSettings {
         std::string cameraId;
         CameraMetadata metadata;
-
-        // Whether the physical camera supports testPatternMode/testPatternData
-        bool mHasTestPatternModeTag = true;
-        bool mHasTestPatternDataTag = true;
-
-        // Original value of TEST_PATTERN_MODE and DATA so that they can be
-        // restored when sensor muting is turned off
-        int32_t mOriginalTestPatternMode = 0;
-        int32_t mOriginalTestPatternData[4] = {};
-
     };
     typedef List<PhysicalCameraSettings> PhysicalCameraSettingsList;
 
@@ -305,8 +297,7 @@ class CameraDeviceBase : public virtual FrameProducer {
      * Get Jpeg buffer size for a given jpeg resolution.
      * Negative values are error codes.
      */
-    virtual ssize_t getJpegBufferSize(const CameraMetadata &info, uint32_t width,
-            uint32_t height) const = 0;
+    virtual ssize_t getJpegBufferSize(uint32_t width, uint32_t height) const = 0;
 
     /**
      * Connect HAL notifications to a listener. Overwrites previous
@@ -438,6 +429,18 @@ class CameraDeviceBase : public virtual FrameProducer {
      * Set bitmask for image dump flag
      */
     void setImageDumpMask(int mask) { mImageDumpMask = mask; }
+
+    /**
+     * The injection camera session to replace the internal camera
+     * session.
+     */
+    virtual status_t injectCamera(const String8& injectedCamId,
+            sp<CameraProviderManager> manager) = 0;
+
+    /**
+     * Stop the injection camera and restore to internal camera session.
+     */
+    virtual status_t stopInjection() = 0;
 
 protected:
     bool mImageDumpMask = 0;

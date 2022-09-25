@@ -28,6 +28,7 @@
 #include <sys/types.h>
 #include <inttypes.h>
 #include <pthread.h>
+#include <poll.h>
 
 #include <android/hardware/ICamera.h>
 #include <android/hardware/ICameraClient.h>
@@ -93,8 +94,6 @@ using hardware::ICameraClient;
 using hardware::ICameraServiceListener;
 using hardware::camera::common::V1_0::CameraDeviceStatus;
 using hardware::camera::common::V1_0::TorchModeStatus;
-using hardware::camera2::ICameraInjectionCallback;
-using hardware::camera2::ICameraInjectionSession;
 using hardware::camera2::utils::CameraIdAndSessionConfiguration;
 using hardware::camera2::utils::ConcurrentCameraIdCombination;
 
@@ -131,13 +130,13 @@ static const String16
         sCameraSendSystemEventsPermission("android.permission.CAMERA_SEND_SYSTEM_EVENTS");
 static const String16 sCameraOpenCloseListenerPermission(
         "android.permission.CAMERA_OPEN_CLOSE_LISTENER");
-static const String16
-        sCameraInjectExternalCameraPermission("android.permission.CAMERA_INJECT_EXTERNAL_CAMERA");
+
 const char *sFileName = "lastOpenSessionDumpFile";
 static constexpr int32_t kVendorClientScore = resource_policy::PERCEPTIBLE_APP_ADJ;
 static constexpr int32_t kVendorClientState = ActivityManager::PROCESS_STATE_PERSISTENT_UI;
 
 const String8 CameraService::kOfflineDevice("offline-");
+const String16 CameraService::kWatchAllClientsFlag("all");
 
 // Set to keep track of logged service error events.
 static std::set<String8> sServiceErrorEventSet;
@@ -179,7 +178,6 @@ void CameraService::onFirstRef()
     mUidPolicy->registerSelf();
     mSensorPrivacyPolicy = new SensorPrivacyPolicy(this);
     mSensorPrivacyPolicy->registerSelf();
-    mInjectionStatusListener = new InjectionStatusListener(this);
     mAppOps.setCameraAudioRestriction(mAudioRestriction);
     sp<HidlCameraService> hcs = HidlCameraService::getInstance(this);
     if (hcs->registerAsService() != android::OK) {
@@ -271,7 +269,6 @@ CameraService::~CameraService() {
     VendorTagDescriptor::clearGlobalVendorTagDescriptor();
     mUidPolicy->unregisterSelf();
     mSensorPrivacyPolicy->unregisterSelf();
-    mInjectionStatusListener->removeListener();
 }
 
 void CameraService::onNewProviderRegistered() {
@@ -364,18 +361,16 @@ void CameraService::addStates(const String8 id) {
     std::string cameraId(id.c_str());
     hardware::camera::common::V1_0::CameraResourceCost cost;
     status_t res = mCameraProviderManager->getResourceCost(cameraId, &cost);
+    SystemCameraKind deviceKind = SystemCameraKind::PUBLIC;
     if (res != OK) {
         ALOGE("Failed to query device resource cost: %s (%d)", strerror(-res), res);
         return;
     }
-    SystemCameraKind deviceKind = SystemCameraKind::PUBLIC;
     res = mCameraProviderManager->getSystemCameraKind(cameraId, &deviceKind);
     if (res != OK) {
         ALOGE("Failed to query device kind: %s (%d)", strerror(-res), res);
         return;
     }
-    std::vector<std::string> physicalCameraIds;
-    mCameraProviderManager->isLogicalCamera(cameraId, &physicalCameraIds);
     std::set<String8> conflicting;
     for (size_t i = 0; i < cost.conflictingDevices.size(); i++) {
         conflicting.emplace(String8(cost.conflictingDevices[i].c_str()));
@@ -384,7 +379,7 @@ void CameraService::addStates(const String8 id) {
     {
         Mutex::Autolock lock(mCameraStatesLock);
         mCameraStates.emplace(id, std::make_shared<CameraState>(id, cost.resourceCost,
-                conflicting, deviceKind, physicalCameraIds));
+                                                                conflicting, deviceKind));
     }
 
     if (mFlashlight->hasFlashUnit(id)) {
@@ -563,13 +558,6 @@ void CameraService::onTorchStatusChanged(const String8& cameraId,
     onTorchStatusChangedLocked(cameraId, newStatus, systemCameraKind);
 }
 
-
-void CameraService::onTorchStatusChanged(const String8& cameraId,
-        TorchModeStatus newStatus, SystemCameraKind systemCameraKind) {
-    Mutex::Autolock al(mTorchStatusMutex);
-    onTorchStatusChangedLocked(cameraId, newStatus, systemCameraKind);
-}
-
 void CameraService::onTorchStatusChangedLocked(const String8& cameraId,
         TorchModeStatus newStatus, SystemCameraKind systemCameraKind) {
     ALOGI("%s: Torch status changed for cameraId=%s, newStatus=%d",
@@ -623,8 +611,10 @@ void CameraService::onTorchStatusChangedLocked(const String8& cameraId,
     broadcastTorchModeStatus(cameraId, newStatus, systemCameraKind);
 }
 
-static bool hasPermissionsForSystemCamera(int callingPid, int callingUid) {
-    return checkPermission(sSystemCameraPermission, callingPid, callingUid) &&
+static bool hasPermissionsForSystemCamera(int callingPid, int callingUid,
+        bool logPermissionFailure = false) {
+    return checkPermission(sSystemCameraPermission, callingPid, callingUid,
+            logPermissionFailure) &&
             checkPermission(sCameraPermission, callingPid, callingUid);
 }
 
@@ -703,8 +693,8 @@ std::string CameraService::cameraIdIntToStrLocked(int cameraIdInt) {
     const std::vector<std::string> *deviceIds = &mNormalDeviceIdsWithoutSystemCamera;
     auto callingPid = CameraThreadState::getCallingPid();
     auto callingUid = CameraThreadState::getCallingUid();
-    if (checkPermission(sSystemCameraPermission, callingPid, callingUid) ||
-            getpid() == callingPid) {
+    if (checkPermission(sSystemCameraPermission, callingPid, callingUid,
+            /*logPermissionFailure*/false) || getpid() == callingPid) {
         deviceIds = &mNormalDeviceIds;
     }
     if (cameraIdInt < 0 || cameraIdInt >= static_cast<int>(deviceIds->size())) {
@@ -1291,9 +1281,9 @@ Status CameraService::validateClientPermissionsLocked(const String8& cameraId,
         ALOGE("CameraService::connect X (PID %d) rejected (cannot connect from "
                 "device user %d, currently allowed device users: %s)", callingPid, clientUserId,
                 toString(mAllowedUsers).string());
-        /*return STATUS_ERROR_FMT(ERROR_PERMISSION_DENIED,
+        return STATUS_ERROR_FMT(ERROR_PERMISSION_DENIED,
                 "Callers from device user %d are not currently allowed to connect to camera \"%s\"",
-                clientUserId, cameraId.string());*/
+                clientUserId, cameraId.string());
     }
 
     return Status::ok();
@@ -1376,7 +1366,7 @@ status_t CameraService::handleEvictionsLocked(const String8& cameraId, int clien
                 auto clientSp = current->getValue();
                 if (clientSp.get() != nullptr) { // should never be needed
                     if (!clientSp->canCastToApiClient(effectiveApiLevel)) {
-                        ALOGW("CameraService connect called from same client, but with a different"
+                        ALOGW("CameraService connect called with a different"
                                 " API level, evicting prior client...");
                     } else if (clientSp->getRemote() == remoteCallback) {
                         ALOGI("CameraService::connect X (PID %d) (second call from same"
@@ -1666,7 +1656,7 @@ bool CameraService::shouldRejectSystemCameraConnection(const String8& cameraId) 
     //     same behavior for system camera devices.
     if (getCurrentServingCall() != BinderCallType::HWBINDER &&
             systemCameraKind == SystemCameraKind::SYSTEM_ONLY_CAMERA &&
-            !hasPermissionsForSystemCamera(cPid, cUid)) {
+            !hasPermissionsForSystemCamera(cPid, cUid, /*logPermissionFailure*/true)) {
         ALOGW("Rejecting access to system only camera %s, inadequete permissions",
                 cameraId.c_str());
         return true;
@@ -1704,6 +1694,13 @@ Status CameraService::connectDevice(
                         id.string());
         ALOGE("%s: %s", __FUNCTION__, msg.string());
         return STATUS_ERROR(ERROR_ILLEGAL_ARGUMENT, msg.string());
+    }
+
+    if (CameraServiceProxyWrapper::isCameraDisabled()) {
+        String8 msg =
+                String8::format("Camera disabled by device policy");
+        ALOGE("%s: %s", __FUNCTION__, msg.string());
+        return STATUS_ERROR(ERROR_DISABLED, msg.string());
     }
 
     // enforce system camera permissions
@@ -1759,12 +1756,6 @@ Status CameraService::connectHelper(const sp<CALLBACK>& cameraCb, const String8&
     String8 clientName8(clientPackageName);
 
     int originalClientPid = 0;
-
-    // If the upper layer does not assign HAL version with API 1, then set HAL1 by default
-    if (strcmp(clientName8.string(), String8("com.oneplus.camera")) == 0 && 
-            effectiveApiLevel == API_1 && halVersion== CAMERA_HAL_API_VERSION_UNSPECIFIED) {
-        halVersion = CAMERA_DEVICE_API_VERSION_1_0;
-    }
 
     ALOGI("CameraService::connect call (PID %d \"%s\", camera ID %s) for HAL version %s and "
             "Camera API version %d", clientPid, clientName8.string(), cameraId.string(),
@@ -1863,7 +1854,8 @@ Status CameraService::connectHelper(const sp<CALLBACK>& cameraCb, const String8&
         LOG_ALWAYS_FATAL_IF(client.get() == nullptr, "%s: CameraService in invalid state",
                 __FUNCTION__);
 
-        err = client->initialize(mCameraProviderManager, mMonitorTags);
+        String8 monitorTags = isClientWatched(client.get()) ? mMonitorTags : String8("");
+        err = client->initialize(mCameraProviderManager, monitorTags);
         if (err != OK) {
             ALOGE("%s: Could not initialize client from HAL.", __FUNCTION__);
             // Errors could be from the HAL module open call or from AppOpsManager
@@ -1920,7 +1912,7 @@ Status CameraService::connectHelper(const sp<CALLBACK>& cameraCb, const String8&
 
         // Set camera muting behavior
         bool isCameraPrivacyEnabled =
-                mSensorPrivacyPolicy->isCameraPrivacyEnabled(multiuser_get_user_id(clientUid));
+                mSensorPrivacyPolicy->isCameraPrivacyEnabled();
         if (client->supportsCameraMute()) {
             client->setCameraMute(
                     mOverrideCameraMuteMode || isCameraPrivacyEnabled);
@@ -2010,7 +2002,8 @@ status_t CameraService::addOfflineClient(String8 cameraId, sp<BasicClient> offli
             return BAD_VALUE;
         }
 
-        auto err = offlineClient->initialize(mCameraProviderManager, mMonitorTags);
+        String8 monitorTags = isClientWatched(offlineClient.get()) ? mMonitorTags : String8("");
+        auto err = offlineClient->initialize(mCameraProviderManager, monitorTags);
         if (err != OK) {
             ALOGE("%s: Could not initialize offline client.", __FUNCTION__);
             return err;
@@ -2417,7 +2410,7 @@ Status CameraService::addListenerHelper(const sp<ICameraServiceListener>& listen
     auto clientUid = CameraThreadState::getCallingUid();
     auto clientPid = CameraThreadState::getCallingPid();
     bool openCloseCallbackAllowed = checkPermission(sCameraOpenCloseListenerPermission,
-            clientPid, clientUid);
+            clientPid, clientUid, /*logPermissionFailure*/false);
 
     Mutex::Autolock lock(mServiceLock);
 
@@ -2454,7 +2447,8 @@ Status CameraService::addListenerHelper(const sp<ICameraServiceListener>& listen
         Mutex::Autolock lock(mCameraStatesLock);
         for (auto& i : mCameraStates) {
             cameraStatuses->emplace_back(i.first,
-                    mapToInterface(i.second->getStatus()), i.second->getUnavailablePhysicalIds());
+                    mapToInterface(i.second->getStatus()), i.second->getUnavailablePhysicalIds(),
+                    openCloseCallbackAllowed ? i.second->getClientPackage() : String8::empty());
         }
     }
     // Remove the camera statuses that should be hidden from the client, we do
@@ -2624,47 +2618,12 @@ Status CameraService::isHiddenPhysicalCamera(const String16& cameraId,
     return Status::ok();
 }
 
-Status CameraService::injectCamera(
-        const String16& packageName, const String16& internalCamId,
-        const String16& externalCamId,
-        const sp<ICameraInjectionCallback>& callback,
-        /*out*/
-        sp<hardware::camera2::ICameraInjectionSession>* cameraInjectionSession) {
-    ATRACE_CALL();
-
-    if (!checkCallingPermission(sCameraInjectExternalCameraPermission)) {
-        const int pid = CameraThreadState::getCallingPid();
-        const int uid = CameraThreadState::getCallingUid();
-        ALOGE("Permission Denial: can't inject camera pid=%d, uid=%d", pid, uid);
-        return STATUS_ERROR(ERROR_PERMISSION_DENIED,
-                        "Permission Denial: no permission to inject camera");
-    }
-
-    ALOGV(
-        "%s: Package name = %s, Internal camera ID = %s, External camera ID = "
-        "%s",
-        __FUNCTION__, String8(packageName).string(),
-        String8(internalCamId).string(), String8(externalCamId).string());
-
-    binder::Status ret = binder::Status::ok();
-    // TODO: Implement the injection camera function.
-    // ret = internalInjectCamera(...);
-    // if(!ret.isOk()) {
-    //     mInjectionStatusListener->notifyInjectionError(...);
-    //     return ret;
-    // }
-
-    mInjectionStatusListener->addListener(callback);
-    *cameraInjectionSession = new CameraInjectionSession(this);
-
-    return ret;
-}
-
 void CameraService::removeByClient(const BasicClient* client) {
     Mutex::Autolock lock(mServiceLock);
     for (auto& i : mActiveClientManager.getAll()) {
         auto clientSp = i->getValue();
         if (clientSp.get() == client) {
+            cacheClientTagDumpIfNeeded(client->mCameraIdStr, clientSp.get());
             mActiveClientManager.remove(i);
         }
     }
@@ -2710,8 +2669,7 @@ bool CameraService::evictClientIdByRemote(const wp<IBinder>& remote) {
                 ret = true;
             }
         }
-        //clear the evicted client list before acquring service lock again.
-        evicted.clear();
+
         // Reacquire mServiceLock
         mServiceLock.lock();
 
@@ -2742,7 +2700,11 @@ sp<CameraService::BasicClient> CameraService::removeClientLocked(const String8& 
         return sp<BasicClient>{nullptr};
     }
 
-    return clientDescriptorPtr->getValue();
+    sp<BasicClient> client = clientDescriptorPtr->getValue();
+    if (client.get() != nullptr) {
+        cacheClientTagDumpIfNeeded(clientDescriptorPtr->getKey(), client.get());
+    }
+    return client;
 }
 
 void CameraService::doUserSwitch(const std::vector<int32_t>& newUserIds) {
@@ -3161,6 +3123,21 @@ status_t CameraService::BasicClient::dump(int, const Vector<String16>&) {
     return OK;
 }
 
+status_t CameraService::BasicClient::startWatchingTags(const String8&, int) {
+    // Can't watch tags directly, must go through CameraService::startWatchingTags
+    return OK;
+}
+
+status_t CameraService::BasicClient::stopWatchingTags(int) {
+    // Can't watch tags directly, must go through CameraService::stopWatchingTags
+    return OK;
+}
+
+status_t CameraService::BasicClient::dumpWatchedEventsToVector(std::vector<std::string> &) {
+    // Can't watch tags directly, must go through CameraService::dumpWatchedEventsToVector
+    return OK;
+}
+
 String16 CameraService::BasicClient::getPackageName() const {
     return mClientPackageName;
 }
@@ -3226,8 +3203,7 @@ status_t CameraService::BasicClient::handleAppOpMode(int32_t mode) {
         bool isUidActive = sCameraService->mUidPolicy->isUidActive(mClientUid,
                 mClientPackageName);
         bool isCameraPrivacyEnabled =
-                sCameraService->mSensorPrivacyPolicy->isCameraPrivacyEnabled(
-                    multiuser_get_user_id(mClientUid));
+                sCameraService->mSensorPrivacyPolicy->isCameraPrivacyEnabled();
         if (!isUidActive || !isCameraPrivacyEnabled) {
             ALOGI("Camera %s: Access for \"%s\" has been restricted",
                     mCameraIdStr.string(), String8(mClientPackageName).string());
@@ -3409,8 +3385,7 @@ void CameraService::BasicClient::opChanged(int32_t op, const String16&) {
     } else if (res == AppOpsManager::MODE_IGNORED) {
         bool isUidActive = sCameraService->mUidPolicy->isUidActive(mClientUid, mClientPackageName);
         bool isCameraPrivacyEnabled =
-                sCameraService->mSensorPrivacyPolicy->isCameraPrivacyEnabled(
-                        multiuser_get_user_id(mClientUid));
+                sCameraService->mSensorPrivacyPolicy->isCameraPrivacyEnabled();
         ALOGI("Camera %s: Access for \"%s\" has been restricted, isUidTrusted %d, isUidActive %d",
                 mCameraIdStr.string(), String8(mClientPackageName).string(),
                 mUidIsTrusted, isUidActive);
@@ -3490,7 +3465,8 @@ void CameraService::UidPolicy::registerSelf() {
     status_t res = mAm.linkToDeath(this);
     mAm.registerUidObserver(this, ActivityManager::UID_OBSERVER_GONE
             | ActivityManager::UID_OBSERVER_IDLE
-            | ActivityManager::UID_OBSERVER_ACTIVE | ActivityManager::UID_OBSERVER_PROCSTATE,
+            | ActivityManager::UID_OBSERVER_ACTIVE | ActivityManager::UID_OBSERVER_PROCSTATE
+            | ActivityManager::UID_OBSERVER_PROC_OOM_ADJ,
             ActivityManager::PROCESS_STATE_UNKNOWN,
             String16("cameraserver"));
     if (res == OK) {
@@ -3539,9 +3515,9 @@ void CameraService::UidPolicy::onUidStateChanged(uid_t uid, int32_t procState,
     bool procStateChange = false;
     {
         Mutex::Autolock _l(mUidLock);
-        if ((mMonitoredUids.find(uid) != mMonitoredUids.end()) &&
-                (mMonitoredUids[uid].first != procState)) {
-            mMonitoredUids[uid].first = procState;
+        if (mMonitoredUids.find(uid) != mMonitoredUids.end() &&
+                mMonitoredUids[uid].procState != procState) {
+            mMonitoredUids[uid].procState = procState;
             procStateChange = true;
         }
     }
@@ -3554,15 +3530,33 @@ void CameraService::UidPolicy::onUidStateChanged(uid_t uid, int32_t procState,
     }
 }
 
+void CameraService::UidPolicy::onUidProcAdjChanged(uid_t uid) {
+    bool procAdjChange = false;
+    {
+        Mutex::Autolock _l(mUidLock);
+        if (mMonitoredUids.find(uid) != mMonitoredUids.end()) {
+            procAdjChange = true;
+        }
+    }
+
+    if (procAdjChange) {
+        sp<CameraService> service = mService.promote();
+        if (service != nullptr) {
+            service->notifyMonitoredUids();
+        }
+    }
+}
+
 void CameraService::UidPolicy::registerMonitorUid(uid_t uid) {
     Mutex::Autolock _l(mUidLock);
     auto it = mMonitoredUids.find(uid);
     if (it != mMonitoredUids.end()) {
-        it->second.second++;
+        it->second.refCount++;
     } else {
-        mMonitoredUids.emplace(
-                std::pair<uid_t, std::pair<int32_t, size_t>> (uid,
-                    std::pair<int32_t, size_t> (ActivityManager::PROCESS_STATE_NONEXISTENT, 1)));
+        MonitoredUid monitoredUid;
+        monitoredUid.procState = ActivityManager::PROCESS_STATE_NONEXISTENT;
+        monitoredUid.refCount = 1;
+        mMonitoredUids.emplace(std::pair<uid_t, MonitoredUid>(uid, monitoredUid));
     }
 }
 
@@ -3570,8 +3564,8 @@ void CameraService::UidPolicy::unregisterMonitorUid(uid_t uid) {
     Mutex::Autolock _l(mUidLock);
     auto it = mMonitoredUids.find(uid);
     if (it != mMonitoredUids.end()) {
-        it->second.second--;
-        if (it->second.second == 0) {
+        it->second.refCount--;
+        if (it->second.refCount == 0) {
             mMonitoredUids.erase(it);
         }
     } else {
@@ -3649,7 +3643,7 @@ int32_t CameraService::UidPolicy::getProcState(uid_t uid) {
 int32_t CameraService::UidPolicy::getProcStateLocked(uid_t uid) {
     int32_t procState = ActivityManager::PROCESS_STATE_UNKNOWN;
     if (mMonitoredUids.find(uid) != mMonitoredUids.end()) {
-        procState = mMonitoredUids[uid].first;
+        procState = mMonitoredUids[uid].procState;
     }
     return procState;
 }
@@ -3722,18 +3716,18 @@ bool CameraService::SensorPrivacyPolicy::isSensorPrivacyEnabled() {
     return mSensorPrivacyEnabled;
 }
 
-bool CameraService::SensorPrivacyPolicy::isCameraPrivacyEnabled(userid_t userId) {
+bool CameraService::SensorPrivacyPolicy::isCameraPrivacyEnabled() {
     if (!hasCameraPrivacyFeature()) {
         return false;
     }
-    return mSpm.isIndividualSensorPrivacyEnabled(userId,
-        SensorPrivacyManager::INDIVIDUAL_SENSOR_CAMERA);
+    return mSpm.isToggleSensorPrivacyEnabled(SensorPrivacyManager::TOGGLE_SENSOR_CAMERA);
 }
 
-binder::Status CameraService::SensorPrivacyPolicy::onSensorPrivacyChanged(bool enabled) {
+binder::Status CameraService::SensorPrivacyPolicy::onSensorPrivacyChanged(
+    int toggleType __unused, int sensor __unused, bool enabled) {
     {
         Mutex::Autolock _l(mSensorPrivacyLock);
-        mSensorPrivacyEnabled = enabled;
+        mSensorPrivacyEnabled = mSpm.isToggleSensorPrivacyEnabled(SensorPrivacyManager::TOGGLE_SENSOR_CAMERA);
     }
     // if sensor privacy is enabled then block all clients from accessing the camera
     if (enabled) {
@@ -3752,7 +3746,11 @@ void CameraService::SensorPrivacyPolicy::binderDied(const wp<IBinder>& /*who*/) 
 }
 
 bool CameraService::SensorPrivacyPolicy::hasCameraPrivacyFeature() {
-    return mSpm.supportsSensorToggle(SensorPrivacyManager::INDIVIDUAL_SENSOR_CAMERA);
+    bool supportsSoftwareToggle = mSpm.supportsSensorToggle(
+            SensorPrivacyManager::TOGGLE_TYPE_SOFTWARE, SensorPrivacyManager::TOGGLE_SENSOR_CAMERA);
+    bool supportsHardwareToggle = mSpm.supportsSensorToggle(
+            SensorPrivacyManager::TOGGLE_TYPE_HARDWARE, SensorPrivacyManager::TOGGLE_SENSOR_CAMERA);
+    return supportsSoftwareToggle || supportsHardwareToggle;
 }
 
 // ----------------------------------------------------------------------------
@@ -3760,10 +3758,9 @@ bool CameraService::SensorPrivacyPolicy::hasCameraPrivacyFeature() {
 // ----------------------------------------------------------------------------
 
 CameraService::CameraState::CameraState(const String8& id, int cost,
-        const std::set<String8>& conflicting, SystemCameraKind systemCameraKind,
-        const std::vector<std::string>& physicalCameras) : mId(id),
+        const std::set<String8>& conflicting, SystemCameraKind systemCameraKind) : mId(id),
         mStatus(StatusInternal::NOT_PRESENT), mCost(cost), mConflicting(conflicting),
-        mSystemCameraKind(systemCameraKind), mPhysicalCameras(physicalCameras) {}
+        mSystemCameraKind(systemCameraKind) {}
 
 CameraService::CameraState::~CameraState() {}
 
@@ -3802,11 +3799,6 @@ SystemCameraKind CameraService::CameraState::getSystemCameraKind() const {
     return mSystemCameraKind;
 }
 
-bool CameraService::CameraState::containsPhysicalCamera(const std::string& physicalCameraId) const {
-    return std::find(mPhysicalCameras.begin(), mPhysicalCameras.end(), physicalCameraId)
-            != mPhysicalCameras.end();
-}
-
 bool CameraService::CameraState::addUnavailablePhysicalId(const String8& physicalId) {
     Mutex::Autolock lock(mStatusLock);
     auto result = mUnavailablePhysicalIds.insert(physicalId);
@@ -3817,6 +3809,16 @@ bool CameraService::CameraState::removeUnavailablePhysicalId(const String8& phys
     Mutex::Autolock lock(mStatusLock);
     auto count = mUnavailablePhysicalIds.erase(physicalId);
     return count > 0;
+}
+
+void CameraService::CameraState::setClientPackage(const String8& clientPackage) {
+    Mutex::Autolock lock(mStatusLock);
+    mClientPackage = clientPackage;
+}
+
+String8 CameraService::CameraState::getClientPackage() const {
+    Mutex::Autolock lock(mStatusLock);
+    return mClientPackage;
 }
 
 // ----------------------------------------------------------------------------
@@ -3927,68 +3929,6 @@ CameraService::DescriptorPtr CameraService::CameraClientManager::makeClientDescr
             partial->getConflicting(), partial->getPriority().getScore(),
             partial->getOwnerId(), partial->getPriority().getState(), oomScoreOffset);
 }
-
-// ----------------------------------------------------------------------------
-//                  InjectionStatusListener
-// ----------------------------------------------------------------------------
-
-void CameraService::InjectionStatusListener::addListener(
-        const sp<ICameraInjectionCallback>& callback) {
-    Mutex::Autolock lock(mListenerLock);
-    if (mCameraInjectionCallback) return;
-    status_t res = IInterface::asBinder(callback)->linkToDeath(this);
-    if (res == OK) {
-        mCameraInjectionCallback = callback;
-    }
-}
-
-void CameraService::InjectionStatusListener::removeListener() {
-    Mutex::Autolock lock(mListenerLock);
-    if (mCameraInjectionCallback == nullptr) {
-        ALOGW("InjectionStatusListener: mCameraInjectionCallback == nullptr");
-        return;
-    }
-    IInterface::asBinder(mCameraInjectionCallback)->unlinkToDeath(this);
-    mCameraInjectionCallback = nullptr;
-}
-
-void CameraService::InjectionStatusListener::notifyInjectionError(
-        int errorCode) {
-    Mutex::Autolock lock(mListenerLock);
-    if (mCameraInjectionCallback == nullptr) {
-        ALOGW("InjectionStatusListener: mCameraInjectionCallback == nullptr");
-        return;
-    }
-    mCameraInjectionCallback->onInjectionError(errorCode);
-}
-
-void CameraService::InjectionStatusListener::binderDied(
-        const wp<IBinder>& /*who*/) {
-    Mutex::Autolock lock(mListenerLock);
-    ALOGV("InjectionStatusListener: ICameraInjectionCallback has died");
-    auto parent = mParent.promote();
-    if (parent != nullptr) {
-        parent->stopInjectionImpl();
-    }
-}
-
-// ----------------------------------------------------------------------------
-//                  CameraInjectionSession
-// ----------------------------------------------------------------------------
-
-binder::Status CameraService::CameraInjectionSession::stopInjection() {
-    Mutex::Autolock lock(mInjectionSessionLock);
-    auto parent = mParent.promote();
-    if (parent == nullptr) {
-        ALOGE("CameraInjectionSession: Parent is gone");
-        return STATUS_ERROR(ICameraInjectionCallback::ERROR_INJECTION_SERVICE,
-                "Camera service encountered error");
-    }
-    parent->stopInjectionImpl();
-    return binder::Status::ok();
-}
-
-// ----------------------------------------------------------------------------
 
 static const int kDumpLockRetries = 50;
 static const int kDumpLockSleep = 60000;
@@ -4125,7 +4065,7 @@ status_t CameraService::dump(int fd, const Vector<String16>& args) {
 
     // Dump camera traces if there were any
     dprintf(fd, "\n");
-    camera3::CameraTraces::dump(fd, args);
+    camera3::CameraTraces::dump(fd);
 
     // Process dump arguments, if any
     int n = args.size();
@@ -4184,8 +4124,9 @@ status_t CameraService::dump(int fd, const Vector<String16>& args) {
 void CameraService::dumpOpenSessionClientLogs(int fd,
         const Vector<String16>& args, const String8& cameraId) {
     auto clientDescriptor = mActiveClientManager.get(cameraId);
-    dprintf(fd, "  Device %s is open. Client instance dump:\n",
-        cameraId.string());
+    dprintf(fd, "  %s : Device %s is open. Client instance dump:\n",
+            getFormattedCurrentTime().string(),
+            cameraId.string());
     dprintf(fd, "    Client priority score: %d state: %d\n",
         clientDescriptor->getPriority().getScore(),
         clientDescriptor->getPriority().getState());
@@ -4217,6 +4158,37 @@ void CameraService::dumpEventLog(int fd) {
         dprintf(fd, "  [no events yet]\n");
     }
     dprintf(fd, "\n");
+}
+
+void CameraService::cacheClientTagDumpIfNeeded(const char *cameraId, BasicClient* client) {
+    Mutex::Autolock lock(mLogLock);
+    if (!isClientWatchedLocked(client)) { return; }
+
+    std::vector<std::string> dumpVector;
+    client->dumpWatchedEventsToVector(dumpVector);
+
+    if (dumpVector.empty()) { return; }
+
+    const String16 &packageName = client->getPackageName();
+
+    String8 packageName8 = String8(packageName);
+    const char *printablePackageName = packageName8.lockBuffer(packageName.size());
+
+    std::string dumpString;
+    size_t i = dumpVector.size();
+
+    // Store the string in reverse order (latest last)
+    while (i > 0) {
+         i--;
+         dumpString += cameraId;
+         dumpString += ":";
+         dumpString += printablePackageName;
+         dumpString += "  ";
+         dumpString += dumpVector[i]; // implicitly ends with '\n'
+    }
+
+    packageName8.unlockBuffer();
+    mWatchedClientsDumpCache[packageName] = dumpString;
 }
 
 void CameraService::handleTorchClientBinderDied(const wp<IBinder> &who) {
@@ -4341,6 +4313,18 @@ void CameraService::updateStatus(StatusInternal status, const String8& cameraId,
 
 void CameraService::updateOpenCloseStatus(const String8& cameraId, bool open,
         const String16& clientPackageName) {
+    auto state = getCameraState(cameraId);
+    if (state == nullptr) {
+        ALOGW("%s: Could not update the status for %s, no such device exists", __FUNCTION__,
+                cameraId.string());
+        return;
+    }
+    if (open) {
+        state->setClientPackage(String8(clientPackageName));
+    } else {
+        state->setClientPackage(String8::empty());
+    }
+
     Mutex::Autolock lock(mStatusListenerLock);
 
     for (const auto& it : mListenerList) {
@@ -4437,9 +4421,18 @@ std::list<String16> CameraService::getLogicalCameras(
     std::list<String16> retList;
     Mutex::Autolock lock(mCameraStatesLock);
     for (const auto& state : mCameraStates) {
-        if (state.second->containsPhysicalCamera(physicalCameraId.c_str())) {
-            retList.emplace_back(String16(state.first));
+        std::vector<std::string> physicalCameraIds;
+        if (!mCameraProviderManager->isLogicalCamera(state.first.c_str(), &physicalCameraIds)) {
+            // This is not a logical multi-camera.
+            continue;
         }
+        if (std::find(physicalCameraIds.begin(), physicalCameraIds.end(), physicalCameraId.c_str())
+                == physicalCameraIds.end()) {
+            // cameraId is not a physical camera of this logical multi-camera.
+            continue;
+        }
+
+        retList.emplace_back(String16(state.first));
     }
     return retList;
 }
@@ -4514,9 +4507,11 @@ status_t CameraService::shellCommand(int in, int out, int err, const Vector<Stri
         return handleGetImageDumpMask(out);
     } else if (args.size() >= 2 && args[0] == String16("set-camera-mute")) {
         return handleSetCameraMute(args);
+    } else if (args.size() >= 2 && args[0] == String16("watch")) {
+        return handleWatchCommand(args, in, out);
     } else if (args.size() == 1 && args[0] == String16("help")) {
         printHelp(out);
-        return NO_ERROR;
+        return OK;
     }
     printHelp(err);
     return BAD_VALUE;
@@ -4660,6 +4655,348 @@ status_t CameraService::handleSetCameraMute(const Vector<String16>& args) {
     return OK;
 }
 
+status_t CameraService::handleWatchCommand(const Vector<String16>& args, int inFd, int outFd) {
+    if (args.size() >= 3 && args[1] == String16("start")) {
+        return startWatchingTags(args, outFd);
+    } else if (args.size() == 2 && args[1] == String16("stop")) {
+        return stopWatchingTags(outFd);
+    } else if (args.size() == 2 && args[1] == String16("dump")) {
+        return printWatchedTags(outFd);
+    } else if (args.size() >= 2 && args[1] == String16("live")) {
+        return printWatchedTagsUntilInterrupt(args, inFd, outFd);
+    } else if (args.size() == 2 && args[1] == String16("clear")) {
+        return clearCachedMonitoredTagDumps(outFd);
+    }
+    dprintf(outFd, "Camera service watch commands:\n"
+                 "  start -m <comma_separated_tag_list> [-c <comma_separated_client_list>]\n"
+                 "        starts watching the provided tags for clients with provided package\n"
+                 "        recognizes tag shorthands like '3a'\n"
+                 "        watches all clients if no client is passed, or if 'all' is listed\n"
+                 "  dump dumps the monitoring information and exits\n"
+                 "  stop stops watching all tags\n"
+                 "  live [-n <refresh_interval_ms>]\n"
+                 "        prints the monitored information in real time\n"
+                 "        Hit return to exit\n"
+                 "  clear clears all buffers storing information for watch command");
+  return BAD_VALUE;
+}
+
+status_t CameraService::startWatchingTags(const Vector<String16> &args, int outFd) {
+    Mutex::Autolock lock(mLogLock);
+    size_t tagsIdx; // index of '-m'
+    String16 tags("");
+    for (tagsIdx = 2; tagsIdx < args.size() && args[tagsIdx] != String16("-m"); tagsIdx++);
+    if (tagsIdx < args.size() - 1) {
+        tags = args[tagsIdx + 1];
+    } else {
+        dprintf(outFd, "No tags provided.\n");
+        return BAD_VALUE;
+    }
+
+    size_t clientsIdx; // index of '-c'
+    String16 clients = kWatchAllClientsFlag; // watch all clients if no clients are provided
+    for (clientsIdx = 2; clientsIdx < args.size() && args[clientsIdx] != String16("-c");
+         clientsIdx++);
+    if (clientsIdx < args.size() - 1) {
+        clients = args[clientsIdx + 1];
+    }
+    parseClientsToWatchLocked(String8(clients));
+
+    // track tags to initialize future clients with the monitoring information
+    mMonitorTags = String8(tags);
+
+    bool serviceLock = tryLock(mServiceLock);
+    int numWatchedClients = 0;
+    auto cameraClients = mActiveClientManager.getAll();
+    for (const auto &clientDescriptor: cameraClients) {
+        if (clientDescriptor == nullptr) { continue; }
+        sp<BasicClient> client = clientDescriptor->getValue();
+        if (client.get() == nullptr) { continue; }
+
+        if (isClientWatchedLocked(client.get())) {
+            client->startWatchingTags(mMonitorTags, outFd);
+            numWatchedClients++;
+        }
+    }
+    dprintf(outFd, "Started watching %d active clients\n", numWatchedClients);
+
+    if (serviceLock) { mServiceLock.unlock(); }
+    return OK;
+}
+
+status_t CameraService::stopWatchingTags(int outFd) {
+    // clear mMonitorTags to prevent new clients from monitoring tags at initialization
+    Mutex::Autolock lock(mLogLock);
+    mMonitorTags = String8::empty();
+
+    mWatchedClientPackages.clear();
+    mWatchedClientsDumpCache.clear();
+
+    bool serviceLock = tryLock(mServiceLock);
+    auto cameraClients = mActiveClientManager.getAll();
+    for (const auto &clientDescriptor : cameraClients) {
+        if (clientDescriptor == nullptr) { continue; }
+        sp<BasicClient> client = clientDescriptor->getValue();
+        if (client.get() == nullptr) { continue; }
+        client->stopWatchingTags(outFd);
+    }
+    dprintf(outFd, "Stopped watching all clients.\n");
+    if (serviceLock) { mServiceLock.unlock(); }
+    return OK;
+}
+
+status_t CameraService::clearCachedMonitoredTagDumps(int outFd) {
+    Mutex::Autolock lock(mLogLock);
+    size_t clearedSize = mWatchedClientsDumpCache.size();
+    mWatchedClientsDumpCache.clear();
+    dprintf(outFd, "Cleared tag information of %zu cached clients.\n", clearedSize);
+    return OK;
+}
+
+status_t CameraService::printWatchedTags(int outFd) {
+    Mutex::Autolock logLock(mLogLock);
+    std::set<String16> connectedMonitoredClients;
+
+    bool printedSomething = false; // tracks if any monitoring information was printed
+                                   // (from either cached or active clients)
+
+    bool serviceLock = tryLock(mServiceLock);
+    // get all watched clients that are currently connected
+    for (const auto &clientDescriptor: mActiveClientManager.getAll()) {
+        if (clientDescriptor == nullptr) { continue; }
+
+        sp<BasicClient> client = clientDescriptor->getValue();
+        if (client.get() == nullptr) { continue; }
+        if (!isClientWatchedLocked(client.get())) { continue; }
+
+        std::vector<std::string> dumpVector;
+        client->dumpWatchedEventsToVector(dumpVector);
+
+        size_t printIdx = dumpVector.size();
+        if (printIdx == 0) {
+            continue;
+        }
+
+        // Print tag dumps for active client
+        const String8 &cameraId = clientDescriptor->getKey();
+        String8 packageName8 = String8(client->getPackageName());
+        const char *printablePackageName = packageName8.lockBuffer(packageName8.size());
+        dprintf(outFd, "Client: %s (active)\n", printablePackageName);
+        while(printIdx > 0) {
+            printIdx--;
+            dprintf(outFd, "%s:%s  %s", cameraId.string(), printablePackageName,
+                    dumpVector[printIdx].c_str());
+        }
+        dprintf(outFd, "\n");
+        packageName8.unlockBuffer();
+        printedSomething = true;
+
+        connectedMonitoredClients.emplace(client->getPackageName());
+    }
+    if (serviceLock) { mServiceLock.unlock(); }
+
+    // Print entries in mWatchedClientsDumpCache for clients that are not connected
+    for (const auto &kv: mWatchedClientsDumpCache) {
+        const String16 &package = kv.first;
+        if (connectedMonitoredClients.find(package) != connectedMonitoredClients.end()) {
+            continue;
+        }
+
+        dprintf(outFd, "Client: %s (cached)\n", String8(package).string());
+        dprintf(outFd, "%s\n", kv.second.c_str());
+        printedSomething = true;
+    }
+
+    if (!printedSomething) {
+        dprintf(outFd, "No monitoring information to print.\n");
+    }
+
+    return OK;
+}
+
+// Print all events in vector `events' that came after lastPrintedEvent
+void printNewWatchedEvents(int outFd,
+                           const char *cameraId,
+                           const String16 &packageName,
+                           const std::vector<std::string> &events,
+                           const std::string &lastPrintedEvent) {
+    if (events.empty()) { return; }
+
+    // index of lastPrintedEvent in events.
+    // lastPrintedIdx = events.size() if lastPrintedEvent is not in events
+    size_t lastPrintedIdx;
+    for (lastPrintedIdx = 0;
+         lastPrintedIdx < events.size() && lastPrintedEvent != events[lastPrintedIdx];
+         lastPrintedIdx++);
+
+    if (lastPrintedIdx == 0) { return; } // early exit if no new event in `events`
+
+    String8 packageName8(packageName);
+    const char *printablePackageName = packageName8.lockBuffer(packageName8.size());
+
+    // print events in chronological order (latest event last)
+    size_t idxToPrint = lastPrintedIdx;
+    do {
+        idxToPrint--;
+        dprintf(outFd, "%s:%s  %s", cameraId, printablePackageName, events[idxToPrint].c_str());
+    } while (idxToPrint != 0);
+
+    packageName8.unlockBuffer();
+}
+
+// Returns true if adb shell cmd watch should be interrupted based on data in inFd. The watch
+// command should be interrupted if the user presses the return key, or if user loses any way to
+// signal interrupt.
+// If timeoutMs == 0, this function will always return false
+bool shouldInterruptWatchCommand(int inFd, int outFd, long timeoutMs) {
+    struct timeval startTime;
+    int startTimeError = gettimeofday(&startTime, nullptr);
+    if (startTimeError) {
+        dprintf(outFd, "Failed waiting for interrupt, aborting.\n");
+        return true;
+    }
+
+    const nfds_t numFds = 1;
+    struct pollfd pollFd = { .fd = inFd, .events = POLLIN, .revents = 0 };
+
+    struct timeval currTime;
+    char buffer[2];
+    while(true) {
+        int currTimeError = gettimeofday(&currTime, nullptr);
+        if (currTimeError) {
+            dprintf(outFd, "Failed waiting for interrupt, aborting.\n");
+            return true;
+        }
+
+        long elapsedTimeMs = ((currTime.tv_sec - startTime.tv_sec) * 1000L)
+                + ((currTime.tv_usec - startTime.tv_usec) / 1000L);
+        int remainingTimeMs = (int) (timeoutMs - elapsedTimeMs);
+
+        if (remainingTimeMs <= 0) {
+            // No user interrupt within timeoutMs, don't interrupt watch command
+            return false;
+        }
+
+        int numFdsUpdated = poll(&pollFd, numFds, remainingTimeMs);
+        if (numFdsUpdated < 0) {
+            dprintf(outFd, "Failed while waiting for user input. Exiting.\n");
+            return true;
+        }
+
+        if (numFdsUpdated == 0) {
+            // No user input within timeoutMs, don't interrupt watch command
+            return false;
+        }
+
+        if (!(pollFd.revents & POLLIN)) {
+            dprintf(outFd, "Failed while waiting for user input. Exiting.\n");
+            return true;
+        }
+
+        ssize_t sizeRead = read(inFd, buffer, sizeof(buffer) - 1);
+        if (sizeRead < 0) {
+            dprintf(outFd, "Error reading user input. Exiting.\n");
+            return true;
+        }
+
+        if (sizeRead == 0) {
+            // Reached end of input fd (can happen if input is piped)
+            // User has no way to signal an interrupt, so interrupt here
+            return true;
+        }
+
+        if (buffer[0] == '\n') {
+            // User pressed return, interrupt watch command.
+            return true;
+        }
+    }
+}
+
+status_t CameraService::printWatchedTagsUntilInterrupt(const Vector<String16> &args,
+                                                       int inFd, int outFd) {
+    // Figure out refresh interval, if present in args
+    long refreshTimeoutMs = 1000L; // refresh every 1s by default
+    if (args.size() > 2) {
+        size_t intervalIdx; // index of '-n'
+        for (intervalIdx = 2; intervalIdx < args.size() && String16("-n") != args[intervalIdx];
+             intervalIdx++);
+
+        size_t intervalValIdx = intervalIdx + 1;
+        if (intervalValIdx < args.size()) {
+            refreshTimeoutMs = strtol(String8(args[intervalValIdx].string()), nullptr, 10);
+            if (errno) { return BAD_VALUE; }
+        }
+    }
+
+    // Set min timeout of 10ms. This prevents edge cases in polling when timeout of 0 is passed.
+    refreshTimeoutMs = refreshTimeoutMs < 10 ? 10 : refreshTimeoutMs;
+
+    dprintf(outFd, "Press return to exit...\n\n");
+    std::map<String16, std::string> packageNameToLastEvent;
+
+    while (true) {
+        bool serviceLock = tryLock(mServiceLock);
+        auto cameraClients = mActiveClientManager.getAll();
+        if (serviceLock) { mServiceLock.unlock(); }
+
+        for (const auto& clientDescriptor : cameraClients) {
+            Mutex::Autolock lock(mLogLock);
+            if (clientDescriptor == nullptr) { continue; }
+
+            sp<BasicClient> client = clientDescriptor->getValue();
+            if (client.get() == nullptr) { continue; }
+            if (!isClientWatchedLocked(client.get())) { continue; }
+
+            const String16 &packageName = client->getPackageName();
+            // This also initializes the map entries with an empty string
+            const std::string& lastPrintedEvent = packageNameToLastEvent[packageName];
+
+            std::vector<std::string> latestEvents;
+            client->dumpWatchedEventsToVector(latestEvents);
+
+            if (!latestEvents.empty()) {
+                String8 cameraId = clientDescriptor->getKey();
+                const char *printableCameraId = cameraId.lockBuffer(cameraId.size());
+                printNewWatchedEvents(outFd,
+                                      printableCameraId,
+                                      packageName,
+                                      latestEvents,
+                                      lastPrintedEvent);
+                packageNameToLastEvent[packageName] = latestEvents[0];
+                cameraId.unlockBuffer();
+            }
+        }
+        if (shouldInterruptWatchCommand(inFd, outFd, refreshTimeoutMs)) {
+            break;
+        }
+    }
+    return OK;
+}
+
+void CameraService::parseClientsToWatchLocked(String8 clients) {
+    mWatchedClientPackages.clear();
+
+    const char *allSentinel = String8(kWatchAllClientsFlag).string();
+
+    char *tokenized = clients.lockBuffer(clients.size());
+    char *savePtr;
+    char *nextClient = strtok_r(tokenized, ",", &savePtr);
+
+    while (nextClient != nullptr) {
+        if (strcmp(nextClient, allSentinel) == 0) {
+            // Don't need to track any other package if 'all' is present
+            mWatchedClientPackages.clear();
+            mWatchedClientPackages.emplace(kWatchAllClientsFlag);
+            break;
+        }
+
+        // track package names
+        mWatchedClientPackages.emplace(nextClient);
+        nextClient = strtok_r(nullptr, ",", &savePtr);
+    }
+    clients.unlockBuffer();
+}
+
 status_t CameraService::printHelp(int out) {
     return dprintf(out, "Camera service commands:\n"
         "  get-uid-state <PACKAGE> [--user USER_ID] gets the uid state\n"
@@ -4672,7 +5009,18 @@ status_t CameraService::printHelp(int out) {
         "      Valid values 0=OFF, 1=ON for JPEG\n"
         "  get-image-dump-mask returns the current image-dump-mask value\n"
         "  set-camera-mute <0/1> enable or disable camera muting\n"
+        "  watch <start|stop|dump|print|clear> manages tag monitoring in connected clients\n"
         "  help print this message\n");
+}
+
+bool CameraService::isClientWatched(const BasicClient *client) {
+    Mutex::Autolock lock(mLogLock);
+    return isClientWatchedLocked(client);
+}
+
+bool CameraService::isClientWatchedLocked(const BasicClient *client) {
+    return mWatchedClientPackages.find(kWatchAllClientsFlag) != mWatchedClientPackages.end() ||
+           mWatchedClientPackages.find(client->getPackageName()) != mWatchedClientPackages.end();
 }
 
 int32_t CameraService::updateAudioRestriction() {
@@ -4694,12 +5042,6 @@ int32_t CameraService::updateAudioRestrictionLocked() {
         mAppOps.setCameraAudioRestriction(mode);
     }
     return mode;
-}
-
-void CameraService::stopInjectionImpl() {
-    mInjectionStatusListener->removeListener();
-
-    // TODO: Implement the stop injection function.
 }
 
 }; // namespace android
