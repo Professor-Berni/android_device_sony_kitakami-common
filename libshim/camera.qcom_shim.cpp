@@ -154,7 +154,7 @@ extern "C" void _ZN7android21SurfaceComposerClient20setDisplayProjectionERKNS_2s
 }
 
 extern "C" void _ZN7android21SurfaceComposerClient20setDisplayLayerStackERKNS_2spINS_7IBinderEEEj(
-    const sp<IBinder>& token, uint32_t layerStack){
+    const sp<IBinder>& token, android::ui::LayerStack layerStack){
   t->setDisplayLayerStack(token, layerStack);
 }
 
