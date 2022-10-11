@@ -222,7 +222,7 @@ PRODUCT_PACKAGES += \
 # IMS
 PRODUCT_PACKAGES += \
     libbase_shim \
-    libui_shim \
+    libshim_ui \
     libshims_ims \
     libshim_libimsmedia
 

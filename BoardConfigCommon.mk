@@ -221,10 +221,11 @@ TARGET_LD_SHIM_LIBS := \
 
 ifneq ($(BOARD_HAVE_RADIO),false)
 TARGET_LD_SHIM_LIBS += \
-    /system/lib64/lib-imsvt.so|libshims_ims.so \
-    /system/vendor/lib64/lib-imsdpl.so|libshims_boringssl.so \
-    /system/lib64/lib-imsvideocodec.so|libui_shim.so \
-    /system/product/lib64/libimsmedia_jni.so|libshim_libimsmedia.so
+     /system/vendor/lib64/lib-imsvt.so|libshims_ims.so \
+     /system/vendor/lib64/lib-imsdpl.so|libshims_boringssl.so \
+     /system/lib64/lib-imsvideocodec.so|libshim_ui.so \
+     /system/product/lib64/libimsmedia_jni.so|libshim_libimsmedia.so \
+     /system/lib64/lib-imsvt.so|libshim_libimsmedia.so
 endif
 
 # SELinux

@@ -75,7 +75,7 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := GraphicBuffer.cpp
 LOCAL_SHARED_LIBRARIES := libui
-LOCAL_MODULE := libui_shim
+LOCAL_MODULE := libshim_ui
 LOCAL_MODULE_CLASS := SHARED_LIBRARIES
 LOCAL_MODULE_TAGS := optional
 LOCAL_MULTILIB := both
