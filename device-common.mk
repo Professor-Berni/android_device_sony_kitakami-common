@@ -68,12 +68,6 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.software.vulkan.deqp.level-2020-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.vulkan.deqp.level.xml \
     frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/handheld_core_hardware.xml
 
-# ANT+
-PRODUCT_PACKAGES += \
-    AntHalService \
-    com.dsi.ant.antradio_library \
-    libantradio
-
 # APEX
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/ld.config.txt:$(TARGET_COPY_OUT_SYSTEM)/etc/swcodec/ld.config.txt
@@ -88,7 +82,6 @@ PRODUCT_PACKAGES += \
     android.hardware.audio.effect@6.0-impl \
     android.hardware.audio.service \
     android.hardware.bluetooth.audio-impl \
-    audiod \
     audio.primary.msm8994 \
     audio.r_submix.default \
     audio.usb.default \
@@ -141,12 +134,12 @@ PRODUCT_PACKAGES += \
     camera.msm8994 \
     vendor.qti.hardware.camera.device@1.0
 
-# Charger
-PRODUCT_PACKAGES += charger_res_images
+# Charger TODO: Still needed?
+#PRODUCT_PACKAGES += charger_res_images
 
-# CryptfsHW
-PRODUCT_PACKAGES += \
-    vendor.qti.hardware.cryptfshw@1.0
+# CryptfsHW TODO: Still needed?
+#PRODUCT_PACKAGES += \
+#    vendor.qti.hardware.cryptfshw@1.0
 
 # Data services
 PRODUCT_PACKAGES += \
@@ -163,7 +156,6 @@ PRODUCT_PACKAGES += \
     android.frameworks.displayservice@1.0 \
     android.hardware.graphics.allocator@2.0-impl \
     android.hardware.graphics.allocator@2.0-service \
-    android.hardware.graphics.composer@2.1-impl \
     android.hardware.graphics.composer@2.1-service \
     android.hardware.graphics.mapper@2.0-impl-2.1 \
     android.hardware.memtrack@1.0-impl \
@@ -219,9 +211,7 @@ PRODUCT_PACKAGES += \
 # HIDL
 PRODUCT_PACKAGES += \
     android.hidl.base@1.0 \
-    android.hidl.base@1.0_system \
     android.hidl.manager@1.0 \
-    android.hidl.manager@1.0-java \
     libhidltransport \
     libhwbinder
 
@@ -266,9 +256,6 @@ PRODUCT_PACKAGES += \
 # Media
 PRODUCT_PACKAGES += \
     libc2dcolorconvert \
-    libdashplayer \
-    libdivxdrmdecrypt \
-    libextmedia_jni \
     libOmxAacEnc \
     libOmxAmrEnc \
     libOmxCore \
@@ -277,9 +264,7 @@ PRODUCT_PACKAGES += \
     libOmxSwVencMpeg4 \
     libOmxSwVencHevc \
     libOmxVdec \
-    libOmxVdecHevc \
     libOmxVenc \
-    libOmxVidcCommon \
     libstagefrighthw \
     libstagefright_soft_flacdec \
     android.hardware.media.c2@1.2 \
@@ -338,9 +323,9 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/public.libraries.txt:$(TARGET_COPY_OUT_VENDOR)/etc/public.libraries.txt
 
-# Recovery
-PRODUCT_PACKAGES += \
-    librecovery_updater_kitakami
+# Recovery TODO: Still needed?
+#PRODUCT_PACKAGES += \
+#    librecovery_updater_kitakami
 
 # RIL
 PRODUCT_PACKAGES += \
@@ -383,10 +368,10 @@ PRODUCT_PACKAGES += \
     android.hardware.tetheroffload.config@1.0 \
     android.hardware.tetheroffload.control@1.0
 
-# TimeKeep
-PRODUCT_PACKAGES += \
-    timekeep \
-    TimeKeep
+# TimeKeep TODO: Still needed?
+#PRODUCT_PACKAGES += \
+#    timekeep \
+#    TimeKeep
 
 # Trust HAL
 PRODUCT_PACKAGES += \
