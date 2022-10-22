@@ -1,4 +1,3 @@
-type brcm_ldisc_sysfs, sysfs_type, fs_type;
 type cgroup_bpf, fs_type;
 type fpc_data_file, file_type;
 type lta_label, fs_type;
