@@ -74,14 +74,9 @@ PRODUCT_COPY_FILES += \
 
 # Audio
 PRODUCT_PACKAGES += \
-    audio.bluetooth.default \
-    android.hardware.audio@2.0-impl \
-    android.hardware.audio@6.0-impl \
-    android.hardware.audio.common@6.0-util \
-    android.hardware.audio.effect@2.0-impl \
-    android.hardware.audio.effect@6.0-impl \
+    android.hardware.audio@7.1-impl \
+    android.hardware.audio.effect@7.0-impl \
     android.hardware.audio.service \
-    android.hardware.bluetooth.audio-impl \
     audio.primary.msm8994 \
     audio.r_submix.default \
     audio.usb.default \
@@ -125,6 +120,8 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     android.hardware.bluetooth@1.0-impl \
     android.hardware.bluetooth@1.0-service \
+    android.hardware.bluetooth.audio-impl \
+    audio.bluetooth.default \
     libbt-vendor
 
 # Camera
