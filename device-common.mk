@@ -77,6 +77,7 @@ PRODUCT_PACKAGES += \
     android.hardware.audio@7.1-impl \
     android.hardware.audio.effect@7.0-impl \
     android.hardware.audio.service \
+    android.hardware.soundtrigger@2.2-impl:32 \
     audio.primary.msm8994 \
     audio.r_submix.default \
     audio.usb.default \
@@ -344,10 +345,6 @@ PRODUCT_PACKAGES += \
 # Soong
 PRODUCT_SOONG_NAMESPACES += \
     device/sony/kitakami-common
-
-# Soundtrigger
-PRODUCT_PACKAGES += \
-    android.hardware.soundtrigger@2.0-impl
 
 # SurfaceFlinger
 PRODUCT_PACKAGES += \
