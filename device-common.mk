@@ -358,10 +358,10 @@ PRODUCT_PACKAGES += \
     android.hardware.tetheroffload.config@1.0 \
     android.hardware.tetheroffload.control@1.0
 
-# TimeKeep TODO: Still needed?
-#PRODUCT_PACKAGES += \
-#    timekeep \
-#    TimeKeep
+# TimeKeep
+PRODUCT_PACKAGES += \
+    timekeep \
+    TimeKeep
 
 # Trust HAL
 PRODUCT_PACKAGES += \
