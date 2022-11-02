@@ -121,6 +121,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     android.hardware.bluetooth@1.0-impl \
     android.hardware.bluetooth@1.0-service \
+    android.hardware.bluetooth.a2dp@1.0-impl.mock \
     android.hardware.bluetooth.audio-impl \
     audio.bluetooth.default \
     libbt-vendor
@@ -143,12 +144,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     librmnetctl
 
-# DRM
-PRODUCT_PACKAGES += \
-    android.hardware.drm@1.0-impl \
-    android.hardware.drm@1.0-service \
-    android.hardware.drm@1.4-service.clearkey
-
 # Display
 PRODUCT_PACKAGES += \
     android.frameworks.displayservice@1.0 \
@@ -164,6 +159,12 @@ PRODUCT_PACKAGES += \
     memtrack.msm8994 \
     libtinyxml
 
+# DRM
+PRODUCT_PACKAGES += \
+    android.hardware.drm@1.0-impl \
+    android.hardware.drm@1.0-service \
+    android.hardware.drm@1.4-service.clearkey
+
 # DumpState
 PRODUCT_PACKAGES += \
     android.hardware.dumpstate@1.1-service-kitakami
@@ -175,6 +176,10 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     android.hardware.biometrics.fingerprint@2.1-service
 
+# Flash LED config
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/flashled_calc_parameters.cfg:$(TARGET_COPY_OUT_SYSTEM)/etc/flashled_calc_parameters.cfg
+
 # Gatekeeper
 PRODUCT_PACKAGES += \
     android.hardware.gatekeeper@1.0-impl \
@@ -182,18 +187,17 @@ PRODUCT_PACKAGES += \
 
 # GPS
 PRODUCT_PACKAGES += \
+    android.hardware.gnss@1.0-impl \
     gps.msm8994 \
     flp.conf \
     gps.conf \
     izat.conf \
     sap.conf
 
+# gRPC
 PRODUCT_PACKAGES += \
-    android.hardware.gnss@1.0-impl
-
-# Flash LED config
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/flashled_calc_parameters.cfg:$(TARGET_COPY_OUT_SYSTEM)/etc/flashled_calc_parameters.cfg
+    libgrpc++ \
+    libgrpc_wrap
 
 # Health HAL
 PRODUCT_PACKAGES += \
@@ -239,11 +243,9 @@ PRODUCT_PACKAGES += \
 
 # LiveDisplay
 PRODUCT_PACKAGES += \
+    libshims_postproc \
     vendor.lineage.livedisplay@2.0-service-legacymm \
     vendor.lineage.livedisplay@2.0-service-sysfs
-
-PRODUCT_PACKAGES += \
-    libshims_postproc
 
 # Media
 PRODUCT_PACKAGES += \
