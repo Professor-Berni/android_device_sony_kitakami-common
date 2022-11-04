@@ -1,0 +1,11 @@
+type timekeep, domain;
+type timekeep_exec, exec_type, file_type;
+
+# Started by init
+init_daemon_domain(timekeep)
+
+allow timekeep self:capability sys_time;
+allow timekeep sysfs_rtc:dir search;
+allow timekeep sysfs:file r_file_perms;
+allow timekeep time_data_file:dir rw_dir_perms;
+allow timekeep time_data_file:file create_file_perms;
