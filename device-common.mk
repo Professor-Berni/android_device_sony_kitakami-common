@@ -68,27 +68,18 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.software.vulkan.deqp.level-2020-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.vulkan.deqp.level.xml \
     frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/handheld_core_hardware.xml
 
-# ANT+
-PRODUCT_PACKAGES += \
-    AntHalService \
-    com.dsi.ant.antradio_library \
-    libantradio
-
 # APEX
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/ld.config.txt:$(TARGET_COPY_OUT_SYSTEM)/etc/swcodec/ld.config.txt
 
 # Audio
 PRODUCT_PACKAGES += \
-    audio.bluetooth.default \
     android.hardware.audio@2.0-impl \
     android.hardware.audio@2.0-service \
     android.hardware.audio@6.0-impl \
     android.hardware.audio.common@6.0-util \
     android.hardware.audio.effect@2.0-impl \
     android.hardware.audio.effect@6.0-impl \
-    android.hardware.bluetooth.audio@2.0-impl \
-    audiod \
     audio.a2dp.default \
     audio.primary.msm8994 \
     audio.r_submix.default \
@@ -133,6 +124,8 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     android.hardware.bluetooth@1.0-impl \
     android.hardware.bluetooth@1.0-service \
+    android.hardware.bluetooth.audio@2.0-impl \
+    audio.bluetooth.default \
     libbt-vendor
 
 # Camera
@@ -143,9 +136,6 @@ PRODUCT_PACKAGES += \
     Snap \
     vendor.qti.hardware.camera.device@1.0
 
-# Charger
-PRODUCT_PACKAGES += charger_res_images
-
 # CryptfsHW
 PRODUCT_PACKAGES += \
     vendor.qti.hardware.cryptfshw@1.0
@@ -153,12 +143,6 @@ PRODUCT_PACKAGES += \
 # Data services
 PRODUCT_PACKAGES += \
     librmnetctl
-
-# DRM
-PRODUCT_PACKAGES += \
-    android.hardware.drm@1.0-impl \
-    android.hardware.drm@1.0-service \
-    android.hardware.drm@1.4-service.clearkey
 
 # Display
 PRODUCT_PACKAGES += \
@@ -176,15 +160,15 @@ PRODUCT_PACKAGES += \
     memtrack.msm8994 \
     libtinyxml
 
+# DRM
+PRODUCT_PACKAGES += \
+    android.hardware.drm@1.0-impl \
+    android.hardware.drm@1.0-service \
+    android.hardware.drm@1.4-service.clearkey
+
 # DumpState
 PRODUCT_PACKAGES += \
     android.hardware.dumpstate@1.1-service-kitakami
-
-# FM
-PRODUCT_PACKAGES += \
-    FMRadio \
-    brcm-uim-sysfs \
-    libfmradio.v4l2-fm
 
 # Fingerprint
 PRODUCT_COPY_FILES += \
@@ -193,6 +177,16 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     android.hardware.biometrics.fingerprint@2.1-service
 
+# Flash LED config
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/flashled_calc_parameters.cfg:$(TARGET_COPY_OUT_SYSTEM)/etc/flashled_calc_parameters.cfg
+
+# FM
+PRODUCT_PACKAGES += \
+    FMRadio \
+    brcm-uim-sysfs \
+    libfmradio.v4l2-fm
+
 # Gatekeeper
 PRODUCT_PACKAGES += \
     android.hardware.gatekeeper@1.0-impl \
@@ -200,18 +194,12 @@ PRODUCT_PACKAGES += \
 
 # GPS
 PRODUCT_PACKAGES += \
+    android.hardware.gnss@1.0-impl \
     gps.msm8994 \
     flp.conf \
     gps.conf \
     izat.conf \
     sap.conf
-
-PRODUCT_PACKAGES += \
-    android.hardware.gnss@1.0-impl
-
-# Flash LED config
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/flashled_calc_parameters.cfg:$(TARGET_COPY_OUT_SYSTEM)/etc/flashled_calc_parameters.cfg
 
 # Health HAL
 PRODUCT_PACKAGES += \
@@ -259,11 +247,9 @@ PRODUCT_PACKAGES += \
 
 # LiveDisplay
 PRODUCT_PACKAGES += \
+    libshims_postproc \
     vendor.lineage.livedisplay@2.0-service-legacymm \
     vendor.lineage.livedisplay@2.0-service-sysfs
-
-PRODUCT_PACKAGES += \
-    libshims_postproc
 
 # Media
 PRODUCT_PACKAGES += \
@@ -339,10 +325,6 @@ PRODUCT_COPY_FILES += \
 # Public Libraries
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/public.libraries.txt:$(TARGET_COPY_OUT_VENDOR)/etc/public.libraries.txt
-
-# Recovery
-PRODUCT_PACKAGES += \
-    librecovery_updater_kitakami
 
 # RIL
 PRODUCT_PACKAGES += \
