@@ -133,10 +133,7 @@ PRODUCT_PACKAGES += \
     camera.msm8994 \
     vendor.qti.hardware.camera.device@1.0
 
-# Charger TODO: Still needed?
-#PRODUCT_PACKAGES += charger_res_images
-
-# CryptfsHW TODO: Still needed?
+# CryptfsHW TODO: Still needed? Not yet ported to Android T!
 #PRODUCT_PACKAGES += \
 #    vendor.qti.hardware.cryptfshw@1.0
 
@@ -316,10 +313,6 @@ PRODUCT_COPY_FILES += \
 # Public Libraries
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/public.libraries.txt:$(TARGET_COPY_OUT_VENDOR)/etc/public.libraries.txt
-
-# Recovery TODO: Still needed?
-#PRODUCT_PACKAGES += \
-#    librecovery_updater_kitakami
 
 # RIL
 PRODUCT_PACKAGES += \
