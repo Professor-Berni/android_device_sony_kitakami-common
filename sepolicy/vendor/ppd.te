@@ -1,0 +1,22 @@
+# ppd service
+type ppd, domain;
+type ppd_exec, exec_type, file_type;
+
+# Started by init
+init_daemon_domain(ppd)
+
+allow ppd default_prop:file r_file_perms;
+allow ppd diag_device:chr_file rw_file_perms;
+allow ppd display_vendor_data_file:dir search;
+allow ppd graphics_device:dir search;
+allow ppd graphics_device:chr_file rw_file_perms;
+allow ppd init:unix_stream_socket connectto;
+allow ppd ion_device:chr_file rw_file_perms;
+allow ppd persist_display_file:dir search;
+allow ppd persist_file:dir search;
+allow ppd postprocessing_prop:file r_file_perms;
+allow ppd postprocessing_prop:property_service set;
+allow ppd property_socket:sock_file write;
+allow ppd sysfs_graphics:dir search;
+allow ppd sysfs_graphics:file rw_file_perms;
+allow ppd sysfs_leds:dir search;
