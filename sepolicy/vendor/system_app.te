@@ -1,6 +1,7 @@
 allow system_app device:chr_file rw_file_perms;
 allow system_app device:file rw_file_perms;
 allow system_app hal_dumpstate_impl:binder call;
+allow system_app hal_power_default:binder call;
 allow system_app init:binder call;
 allow system_app proc_pagetypeinfo:file r_file_perms;
 allow system_app sysfs_rtc:dir search;
@@ -12,3 +13,5 @@ allow system_app time_data_file:dir ra_dir_perms;
 allow system_app time_data_file:file create_file_perms;
 allow system_app vendor_default_prop:file r_file_perms;
 allow system_app vendor_default_prop:property_service set;
+allow system_app vold:binder call;
+allow system_app wificond:binder call;
