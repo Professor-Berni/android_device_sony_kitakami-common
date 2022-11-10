@@ -2,6 +2,7 @@ allow system_app device:chr_file rw_file_perms;
 allow system_app device:file rw_file_perms;
 allow system_app hal_dumpstate_impl:binder call;
 allow system_app hal_power_default:binder call;
+allow system_app hal_wifi_supplicant_default:binder call;
 allow system_app init:binder call;
 allow system_app proc_pagetypeinfo:file r_file_perms;
 allow system_app sysfs_rtc:dir search;
