@@ -107,9 +107,9 @@ static loc_param_s_type gps_conf_table[] =
   {"NMEA_PROVIDER",                  &gps_conf.NMEA_PROVIDER,                  NULL, 'n'},
   {"CAPABILITIES",                   &gps_conf.CAPABILITIES,                   NULL, 'n'},
   {"XTRA_VERSION_CHECK",             &gps_conf.XTRA_VERSION_CHECK,             NULL, 'n'},
-  {"XTRA_SERVER_1",                  &gps_conf.XTRA_SERVER_1,                  NULL, 's'},
-  {"XTRA_SERVER_2",                  &gps_conf.XTRA_SERVER_2,                  NULL, 's'},
-  {"XTRA_SERVER_3",                  &gps_conf.XTRA_SERVER_3,                  NULL, 's'},
+  {"LONGTERM_PSDS_SERVER_1",                  &gps_conf.LONGTERM_PSDS_SERVER_1,                  NULL, 's'},
+  {"LONGTERM_PSDS_SERVER_2",                  &gps_conf.LONGTERM_PSDS_SERVER_2,                  NULL, 's'},
+  {"LONGTERM_PSDS_SERVER_3",                  &gps_conf.LONGTERM_PSDS_SERVER_3,                  NULL, 's'},
   {"USE_EMERGENCY_PDN_FOR_EMERGENCY_SUPL",  &gps_conf.USE_EMERGENCY_PDN_FOR_EMERGENCY_SUPL,          NULL, 'n'},
 };
 
@@ -926,14 +926,14 @@ LocEngReportXtraServer::LocEngReportXtraServer(void* locEng,
     memset(mServers, 0, 3*(mMaxLen+1));
 
     // Override modem URLs with uncommented gps.conf urls
-    if( gps_conf.XTRA_SERVER_1[0] != '\0' ) {
-        url1 = &gps_conf.XTRA_SERVER_1[0];
+    if( gps_conf.LONGTERM_PSDS_SERVER_1[0] != '\0' ) {
+        url1 = &gps_conf.LONGTERM_PSDS_SERVER_1[0];
     }
-    if( gps_conf.XTRA_SERVER_2[0] != '\0' ) {
-        url2 = &gps_conf.XTRA_SERVER_2[0];
+    if( gps_conf.LONGTERM_PSDS_SERVER_2[0] != '\0' ) {
+        url2 = &gps_conf.LONGTERM_PSDS_SERVER_2[0];
     }
-    if( gps_conf.XTRA_SERVER_3[0] != '\0' ) {
-        url3 = &gps_conf.XTRA_SERVER_3[0];
+    if( gps_conf.LONGTERM_PSDS_SERVER_3[0] != '\0' ) {
+        url3 = &gps_conf.LONGTERM_PSDS_SERVER_3[0];
     }
     // copy non xtra1.gpsonextra.net URLs into the forwarding buffer.
     if( NULL == strcasestr(url1, XTRA1_GPSONEXTRA) ) {
