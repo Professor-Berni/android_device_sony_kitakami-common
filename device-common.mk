@@ -121,9 +121,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     android.hardware.bluetooth@1.0-impl \
     android.hardware.bluetooth@1.0-service \
-    android.hardware.bluetooth.a2dp@1.0 \
     android.hardware.bluetooth.audio-impl \
-    audio.a2dp.default \
     audio.bluetooth.default \
     libbt-vendor
 
