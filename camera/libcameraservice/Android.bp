@@ -39,7 +39,6 @@ cc_library_shared {
     name: "libcameraservice_kitakami",
     defaults: [
         "no_cameraserver_defaults",
-        "qti_camera_device_defaults",
         "needs_camera_boottime_defaults",
     ],
 
