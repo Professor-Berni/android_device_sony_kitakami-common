@@ -128,6 +128,7 @@ PRODUCT_PACKAGES += \
 # Camera
 PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl-kitakami \
+    Aperture \
     camera.msm8994 \
     cameraserver_kitakami \
     vendor.qti.hardware.camera.device@1.0
@@ -201,7 +202,8 @@ PRODUCT_PACKAGES += \
     android.hidl.base@1.0 \
     android.hidl.manager@1.0 \
     libhidltransport \
-    libhwbinder
+    libhwbinder \
+    vndservicemanager
 
 # Init
 PRODUCT_COPY_FILES += \
