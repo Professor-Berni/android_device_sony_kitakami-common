@@ -128,7 +128,6 @@ PRODUCT_PACKAGES += \
 # Camera
 PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl-kitakami \
-    Aperture \
     camera.msm8994 \
     cameraserver_kitakami \
     vendor.qti.hardware.camera.device@1.0
