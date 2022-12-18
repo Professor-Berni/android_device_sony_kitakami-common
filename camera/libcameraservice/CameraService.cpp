@@ -1696,7 +1696,7 @@ Status CameraService::connectDevice(
         return STATUS_ERROR(ERROR_ILLEGAL_ARGUMENT, msg.string());
     }
 
-    if (CameraServiceProxyWrapper::isCameraDisabled()) {
+    if (CameraServiceProxyWrapper::isCameraDisabled(clientUid)) {
         String8 msg =
                 String8::format("Camera disabled by device policy");
         ALOGE("%s: %s", __FUNCTION__, msg.string());
