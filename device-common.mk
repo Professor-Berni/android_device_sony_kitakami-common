@@ -84,6 +84,8 @@ PRODUCT_PACKAGES += \
     audio.primary.msm8994 \
     audio.r_submix.default \
     audio.usb.default \
+    libaptX_encoder \
+    libaptXHD_encoder \
     libqcompostprocbundle \
     libqcomvisualizer \
     libqcomvoiceprocessing \
