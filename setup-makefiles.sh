@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Copyright (C) 2016 The CyanogenMod Project
-# Copyright (C) 2017 The LineageOS Project
+# Copyright (C) 2017-2023 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,54 +18,51 @@
 
 set -e
 
-INITIAL_COPYRIGHT_YEAR=2016
-
 # Load extract_utils and do some sanity checks
 MY_DIR="${BASH_SOURCE%/*}"
-if [[ ! -d "$MY_DIR" ]]; then MY_DIR="$PWD"; fi
+if [[ ! -d "${MY_DIR}" ]]; then MY_DIR="${PWD}"; fi
 
-CM_ROOT="$MY_DIR"/../../..
+ANDROID_ROOT="${MY_DIR}/../../.."
 
-HELPER="$CM_ROOT"/vendor/lineage/build/tools/extract_utils.sh
-if [ ! -f "$HELPER" ]; then
-    echo "Unable to find helper script at $HELPER"
+HELPER="${ANDROID_ROOT}/tools/extract-utils/extract_utils.sh"
+if [ ! -f "${HELPER}" ]; then
+    echo "Unable to find helper script at ${HELPER}"
     exit 1
 fi
-. "$HELPER"
+source "${HELPER}"
 
 # Initialize the helper for common
-setup_vendor "$DEVICE_COMMON" "$VENDOR" "$CM_ROOT" true
+setup_vendor "${DEVICE_COMMON}" "${VENDOR}" "${ANDROID_ROOT}" true
 
 # Copyright headers and guards
 write_headers "ivy karin karin_windy satsuki sumire suzuran"
 
 # The standard common blobs
-write_makefiles "$MY_DIR"/proprietary-files.txt
+write_makefiles "${MY_DIR}/proprietary-files.txt" true
 
-printf '\n' >> "$PRODUCTMK"
-printf 'ifneq ($(BOARD_HAVE_RADIO),false)\n' >> "$PRODUCTMK"
+printf '\n' >> "${PRODUCTMK}"
+printf 'ifneq ($(BOARD_HAVE_RADIO),false)\n' >> "${PRODUCTMK}"
 
-write_makefiles "$MY_DIR"/proprietary-files-radio.txt
+write_makefiles "${MY_DIR}/proprietary-files-radio.txt" true
 
-echo "ifeq (\$(strip \$(BOARD_NFC_CHIPSET)),pn547)" >> "$ANDROIDMK"
-write_makefiles "$MY_DIR"/proprietary-files-pn547.txt
-echo "endif" >> "$ANDROIDMK"
+echo "ifeq (\$(strip \$(BOARD_NFC_CHIPSET)),pn547)" >> "${ANDROIDMK}"
+write_makefiles "${MY_DIR}/proprietary-files-pn547.txt" true
+echo "endif" >> "${ANDROIDMK}"
 
-printf 'endif\n' >> "$PRODUCTMK"
+printf 'endif\n' >> "${PRODUCTMK}"
 
 # We are done!
 write_footers
 
-if [ -s "$MY_DIR"/../$DEVICE/proprietary-files.txt ]; then
+if [ -s "${MY_DIR}/../${DEVICE}/proprietary-files.txt" ]; then
     # Reinitialize the helper for device
-    INITIAL_COPYRIGHT_YEAR="$DEVICE_BRINGUP_YEAR"
-    setup_vendor "$DEVICE" "$VENDOR" "$CM_ROOT" false
+    setup_vendor "${DEVICE}" "${VENDOR}" "${ANDROID_ROOT}" false
 
     # Copyright headers and guards
     write_headers
 
     # The standard device blobs
-    write_makefiles "$MY_DIR"/../$DEVICE/proprietary-files.txt
+    write_makefiles "${MY_DIR}/../${DEVICE}/proprietary-files.txt" true
 
     # We are done!
     write_footers
