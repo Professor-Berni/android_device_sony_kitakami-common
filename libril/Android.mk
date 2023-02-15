@@ -23,6 +23,7 @@ LOCAL_SHARED_LIBRARIES := \
     android.hardware.radio@1.0 \
     android.hardware.radio@1.1 \
     libhidlbase \
+    android.hardware.radio.deprecated@1.0
 
 LOCAL_STATIC_LIBRARIES := \
     libprotobuf-c-nano-enable_malloc-32bit \

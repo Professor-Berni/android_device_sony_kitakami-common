@@ -641,6 +641,10 @@ int cdmaInfoRecInd(int slotId,
                    int indicationType, int token, RIL_Errno e, void *response,
                    size_t responselen);
 
+int oemHookRawInd(int slotId,
+                  int indicationType, int token, RIL_Errno e, void *response,
+                  size_t responselen);
+
 int indicateRingbackToneInd(int slotId,
                             int indicationType, int token, RIL_Errno e, void *response,
                             size_t responselen);
@@ -720,6 +724,14 @@ int networkScanResultInd(int slotId,
 int keepaliveStatusInd(int slotId,
                        int indicationType, int token, RIL_Errno e, void *response,
                        size_t responselen);
+
+int sendRequestRawResponse(int slotId,
+                           int responseType, int serial, RIL_Errno e,
+                           void *response, size_t responseLen);
+
+int sendRequestStringsResponse(int slotId,
+                               int responseType, int serial, RIL_Errno e,
+                               void *response, size_t responseLen);
 
 int setCarrierInfoForImsiEncryptionResponse(int slotId,
                                             int responseType, int serial, RIL_Errno e,
