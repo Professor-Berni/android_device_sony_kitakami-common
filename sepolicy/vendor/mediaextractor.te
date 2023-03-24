@@ -1,0 +1,2 @@
+allow mediaextractor logdr_socket:sock_file write;
+allow mediaextractor logd:unix_stream_socket connectto;

@@ -1,1 +1,5 @@
 allow installd device:file rw_file_perms;
+allow installd self:capability sys_ptrace;
+allow installd system_server:dir r_dir_perms;
+allow installd system_server:file r_file_perms;
+allow installd system_server:process getattr;
