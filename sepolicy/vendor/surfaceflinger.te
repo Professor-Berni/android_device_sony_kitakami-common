@@ -3,6 +3,7 @@ allow surfaceflinger bootanim:file r_file_perms;
 allow surfaceflinger bootanim:process getattr;
 allow surfaceflinger device:chr_file rw_file_perms;
 allow surfaceflinger device:file rw_file_perms;
+allow surfaceflinger mediaprovider:process getattr;
 allow surfaceflinger platform_app:process getattr;
 allow surfaceflinger priv_app:process getattr;
 allow surfaceflinger system_app:process getattr;

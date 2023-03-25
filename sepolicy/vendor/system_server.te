@@ -10,6 +10,7 @@ allow system_server hal_hardware_sensors:binder { call transfer };
 allow system_server hal_wifi_supplicant_default:process getattr;
 allow system_server mediametrics:process getattr;
 allow system_server mediaprovider:process getattr;
+allow system_server mediaserver:process getattr;
 allow system_server netd:process getattr;
 allow system_server network_stack:process getattr;
 allow system_server nfc:process getattr;
