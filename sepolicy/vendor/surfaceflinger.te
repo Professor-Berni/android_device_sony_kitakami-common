@@ -6,6 +6,7 @@ allow surfaceflinger device:file rw_file_perms;
 allow surfaceflinger mediaprovider:process getattr;
 allow surfaceflinger platform_app:process getattr;
 allow surfaceflinger priv_app:process getattr;
+allow surfaceflinger radio:process getattr;
 allow surfaceflinger system_app:process getattr;
 allow surfaceflinger system_server:process getattr;
 allow surfaceflinger untrusted_app_30:process getattr;
