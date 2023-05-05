@@ -123,6 +123,8 @@ PRODUCT_PACKAGES += \
     android.hardware.bluetooth@1.0-service \
     android.hardware.bluetooth.audio-impl \
     audio.bluetooth.default \
+    libaptx_enc \
+    libaptxhd_enc \
     libbt-vendor
 
 # Camera
