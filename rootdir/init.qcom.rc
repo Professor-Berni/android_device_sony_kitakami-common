@@ -52,6 +52,9 @@ on init
 
     # E: Failed to open /dev/qseecom device
     chmod 0666 /dev/qseecom
+    
+    # E system_server: open failed: /dev/mdm: No such file or directory
+    mkdir /dev/mdm 0775 system system
 
     write /sys/devices/soc.0/f98a4900.sdhci/mmc_host/mmc1/clkgate_delay 1
     # Avoid long waits for rcu grace periods
