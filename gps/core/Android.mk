@@ -28,7 +28,8 @@ LOCAL_CFLAGS += \
 
 LOCAL_C_INCLUDES:= \
     $(TARGET_OUT_HEADERS)/gps.utils \
-    $(TARGET_OUT_HEADERS)/libflp
+    $(TARGET_OUT_HEADERS)/libflp \
+    hardware/libhardware/include
 
 LOCAL_HEADER_LIBRARIES := libgps.utils_headers
 
