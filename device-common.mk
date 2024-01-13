@@ -77,7 +77,12 @@ PRODUCT_PACKAGES += \
     android.hardware.audio@7.1-impl \
     android.hardware.audio.effect@7.0-impl \
     android.hardware.audio.service \
-    android.hardware.soundtrigger@2.2-impl:32 \
+    android.hardware.audio.effect@2.0-impl \
+    android.hardware.audio.effect@6.0-impl \
+    android.hardware.bluetooth.audio-impl \
+    android.hardware.soundtrigger@2.0 \
+    android.hardware.soundtrigger@2.0-core \
+    android.hardware.soundtrigger@2.0-impl \
     audio.primary.msm8994 \
     audio.r_submix.default \
     audio.usb.default \
@@ -133,6 +138,8 @@ PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl-kitakami \
     camera.msm8994 \
     Aperture \
+    libyuv \
+    libexif \
     vendor.qti.hardware.camera.device@1.0 \
     vendor.qti.hardware.camera.device@1.0_vendor
 
