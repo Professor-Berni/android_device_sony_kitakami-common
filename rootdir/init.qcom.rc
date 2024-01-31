@@ -783,15 +783,6 @@ service iddd /system/bin/iddd
     group oem_2987 log inet oem_2993
     disabled
 
-service cameraserver /system/bin/cameraserver_kitakami
-    override
-    class main
-    user cameraserver
-    group audio camera input drmrpc
-    ioprio rt 4
-    writepid /dev/cpuset/camera-daemon/tasks /dev/stune/top-app/tasks
-    rlimit rtprio 10 10
-
 on property:sys.boot_completed=1
     rm /data/system/perfd/default_values
     start vendor.perfd
