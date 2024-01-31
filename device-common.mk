@@ -131,8 +131,16 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl-kitakami \
     camera.msm8994 \
-    cameraserver_kitakami \
-    vendor.qti.hardware.camera.device@1.0
+    Aperture \
+    vendor.qti.hardware.camera.device@1.0 \
+    vendor.qti.hardware.camera.device@1.0_vendor
+
+# Charger
+PRODUCT_PACKAGES += charger_res_images
+
+# Configstore
+PRODUCT_PACKAGES += \
+    disable_configstore
 
 # Data services
 PRODUCT_PACKAGES += \
