@@ -205,15 +205,15 @@ TARGET_USERIMAGES_USE_EXT4 := true
 
 # Shims
 TARGET_LD_SHIM_LIBS := \
-    /system/vendor/lib/hw/camera.vendor.msm8994.so|/system/vendor/lib/camera.qcom_shim.so \
-    /system/lib64/libsys-utils.so|libsensor.so \
-    /system/lib/libcammw.so|libsensor.so \
-    /system/bin/secd|/system/lib64/lib-preload64.so \
-    /system/vendor/lib64/libril-qc-qmi-1.so|libaudioclient_shim.so \
-    /system/lib/libsys-utils.so|libshim_sensors.so \
-    /system/lib64/libsys-utils.so|libshim_sensors.so \
-    /system/lib/libcammw.so|libshim_sensors.so \
-    /system/vendor/lib64/libmm-abl.so|libshims_postproc.so
+     /system/vendor/lib/hw/camera.vendor.msm8994.so|/system/lib/camera.qcom_shim.so \
+     /system/lib64/libsys-utils.so|libsensor.so \
+     /system/lib/libcammw.so|libsensor.so \
+     /system/bin/secd|/system/lib64/lib-preload64.so \
+     /system/vendor/lib64/libril-qc-qmi-1.so|libaudioclient_shim.so \
+     /system/lib/libsys-utils.so|libshim_sensors.so \
+     /system/lib64/libsys-utils.so|libshim_sensors.so \
+     /system/lib/libcammw.so|libshim_sensors.so \
+     /system/vendor/lib64/libmm-abl.so|libshims_postproc.so
 
 ifneq ($(BOARD_HAVE_RADIO),false)
 TARGET_LD_SHIM_LIBS += \
