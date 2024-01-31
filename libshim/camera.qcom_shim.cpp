@@ -110,8 +110,8 @@ extern "C" void _ZN7android13GraphicBufferC1Ejjij(
 //                                                        const sp<IBinder>& parentHandle,
 //                                                        LayerMetadata metadata,
 //                                                        uint32_t* outTransformHint)
-extern "C" void* _ZN7android21SurfaceComposerClient13createSurfaceERKNS_7String8EjjijRKNS_2spINS_7IBinderEEENS_13LayerMetadataEPj(const android::String8& name, uint32_t w, uint32_t h,
-                                                        PixelFormat format, uint32_t flags,
+extern "C" void* _ZN7android21SurfaceComposerClient13createSurfaceERKNS_7String8EjjiiRKNS_2spINS_7IBinderEEENS_3gui13LayerMetadataEPj(const android::String8& name, uint32_t w, uint32_t h,
+                                                        PixelFormat format, int32_t flags,
                                                         const sp<IBinder>& parentHandle,
                                                         android::LayerMetadata metadata,
                                                         uint32_t* outTransformHint);
@@ -122,7 +122,7 @@ extern "C" void* _ZN7android21SurfaceComposerClient13createSurfaceERKNS_7String8
     const android::String8& name, uint32_t w, uint32_t h, PixelFormat format,
     uint32_t flags) {
   android::LayerMetadata metadata;
-  sc = _ZN7android21SurfaceComposerClient13createSurfaceERKNS_7String8EjjijRKNS_2spINS_7IBinderEEENS_13LayerMetadataEPj(name, w, h, format, flags, nullptr, metadata, nullptr);
+  sc = _ZN7android21SurfaceComposerClient13createSurfaceERKNS_7String8EjjiiRKNS_2spINS_7IBinderEEENS_3gui13LayerMetadataEPj(name, w, h, format, flags, nullptr, metadata, nullptr);
   return sc;
 }
 
