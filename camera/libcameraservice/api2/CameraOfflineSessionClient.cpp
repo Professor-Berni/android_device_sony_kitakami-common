@@ -110,18 +110,6 @@ status_t CameraOfflineSessionClient::dumpClient(int fd, const Vector<String16>& 
     return OK;
 }
 
-status_t CameraOfflineSessionClient::startWatchingTags(const String8 &tags, int outFd) {
-    return BasicClient::startWatchingTags(tags, outFd);
-}
-
-status_t CameraOfflineSessionClient::stopWatchingTags(int outFd) {
-    return BasicClient::stopWatchingTags(outFd);
-}
-
-status_t CameraOfflineSessionClient::dumpWatchedEventsToVector(std::vector<std::string> &out) {
-    return BasicClient::dumpWatchedEventsToVector(out);
-}
-
 binder::Status CameraOfflineSessionClient::disconnect() {
     Mutex::Autolock icl(mBinderSerializationLock);
 

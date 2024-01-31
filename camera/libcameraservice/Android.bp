@@ -90,17 +90,17 @@ cc_library_shared {
         "device3/Camera3OutputUtils.cpp",
         "device3/Camera3DeviceInjectionMethods.cpp",
         "device3/UHRCropAndMeteringRegionMapper.cpp",
-        "device3/PreviewFrameScheduler.cpp",
         "gui/RingBufferConsumer.cpp",
         "hidl/AidlCameraDeviceCallbacks.cpp",
         "hidl/AidlCameraServiceListener.cpp",
+        "hidl/Convert.cpp",
         "hidl/HidlCameraDeviceUser.cpp",
         "hidl/HidlCameraService.cpp",
-        "hidl/Utils.cpp",
         "utils/CameraServiceProxyWrapper.cpp",
         "utils/CameraThreadState.cpp",
         "utils/CameraTraces.cpp",
         "utils/AutoConditionLock.cpp",
+        "utils/ExifUtils.cpp",
         "utils/SessionConfigurationUtils.cpp",
         "utils/SessionStatsBuilder.cpp",
         "utils/TagMonitor.cpp",
@@ -113,7 +113,6 @@ cc_library_shared {
     ],
 
     shared_libs: [
-        "libandroid",
         "libbase",
         "libdl",
         "libexif",
@@ -169,7 +168,6 @@ cc_library_shared {
         "libprocessinfoservice_aidl",
         "libbinderthreadstateutils",
         "media_permission-aidl-cpp",
-        "libcameraservice_host",
     ],
 
     export_shared_lib_headers: [
@@ -184,6 +182,7 @@ cc_library_shared {
     include_dirs: [
         "system/media/private/camera/include",
         "frameworks/native/include/media/openmax",
+        "frameworks/av/media/ndk",
         "external/dynamic_depth/includes",
         "external/dynamic_depth/internal",
     ],

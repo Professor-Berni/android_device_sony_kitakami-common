@@ -27,7 +27,6 @@
 #include "Camera3IOStreamBase.h"
 #include "Camera3OutputStreamInterface.h"
 #include "Camera3BufferManager.h"
-#include "PreviewFrameScheduler.h"
 
 namespace android {
 
@@ -230,7 +229,6 @@ class Camera3OutputStream :
     static void applyZSLUsageQuirk(int format, uint64_t *consumerUsage /*inout*/);
 
     void setImageDumpMask(int mask) { mImageDumpMask = mask; }
-    bool shouldLogError(status_t res);
 
   protected:
     Camera3OutputStream(int id, camera_stream_type_t type,
@@ -257,7 +255,7 @@ class Camera3OutputStream :
 
     status_t getEndpointUsageForSurface(uint64_t *usage,
             const sp<Surface>& surface) const;
-    status_t configureConsumerQueueLocked(bool allowPreviewScheduler);
+    status_t configureConsumerQueueLocked();
 
     // Consumer as the output of camera HAL
     sp<Surface> mConsumer;
@@ -372,8 +370,6 @@ class Camera3OutputStream :
 
     int mImageDumpMask = 0;
 
-    // The preview stream scheduler for re-timing frames
-    std::unique_ptr<PreviewFrameScheduler> mPreviewFrameScheduler;
 }; // class Camera3OutputStream
 
 } // namespace camera3

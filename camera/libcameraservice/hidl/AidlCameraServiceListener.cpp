@@ -15,7 +15,7 @@
  */
 
 #include <hidl/AidlCameraServiceListener.h>
-#include <hidl/Utils.h>
+#include <hidl/Convert.h>
 
 namespace android {
 namespace frameworks {

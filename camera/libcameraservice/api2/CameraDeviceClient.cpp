@@ -100,7 +100,15 @@ CameraDeviceClient::CameraDeviceClient(const sp<CameraService>& cameraService,
     mInputStream(),
     mStreamingRequestId(REQUEST_ID_NONE),
     mRequestIdCounter(0),
+    mPrivilegedClient(false),
     mOverrideForPerfClass(overrideForPerfClass) {
+
+    char value[PROPERTY_VALUE_MAX];
+    property_get("persist.vendor.camera.privapp.list", value, "");
+    String16 packagelist(value);
+    if (packagelist.contains(clientPackageName.string())) {
+        mPrivilegedClient = true;
+    }
 
     ATRACE_CALL();
     ALOGI("CameraDeviceClient %s: Opened", cameraId.string());
@@ -379,6 +387,12 @@ binder::Status CameraDeviceClient::submitRequestList(
             }
 
             String8 physicalId(it.id.c_str());
+            bool hasTestPatternModePhysicalKey = std::find(mSupportedPhysicalRequestKeys.begin(),
+                    mSupportedPhysicalRequestKeys.end(), ANDROID_SENSOR_TEST_PATTERN_MODE) !=
+                    mSupportedPhysicalRequestKeys.end();
+            bool hasTestPatternDataPhysicalKey = std::find(mSupportedPhysicalRequestKeys.begin(),
+                    mSupportedPhysicalRequestKeys.end(), ANDROID_SENSOR_TEST_PATTERN_DATA) !=
+                    mSupportedPhysicalRequestKeys.end();
             if (physicalId != mDevice->getId()) {
                 auto found = std::find(requestedPhysicalIds.begin(), requestedPhysicalIds.end(),
                         it.id);
@@ -404,7 +418,8 @@ binder::Status CameraDeviceClient::submitRequestList(
                         }
                     }
 
-                    physicalSettingsList.push_back({it.id, filteredParams});
+                    physicalSettingsList.push_back({it.id, filteredParams,
+                            hasTestPatternModePhysicalKey, hasTestPatternDataPhysicalKey});
                 }
             } else {
                 physicalSettingsList.push_back({it.id, it.settings});
@@ -639,7 +654,7 @@ binder::Status CameraDeviceClient::isSessionConfigurationSupported(
     mProviderManager->isLogicalCamera(mCameraIdStr.string(), &physicalCameraIds);
     res = SessionConfigurationUtils::convertToHALStreamCombination(sessionConfiguration,
             mCameraIdStr, mDevice->info(), getMetadata, physicalCameraIds, streamConfiguration,
-            mOverrideForPerfClass, &earlyExit);
+            mOverrideForPerfClass, &earlyExit, mPrivilegedClient);
     if (!res.isOk()) {
         return res;
     }
@@ -837,7 +852,7 @@ binder::Status CameraDeviceClient::createStream(
         sp<Surface> surface;
         res = SessionConfigurationUtils::createSurfaceFromGbp(streamInfo,
                 isStreamInfoValid, surface, bufferProducer, mCameraIdStr,
-                mDevice->infoPhysical(physicalCameraId), sensorPixelModesUsed);
+                mDevice->infoPhysical(physicalCameraId), sensorPixelModesUsed, mPrivilegedClient);
 
         if (!res.isOk())
             return res;
@@ -1182,7 +1197,7 @@ binder::Status CameraDeviceClient::updateOutputConfiguration(int streamId,
         sp<Surface> surface;
         res = SessionConfigurationUtils::createSurfaceFromGbp(outInfo,
                 /*isStreamInfoValid*/ false, surface, newOutputsMap.valueAt(i), mCameraIdStr,
-                mDevice->infoPhysical(physicalCameraId), sensorPixelModesUsed);
+                mDevice->infoPhysical(physicalCameraId), sensorPixelModesUsed, mPrivilegedClient);
         if (!res.isOk())
             return res;
 
@@ -1551,7 +1566,7 @@ binder::Status CameraDeviceClient::finalizeOutputConfigurations(int32_t streamId
         sp<Surface> surface;
         res = SessionConfigurationUtils::createSurfaceFromGbp(mStreamInfoMap[streamId],
                 true /*isStreamInfoValid*/, surface, bufferProducer, mCameraIdStr,
-                mDevice->infoPhysical(physicalId), sensorPixelModesUsed);
+                mDevice->infoPhysical(physicalId), sensorPixelModesUsed, mPrivilegedClient);
 
         if (!res.isOk())
             return res;
@@ -1795,35 +1810,6 @@ status_t CameraDeviceClient::dumpClient(int fd, const Vector<String16>& args) {
     mFrameProcessor->dump(fd, args);
 
     return dumpDevice(fd, args);
-}
-
-status_t CameraDeviceClient::startWatchingTags(const String8 &tags, int out) {
-    sp<CameraDeviceBase> device = mDevice;
-    if (!device) {
-        dprintf(out, "  Device is detached.");
-        return OK;
-    }
-    device->startWatchingTags(tags);
-    return OK;
-}
-
-status_t CameraDeviceClient::stopWatchingTags(int out) {
-    sp<CameraDeviceBase> device = mDevice;
-    if (!device) {
-        dprintf(out, "  Device is detached.");
-        return OK;
-    }
-    device->stopWatchingTags();
-    return OK;
-}
-
-status_t CameraDeviceClient::dumpWatchedEventsToVector(std::vector<std::string> &out) {
-    sp<CameraDeviceBase> device = mDevice;
-    if (!device) {
-        return OK;
-    }
-    device->dumpWatchedEventsToVector(out);
-    return OK;
 }
 
 void CameraDeviceClient::notifyError(int32_t errorCode,

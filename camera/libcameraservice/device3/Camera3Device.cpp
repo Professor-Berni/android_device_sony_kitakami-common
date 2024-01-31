@@ -149,11 +149,20 @@ status_t Camera3Device::initialize(sp<CameraProviderManager> manager, const Stri
             // Do not override characteristics for physical cameras
             res = manager->getCameraCharacteristics(
                     physicalId, /*overrideForPerfClass*/false, &mPhysicalDeviceInfoMap[physicalId]);
+            // HACK for ginkgo - check camera id 20 for depth sensor
             if (res != OK) {
-                SET_ERR_L("Could not retrieve camera %s characteristics: %s (%d)",
+                CLOGW("Could not retrieve camera %s characteristics: %s (%d)",
                         physicalId.c_str(), strerror(-res), res);
-                session->close();
-                return res;
+                physicalId = std::to_string(20); // TODO: Maybe make this a soong config?
+                CLOGW("Trying physical camera %s if available", physicalId.c_str());
+                res = manager->getCameraCharacteristics(
+                        physicalId, false, &mPhysicalDeviceInfoMap[physicalId]);
+                if (res != OK) {
+                    SET_ERR_L("Could not retrieve camera %s characteristics: %s (%d)",
+                            physicalId.c_str(), strerror(-res), res);
+                    session->close();
+                    return res;
+                }
             }
 
             bool usePrecorrectArray =
@@ -607,15 +616,16 @@ uint64_t Camera3Device::mapProducerToFrameworkUsage(
     return usage;
 }
 
-ssize_t Camera3Device::getJpegBufferSize(uint32_t width, uint32_t height) const {
+ssize_t Camera3Device::getJpegBufferSize(const CameraMetadata &info, uint32_t width,
+        uint32_t height) const {
     // Get max jpeg size (area-wise) for default sensor pixel mode
     camera3::Size maxDefaultJpegResolution =
-            SessionConfigurationUtils::getMaxJpegResolution(mDeviceInfo,
+            SessionConfigurationUtils::getMaxJpegResolution(info,
                     /*isUltraHighResolutionSensor*/false);
     // Get max jpeg size (area-wise) for max resolution sensor pixel mode / 0 if
     // not ultra high res sensor
     camera3::Size uhrMaxJpegResolution =
-            SessionConfigurationUtils::getMaxJpegResolution(mDeviceInfo,
+            SessionConfigurationUtils::getMaxJpegResolution(info,
                     /*isUltraHighResolution*/true);
     if (maxDefaultJpegResolution.width == 0) {
         ALOGE("%s: Camera %s: Can't find valid available jpeg sizes in static metadata!",
@@ -631,7 +641,7 @@ ssize_t Camera3Device::getJpegBufferSize(uint32_t width, uint32_t height) const 
 
     // Get max jpeg buffer size
     ssize_t maxJpegBufferSize = 0;
-    camera_metadata_ro_entry jpegBufMaxSize = mDeviceInfo.find(ANDROID_JPEG_MAX_SIZE);
+    camera_metadata_ro_entry jpegBufMaxSize = info.find(ANDROID_JPEG_MAX_SIZE);
     if (jpegBufMaxSize.count == 0) {
         ALOGE("%s: Camera %s: Can't find maximum JPEG size in static metadata!", __FUNCTION__,
                 mId.string());
@@ -661,9 +671,9 @@ ssize_t Camera3Device::getJpegBufferSize(uint32_t width, uint32_t height) const 
     return jpegBufferSize;
 }
 
-ssize_t Camera3Device::getPointCloudBufferSize() const {
+ssize_t Camera3Device::getPointCloudBufferSize(const CameraMetadata &info) const {
     const int FLOATS_PER_POINT=4;
-    camera_metadata_ro_entry maxPointCount = mDeviceInfo.find(ANDROID_DEPTH_MAX_DEPTH_SAMPLES);
+    camera_metadata_ro_entry maxPointCount = info.find(ANDROID_DEPTH_MAX_DEPTH_SAMPLES);
     if (maxPointCount.count == 0) {
         ALOGE("%s: Camera %s: Can't find maximum depth point cloud size in static metadata!",
                 __FUNCTION__, mId.string());
@@ -674,14 +684,14 @@ ssize_t Camera3Device::getPointCloudBufferSize() const {
     return maxBytesForPointCloud;
 }
 
-ssize_t Camera3Device::getRawOpaqueBufferSize(int32_t width, int32_t height,
-        bool maxResolution) const {
+ssize_t Camera3Device::getRawOpaqueBufferSize(const CameraMetadata &info, int32_t width,
+        int32_t height, bool maxResolution) const {
     const int PER_CONFIGURATION_SIZE = 3;
     const int WIDTH_OFFSET = 0;
     const int HEIGHT_OFFSET = 1;
     const int SIZE_OFFSET = 2;
     camera_metadata_ro_entry rawOpaqueSizes =
-        mDeviceInfo.find(
+        info.find(
             camera3::SessionConfigurationUtils::getAppropriateModeTag(
                     ANDROID_SENSOR_OPAQUE_RAW_SIZE,
                     maxResolution));
@@ -851,21 +861,6 @@ status_t Camera3Device::dump(int fd, const Vector<String16> &args) {
     if (gotLock) mLock.unlock();
     if (gotInterfaceLock) mInterfaceLock.unlock();
 
-    return OK;
-}
-
-status_t Camera3Device::startWatchingTags(const String8 &tags) {
-    mTagMonitor.parseTagsToMonitor(tags);
-    return OK;
-}
-
-status_t Camera3Device::stopWatchingTags() {
-    mTagMonitor.disableMonitoring();
-    return OK;
-}
-
-status_t Camera3Device::dumpWatchedEventsToVector(std::vector<std::string> &out) {
-    mTagMonitor.getLatestMonitoredTagEvents(out);
     return OK;
 }
 
@@ -1472,7 +1467,7 @@ status_t Camera3Device::createStream(const std::vector<sp<Surface>>& consumers,
     if (format == HAL_PIXEL_FORMAT_BLOB) {
         ssize_t blobBufferSize;
         if (dataSpace == HAL_DATASPACE_DEPTH) {
-            blobBufferSize = getPointCloudBufferSize();
+            blobBufferSize = getPointCloudBufferSize(infoPhysical(physicalCameraId));
             if (blobBufferSize <= 0) {
                 SET_ERR_L("Invalid point cloud buffer size %zd", blobBufferSize);
                 return BAD_VALUE;
@@ -1480,7 +1475,7 @@ status_t Camera3Device::createStream(const std::vector<sp<Surface>>& consumers,
         } else if (dataSpace == static_cast<android_dataspace>(HAL_DATASPACE_JPEG_APP_SEGMENTS)) {
             blobBufferSize = width * height;
         } else {
-            blobBufferSize = getJpegBufferSize(width, height);
+            blobBufferSize = getJpegBufferSize(infoPhysical(physicalCameraId), width, height);
             if (blobBufferSize <= 0) {
                 SET_ERR_L("Invalid jpeg buffer size %zd", blobBufferSize);
                 return BAD_VALUE;
@@ -1494,7 +1489,8 @@ status_t Camera3Device::createStream(const std::vector<sp<Surface>>& consumers,
         bool maxResolution =
                 sensorPixelModesUsed.find(ANDROID_SENSOR_PIXEL_MODE_MAXIMUM_RESOLUTION) !=
                         sensorPixelModesUsed.end();
-        ssize_t rawOpaqueBufferSize = getRawOpaqueBufferSize(width, height, maxResolution);
+        ssize_t rawOpaqueBufferSize = getRawOpaqueBufferSize(infoPhysical(physicalCameraId), width,
+                height, maxResolution);
         if (rawOpaqueBufferSize <= 0) {
             SET_ERR_L("Invalid RAW opaque buffer size %zd", rawOpaqueBufferSize);
             return BAD_VALUE;
@@ -2476,22 +2472,24 @@ sp<Camera3Device::CaptureRequest> Camera3Device::createCaptureRequest(
     }
 
     if (mSupportCameraMute) {
-        auto testPatternModeEntry =
-                newRequest->mSettingsList.begin()->metadata.find(ANDROID_SENSOR_TEST_PATTERN_MODE);
-        newRequest->mOriginalTestPatternMode = testPatternModeEntry.count > 0 ?
-                testPatternModeEntry.data.i32[0] :
-                ANDROID_SENSOR_TEST_PATTERN_MODE_OFF;
+        for (auto& settings : newRequest->mSettingsList) {
+            auto testPatternModeEntry =
+                    settings.metadata.find(ANDROID_SENSOR_TEST_PATTERN_MODE);
+            settings.mOriginalTestPatternMode = testPatternModeEntry.count > 0 ?
+                    testPatternModeEntry.data.i32[0] :
+                    ANDROID_SENSOR_TEST_PATTERN_MODE_OFF;
 
-        auto testPatternDataEntry =
-                newRequest->mSettingsList.begin()->metadata.find(ANDROID_SENSOR_TEST_PATTERN_DATA);
-        if (testPatternDataEntry.count >= 4) {
-            memcpy(newRequest->mOriginalTestPatternData, testPatternDataEntry.data.i32,
-                    sizeof(CaptureRequest::mOriginalTestPatternData));
-        } else {
-            newRequest->mOriginalTestPatternData[0] = 0;
-            newRequest->mOriginalTestPatternData[1] = 0;
-            newRequest->mOriginalTestPatternData[2] = 0;
-            newRequest->mOriginalTestPatternData[3] = 0;
+            auto testPatternDataEntry =
+                    settings.metadata.find(ANDROID_SENSOR_TEST_PATTERN_DATA);
+            if (testPatternDataEntry.count >= 4) {
+                memcpy(settings.mOriginalTestPatternData, testPatternDataEntry.data.i32,
+                        sizeof(PhysicalCameraSettings::mOriginalTestPatternData));
+            } else {
+                settings.mOriginalTestPatternData[0] = 0;
+                settings.mOriginalTestPatternData[1] = 0;
+                settings.mOriginalTestPatternData[2] = 0;
+                settings.mOriginalTestPatternData[3] = 0;
+            }
         }
     }
 
@@ -2723,7 +2721,8 @@ status_t Camera3Device::configureStreamsLocked(int operatingMode,
                                                                 // always occupy the initial entry.
             if (outputStream->data_space == HAL_DATASPACE_V0_JFIF) {
                 bufferSizes[k] = static_cast<uint32_t>(
-                        getJpegBufferSize(outputStream->width, outputStream->height));
+                        getJpegBufferSize(infoPhysical(String8(outputStream->physical_camera_id)),
+                                outputStream->width, outputStream->height));
             } else if (outputStream->data_space ==
                     static_cast<android_dataspace>(HAL_DATASPACE_JPEG_APP_SEGMENTS)) {
                 bufferSizes[k] = outputStream->width * outputStream->height;
@@ -2864,28 +2863,17 @@ status_t Camera3Device::configureStreamsLocked(int operatingMode,
         mRequestBufferSM.onStreamsConfigured();
     }
 
-    // First call injectCamera() and then run configureStreamsLocked() case:
     // Since the streams configuration of the injection camera is based on the internal camera, we
-    // must wait until the internal camera configure streams before running the injection job to
+    // must wait until the internal camera configure streams before calling injectCamera() to
     // configure the injection streams.
     if (mInjectionMethods->isInjecting()) {
-        ALOGD("%s: Injection camera %s: Start to configure streams.",
+        ALOGV("%s: Injection camera %s: Start to configure streams.",
               __FUNCTION__, mInjectionMethods->getInjectedCamId().string());
         res = mInjectionMethods->injectCamera(config, bufferSizes);
         if (res != OK) {
             ALOGE("Can't finish inject camera process!");
             return res;
         }
-    } else {
-        // First run configureStreamsLocked() and then call injectCamera() case:
-        // If the stream configuration has been completed and camera deive is active, but the
-        // injection camera has not been injected yet, we need to store the stream configuration of
-        // the internal camera (because the stream configuration of the injection camera is based
-        // on the internal camera). When injecting occurs later, this configuration can be used by
-        // the injection camera.
-        ALOGV("%s: The stream configuration is complete and the camera device is active, but the"
-              " injection camera has not been injected yet.", __FUNCTION__);
-        mInjectionMethods->storeInjectionConfig(config, bufferSizes);
     }
 
     return OK;
@@ -3111,12 +3099,10 @@ CameraMetadata Camera3Device::getLatestRequestLocked() {
 
 void Camera3Device::monitorMetadata(TagMonitor::eventSource source,
         int64_t frameNumber, nsecs_t timestamp, const CameraMetadata& metadata,
-        const std::unordered_map<std::string, CameraMetadata>& physicalMetadata,
-        const camera_stream_buffer_t *outputBuffers, uint32_t numOutputBuffers,
-        int32_t inputStreamId) {
+        const std::unordered_map<std::string, CameraMetadata>& physicalMetadata) {
 
     mTagMonitor.monitorMetadata(source, frameNumber, timestamp, metadata,
-            physicalMetadata, outputBuffers, numOutputBuffers, inputStreamId);
+            physicalMetadata);
 }
 
 /**
@@ -4439,9 +4425,15 @@ status_t Camera3Device::RequestThread::clear(
 
 status_t Camera3Device::RequestThread::flush() {
     ATRACE_CALL();
+    status_t flush_status;
     Mutex::Autolock l(mFlushLock);
 
-    return mInterface->flush();
+    flush_status = mInterface->flush();
+    // We have completed flush, signal RequestThread::waitForNextRequestLocked() to no longer wait for
+    // new requests
+    mRequestSignal.signal();
+
+    return flush_status;
 }
 
 void Camera3Device::RequestThread::setPaused(bool paused) {
@@ -4625,15 +4617,9 @@ void Camera3Device::RequestThread::updateNextRequest(NextRequest& nextRequest) {
 
         sp<Camera3Device> parent = mParent.promote();
         if (parent != NULL) {
-            int32_t inputStreamId = -1;
-            if (halRequest.input_buffer != nullptr) {
-              inputStreamId = Camera3Stream::cast(halRequest.input_buffer->stream)->getId();
-            }
-
             parent->monitorMetadata(TagMonitor::REQUEST,
                     halRequest.frame_number,
-                    0, mLatestRequest, mLatestPhysicalRequest, halRequest.output_buffers,
-                    halRequest.num_output_buffers, inputStreamId);
+                    0, mLatestRequest, mLatestPhysicalRequest);
         }
     }
 
@@ -4831,6 +4817,26 @@ bool Camera3Device::RequestThread::threadLoop() {
     return submitRequestSuccess;
 }
 
+status_t Camera3Device::removeFwkOnlyRegionKeys(CameraMetadata *request) {
+    static const std::array<uint32_t, 4> kFwkOnlyRegionKeys = {ANDROID_CONTROL_AF_REGIONS_SET,
+        ANDROID_CONTROL_AE_REGIONS_SET, ANDROID_CONTROL_AWB_REGIONS_SET,
+        ANDROID_SCALER_CROP_REGION_SET};
+    if (request == nullptr) {
+        ALOGE("%s request metadata nullptr", __FUNCTION__);
+        return BAD_VALUE;
+    }
+    status_t res = OK;
+    for (const auto &key : kFwkOnlyRegionKeys) {
+        if (request->exists(key)) {
+            res = request->erase(key);
+            if (res != OK) {
+                return res;
+            }
+        }
+    }
+    return OK;
+}
+
 status_t Camera3Device::RequestThread::prepareHalRequests() {
     ATRACE_CALL();
 
@@ -4894,6 +4900,12 @@ status_t Camera3Device::RequestThread::prepareHalRequests() {
                             it != captureRequest->mSettingsList.end(); it++) {
                         if (parent->mUHRCropAndMeteringRegionMappers.find(it->cameraId) ==
                                 parent->mUHRCropAndMeteringRegionMappers.end()) {
+                            if (removeFwkOnlyRegionKeys(&(it->metadata)) != OK) {
+                                SET_ERR("RequestThread: Unable to remove fwk-only keys from request"
+                                        "%d: %s (%d)", halRequest->frame_number, strerror(-res),
+                                        res);
+                                return INVALID_OPERATION;
+                            }
                             continue;
                         }
 
@@ -4908,6 +4920,12 @@ status_t Camera3Device::RequestThread::prepareHalRequests() {
                                 return INVALID_OPERATION;
                             }
                             captureRequest->mUHRCropAndMeteringRegionsUpdated = true;
+                            if (removeFwkOnlyRegionKeys(&(it->metadata)) != OK) {
+                                SET_ERR("RequestThread: Unable to remove fwk-only keys from request"
+                                        "%d: %s (%d)", halRequest->frame_number, strerror(-res),
+                                        res);
+                                return INVALID_OPERATION;
+                            }
                         }
                     }
 
@@ -5935,48 +5953,53 @@ bool Camera3Device::RequestThread::overrideTestPattern(
 
     bool changed = false;
 
-    int32_t testPatternMode = request->mOriginalTestPatternMode;
-    int32_t testPatternData[4] = {
-        request->mOriginalTestPatternData[0],
-        request->mOriginalTestPatternData[1],
-        request->mOriginalTestPatternData[2],
-        request->mOriginalTestPatternData[3]
-    };
+    // For a multi-camera, the physical cameras support the same set of
+    // test pattern modes as the logical camera.
+    for (auto& settings : request->mSettingsList) {
+        CameraMetadata &metadata = settings.metadata;
 
-    if (mCameraMute != ANDROID_SENSOR_TEST_PATTERN_MODE_OFF) {
-        testPatternMode = mCameraMute;
-        testPatternData[0] = 0;
-        testPatternData[1] = 0;
-        testPatternData[2] = 0;
-        testPatternData[3] = 0;
-    }
-
-    CameraMetadata &metadata = request->mSettingsList.begin()->metadata;
-
-    auto testPatternEntry = metadata.find(ANDROID_SENSOR_TEST_PATTERN_MODE);
-    if (testPatternEntry.count > 0) {
-        if (testPatternEntry.data.i32[0] != testPatternMode) {
-            testPatternEntry.data.i32[0] = testPatternMode;
-            changed = true;
+        int32_t testPatternMode = settings.mOriginalTestPatternMode;
+        int32_t testPatternData[4] = {
+            settings.mOriginalTestPatternData[0],
+            settings.mOriginalTestPatternData[1],
+            settings.mOriginalTestPatternData[2],
+            settings.mOriginalTestPatternData[3]
+        };
+        if (mCameraMute != ANDROID_SENSOR_TEST_PATTERN_MODE_OFF) {
+            testPatternMode = mCameraMute;
+            testPatternData[0] = 0;
+            testPatternData[1] = 0;
+            testPatternData[2] = 0;
+            testPatternData[3] = 0;
         }
-    } else {
-        metadata.update(ANDROID_SENSOR_TEST_PATTERN_MODE,
-                &testPatternMode, 1);
-        changed = true;
-    }
 
-    auto testPatternColor = metadata.find(ANDROID_SENSOR_TEST_PATTERN_DATA);
-    if (testPatternColor.count >= 4) {
-        for (size_t i = 0; i < 4; i++) {
-            if (testPatternColor.data.i32[i] != testPatternData[i]) {
-                testPatternColor.data.i32[i] = testPatternData[i];
+        auto testPatternEntry = metadata.find(ANDROID_SENSOR_TEST_PATTERN_MODE);
+        bool supportTestPatternModeKey = settings.mHasTestPatternModeTag;
+        if (testPatternEntry.count > 0) {
+            if (testPatternEntry.data.i32[0] != testPatternMode) {
+                testPatternEntry.data.i32[0] = testPatternMode;
                 changed = true;
             }
+        } else if (supportTestPatternModeKey) {
+            metadata.update(ANDROID_SENSOR_TEST_PATTERN_MODE,
+                    &testPatternMode, 1);
+            changed = true;
         }
-    } else {
-        metadata.update(ANDROID_SENSOR_TEST_PATTERN_DATA,
-                testPatternData, 4);
-        changed = true;
+
+        auto testPatternColor = metadata.find(ANDROID_SENSOR_TEST_PATTERN_DATA);
+        bool supportTestPatternDataKey = settings.mHasTestPatternDataTag;
+        if (testPatternColor.count >= 4) {
+            for (size_t i = 0; i < 4; i++) {
+                if (testPatternColor.data.i32[i] != testPatternData[i]) {
+                    testPatternColor.data.i32[i] = testPatternData[i];
+                    changed = true;
+                }
+            }
+        } else if (supportTestPatternDataKey) {
+            metadata.update(ANDROID_SENSOR_TEST_PATTERN_DATA,
+                    testPatternData, 4);
+            changed = true;
+        }
     }
 
     return changed;
@@ -6646,13 +6669,6 @@ status_t Camera3Device::injectCamera(const String8& injectedCamId,
     ALOGI("%s Injection camera: injectedCamId = %s", __FUNCTION__, injectedCamId.string());
     ATRACE_CALL();
     Mutex::Autolock il(mInterfaceLock);
-    // When the camera device is active, injectCamera() and stopInjection() will call
-    // internalPauseAndWaitLocked() and internalResumeLocked(), and then they will call
-    // mStatusChanged.waitRelative(mLock, timeout) of waitUntilStateThenRelock(). But
-    // mStatusChanged.waitRelative(mLock, timeout)'s parameter: mutex "mLock" must be in the locked
-    // state, so we need to add "Mutex::Autolock l(mLock)" to lock the "mLock" before calling
-    // waitUntilStateThenRelock().
-    Mutex::Autolock l(mLock);
 
     status_t res = NO_ERROR;
     if (mInjectionMethods->isInjecting()) {
@@ -6675,25 +6691,16 @@ status_t Camera3Device::injectCamera(const String8& injectedCamId,
         return res;
     }
 
+    camera3::camera_stream_configuration injectionConfig;
+    std::vector<uint32_t> injectionBufferSizes;
+    mInjectionMethods->getInjectionConfig(&injectionConfig, &injectionBufferSizes);
     // When the second display of android is cast to the remote device, and the opened camera is
     // also cast to the second display, in this case, because the camera has configured the streams
     // at this time, we can directly call injectCamera() to replace the internal camera with
     // injection camera.
-    if (mInjectionMethods->isStreamConfigCompleteButNotInjected()) {
-        ALOGD("%s: The opened camera is directly cast to the remote device.", __FUNCTION__);
-
-        camera3::camera_stream_configuration injectionConfig;
-        std::vector<uint32_t> injectionBufferSizes;
-        mInjectionMethods->getInjectionConfig(&injectionConfig, &injectionBufferSizes);
-        if (mOperatingMode < 0 || injectionConfig.num_streams <= 0
-                    || injectionBufferSizes.size() <= 0) {
-            ALOGE("Failed to inject camera due to abandoned configuration! "
-                    "mOperatingMode: %d injectionConfig.num_streams: %d "
-                    "injectionBufferSizes.size(): %zu", mOperatingMode,
-                    injectionConfig.num_streams, injectionBufferSizes.size());
-            return DEAD_OBJECT;
-        }
-
+    if (mOperatingMode >= 0 && injectionConfig.num_streams > 0
+                && injectionBufferSizes.size() > 0) {
+        ALOGV("%s: The opened camera is directly cast to the remote device.", __FUNCTION__);
         res = mInjectionMethods->injectCamera(
                 injectionConfig, injectionBufferSizes);
         if (res != OK) {
@@ -6708,7 +6715,6 @@ status_t Camera3Device::injectCamera(const String8& injectedCamId,
 status_t Camera3Device::stopInjection() {
     ALOGI("%s: Injection camera: stopInjection", __FUNCTION__);
     Mutex::Autolock il(mInterfaceLock);
-    Mutex::Autolock l(mLock);
     return mInjectionMethods->stopInjection();
 }
 

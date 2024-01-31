@@ -20,6 +20,8 @@
 #include <android/hardware/BnCameraService.h>
 #include <android/hardware/BnSensorPrivacyListener.h>
 #include <android/hardware/ICameraServiceListener.h>
+#include <android/hardware/camera2/BnCameraInjectionSession.h>
+#include <android/hardware/camera2/ICameraInjectionCallback.h>
 
 #include <cutils/multiuser.h>
 #include <utils/Vector.h>
@@ -109,8 +111,16 @@ public:
     virtual void        onDeviceStatusChanged(const String8 &cameraId,
             const String8 &physicalCameraId,
             hardware::camera::common::V1_0::CameraDeviceStatus newHalStatus) override;
+    // This method may hold CameraProviderManager::mInterfaceMutex as a part
+    // of calling getSystemCameraKind() internally. Care should be taken not to
+    // directly / indirectly call this from callers who also hold
+    // mInterfaceMutex.
     virtual void        onTorchStatusChanged(const String8& cameraId,
             hardware::camera::common::V1_0::TorchModeStatus newStatus) override;
+    // Does not hold CameraProviderManager::mInterfaceMutex.
+    virtual void        onTorchStatusChanged(const String8& cameraId,
+            hardware::camera::common::V1_0::TorchModeStatus newStatus,
+            SystemCameraKind kind) override;
     virtual void        onNewProviderRegistered() override;
 
     /////////////////////////////////////////////////////////////////////
@@ -186,6 +196,13 @@ public:
             const String16& cameraId,
             /*out*/
             bool *isSupported);
+
+    virtual binder::Status injectCamera(
+            const String16& packageName, const String16& internalCamId,
+            const String16& externalCamId,
+            const sp<hardware::camera2::ICameraInjectionCallback>& callback,
+            /*out*/
+            sp<hardware::camera2::ICameraInjectionSession>* cameraInjectionSession);
 
     // Extra permissions checks
     virtual status_t    onTransact(uint32_t code, const Parcel& data,
@@ -269,10 +286,6 @@ public:
         virtual status_t dump(int fd, const Vector<String16>& args);
         // Internal dump method to be called by CameraService
         virtual status_t dumpClient(int fd, const Vector<String16>& args) = 0;
-
-        virtual status_t startWatchingTags(const String8 &tags, int outFd);
-        virtual status_t stopWatchingTags(int outFd);
-        virtual status_t dumpWatchedEventsToVector(std::vector<std::string> &out);
 
         // Return the package name for this client
         virtual String16 getPackageName() const;
@@ -565,7 +578,7 @@ private:
          * returned in the HAL's camera_info struct for each device.
          */
         CameraState(const String8& id, int cost, const std::set<String8>& conflicting,
-                SystemCameraKind deviceKind);
+                SystemCameraKind deviceKind, const std::vector<std::string>& physicalCameras);
         virtual ~CameraState();
 
         /**
@@ -623,16 +636,16 @@ private:
         SystemCameraKind getSystemCameraKind() const;
 
         /**
+         * Return whether this camera is a logical multi-camera and has a
+         * particular physical sub-camera.
+         */
+        bool containsPhysicalCamera(const std::string& physicalCameraId) const;
+
+        /**
          * Add/Remove the unavailable physical camera ID.
          */
         bool addUnavailablePhysicalId(const String8& physicalId);
         bool removeUnavailablePhysicalId(const String8& physicalId);
-
-        /**
-         * Set and get client package name.
-         */
-        void setClientPackage(const String8& clientPackage);
-        String8 getClientPackage() const;
 
         /**
          * Return the unavailable physical ids for this device.
@@ -646,10 +659,10 @@ private:
         const int mCost;
         std::set<String8> mConflicting;
         std::set<String8> mUnavailablePhysicalIds;
-        String8 mClientPackage;
         mutable Mutex mStatusLock;
         CameraParameters mShimParams;
         const SystemCameraKind mSystemCameraKind;
+        const std::vector<std::string> mPhysicalCameras; // Empty if not a logical multi-camera
     }; // class CameraState
 
     // Observer for UID lifecycle enforcing that UIDs in idle
@@ -665,13 +678,11 @@ private:
         bool isUidActive(uid_t uid, String16 callingPackage);
         int32_t getProcState(uid_t uid);
 
-        // IUidObserver
-        void onUidGone(uid_t uid, bool disabled) override;
-        void onUidActive(uid_t uid) override;
-        void onUidIdle(uid_t uid, bool disabled) override;
+        void onUidGone(uid_t uid, bool disabled);
+        void onUidActive(uid_t uid);
+        void onUidIdle(uid_t uid, bool disabled);
         void onUidStateChanged(uid_t uid, int32_t procState, int64_t procStateSeq,
-                int32_t capability) override;
-        void onUidProcAdjChanged(uid_t uid) override;
+                int32_t capability);
 
         void addOverrideUid(uid_t uid, String16 callingPackage, bool active);
         void removeOverrideUid(uid_t uid, String16 callingPackage);
@@ -686,18 +697,13 @@ private:
         int32_t getProcStateLocked(uid_t uid);
         void updateOverrideUid(uid_t uid, String16 callingPackage, bool active, bool insert);
 
-        struct MonitoredUid {
-            int32_t procState;
-            size_t refCount;
-        };
-
         Mutex mUidLock;
         bool mRegistered;
         ActivityManager mAm;
         wp<CameraService> mService;
         std::unordered_set<uid_t> mActiveUids;
-        // Monitored uid map
-        std::unordered_map<uid_t, MonitoredUid> mMonitoredUids;
+        // Monitored uid map to cached procState and refCount pair
+        std::unordered_map<uid_t, std::pair<int32_t, size_t>> mMonitoredUids;
         std::unordered_map<uid_t, bool> mOverrideUids;
     }; // class UidPolicy
 
@@ -713,10 +719,9 @@ private:
             void unregisterSelf();
 
             bool isSensorPrivacyEnabled();
-            bool isCameraPrivacyEnabled();
+            bool isCameraPrivacyEnabled(userid_t userId);
 
-            binder::Status onSensorPrivacyChanged(int toggleType, int sensor,
-                                                  bool enabled);
+            binder::Status onSensorPrivacyChanged(bool enabled);
 
             // IBinder::DeathRecipient implementation
             virtual void binderDied(const wp<IBinder> &who);
@@ -826,14 +831,6 @@ private:
     // Circular buffer for storing event logging for dumps
     RingBuffer<String8> mEventLog;
     Mutex mLogLock;
-
-    // set of client package names to watch. if this set contains 'all', then all clients will
-    // be watched. Access should be guarded by mLogLock
-    std::set<String16> mWatchedClientPackages;
-    // cache of last monitored tags dump immediately before the client disconnects. If a client
-    // re-connects, its entry is not updated until it disconnects again. Access should be guarded
-    // by mLogLock
-    std::map<String16, std::string> mWatchedClientsDumpCache;
 
     // The last monitored tags set by client
     String8 mMonitorTags;
@@ -966,8 +963,6 @@ private:
      * Dump the event log to an FD
      */
     void dumpEventLog(int fd);
-
-    void cacheClientTagDumpIfNeeded(const char *cameraId, BasicClient *client);
 
     /**
      * This method will acquire mServiceLock
@@ -1161,42 +1156,8 @@ private:
     // Set the camera mute state
     status_t handleSetCameraMute(const Vector<String16>& args);
 
-    // Handle 'watch' command as passed through 'cmd'
-    status_t handleWatchCommand(const Vector<String16> &args, int inFd, int outFd);
-
-    // Enable tag monitoring of the given tags in provided clients
-    status_t startWatchingTags(const Vector<String16> &args, int outFd);
-
-    // Disable tag monitoring
-    status_t stopWatchingTags(int outFd);
-
-    // Clears mWatchedClientsDumpCache
-    status_t clearCachedMonitoredTagDumps(int outFd);
-
-    // Print events of monitored tags in all cached and attached clients
-    status_t printWatchedTags(int outFd);
-
-    // Print events of monitored tags in all attached clients as they are captured. New events are
-    // fetched every `refreshMillis` ms
-    // NOTE: This function does not terminate until user passes '\n' to inFd.
-    status_t printWatchedTagsUntilInterrupt(const Vector<String16> &args, int inFd, int outFd);
-
-    // Parses comma separated clients list and adds them to mWatchedClientPackages.
-    // Does not acquire mLogLock before modifying mWatchedClientPackages. It is the caller's
-    // responsibility to acquire mLogLock before calling this function.
-    void parseClientsToWatchLocked(String8 clients);
-
     // Prints the shell command help
     status_t printHelp(int out);
-
-    // Returns true if client should monitor tags based on the contents of mWatchedClientPackages.
-    // Acquires mLogLock before querying mWatchedClientPackages.
-    bool isClientWatched(const BasicClient *client);
-
-    // Returns true if client should monitor tags based on the contents of mWatchedClientPackages.
-    // Does not acquire mLogLock before querying mWatchedClientPackages. It is the caller's
-    // responsibility to acquire mLogLock before calling this functions.
-    bool isClientWatchedLocked(const BasicClient *client);
 
     /**
      * Get the current system time as a formatted string.
@@ -1228,10 +1189,6 @@ private:
     // Use separate keys for offline devices.
     static const String8 kOfflineDevice;
 
-    // Sentinel value to be stored in `mWatchedClientsPackages` to indicate that all clients should
-    // be watched.
-    static const String16 kWatchAllClientsFlag;
-
     // TODO: right now each BasicClient holds one AppOpsManager instance.
     // We can refactor the code so all of clients share this instance
     AppOpsManager mAppOps;
@@ -1247,6 +1204,46 @@ private:
 
     // Current camera mute mode
     bool mOverrideCameraMuteMode = false;
+
+    /**
+     * A listener class that implements the IBinder::DeathRecipient interface
+     * for use to call back the error state injected by the external camera, and
+     * camera service can kill the injection when binder signals process death.
+     */
+    class InjectionStatusListener : public virtual IBinder::DeathRecipient {
+        public:
+            InjectionStatusListener(sp<CameraService> parent) : mParent(parent) {}
+
+            void addListener(const sp<hardware::camera2::ICameraInjectionCallback>& callback);
+            void removeListener();
+            void notifyInjectionError(int errorCode);
+
+            // IBinder::DeathRecipient implementation
+            virtual void binderDied(const wp<IBinder>& who);
+
+        private:
+            Mutex mListenerLock;
+            wp<CameraService> mParent;
+            sp<hardware::camera2::ICameraInjectionCallback> mCameraInjectionCallback;
+    };
+
+    sp<InjectionStatusListener> mInjectionStatusListener;
+
+    /**
+     * A class that implements the hardware::camera2::BnCameraInjectionSession interface
+     */
+    class CameraInjectionSession : public hardware::camera2::BnCameraInjectionSession {
+        public:
+            CameraInjectionSession(sp<CameraService> parent) : mParent(parent) {}
+            virtual ~CameraInjectionSession() {}
+            binder::Status stopInjection() override;
+
+        private:
+            Mutex mInjectionSessionLock;
+            wp<CameraService> mParent;
+    };
+
+    void stopInjectionImpl();
 };
 
 } // namespace android

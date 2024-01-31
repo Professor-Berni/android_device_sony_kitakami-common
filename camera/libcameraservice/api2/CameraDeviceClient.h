@@ -199,10 +199,6 @@ public:
 
     virtual status_t      dumpClient(int fd, const Vector<String16>& args);
 
-    virtual status_t      startWatchingTags(const String8 &tags, int out);
-    virtual status_t      stopWatchingTags(int out);
-    virtual status_t      dumpWatchedEventsToVector(std::vector<std::string> &out);
-
     /**
      * Device listener interface
      */
@@ -317,6 +313,7 @@ private:
     static const int32_t REQUEST_ID_NONE = -1;
 
     int32_t mRequestIdCounter;
+    bool mPrivilegedClient;
 
     std::vector<std::string> mPhysicalCameraIds;
 
