@@ -39,7 +39,7 @@ ro.charger.enable_suspend=true
 # Bluetooth
 bluetooth.enable_timeout_ms=12000
 ro.bluetooth.hfp.ver=1.6
-ro.bt.bdaddr_path=/data/etc/bluetooth_bdaddr
+ro.bt.bdaddr_path=/data/vendor/bluetooth/bluetooth_bdaddr
 bluetooth.core.le.vendor_capabilities.enabled=false
 bluetooth.le.disable_apcf_extended_features=1
 
@@ -136,6 +136,4 @@ ro.qc.sdk.sensors.gestures=true
 
 # Wifi
 wifi.interface=wlan0
-
-# Additional Vendor Default Properties
-ro.vndk.version=31
+ro.vendor.wifi.addr_path=/dev/null

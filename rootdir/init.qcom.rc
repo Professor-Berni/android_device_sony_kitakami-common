@@ -41,10 +41,6 @@ on early-init
     write /sys/module/msm_performance/parameters/managed_cpus 4-7
 
 on init
-    wait /dev/block/mmcblk0p1
-    chown oem_2997 oem_2997 /dev/block/mmcblk0p1
-    chmod 0770 /dev/block/mmcblk0p1
-
     # default is root radio 0440
     chmod 0644 /proc/cmdline
 
@@ -53,6 +49,7 @@ on init
     
     # E system_server: open failed: /dev/mdm: No such file or directory
     mkdir /dev/mdm 0775 system system
+    mkdir /persist/data 0700 system system
 
     write /sys/devices/soc.0/f98a4900.sdhci/mmc_host/mmc1/clkgate_delay 1
     # Avoid long waits for rcu grace periods
@@ -348,6 +345,9 @@ on post-fs-data
     mkdir /data/misc/ipa 0700 net_admin net_admin
 
     mkdir /data/misc/bluetooth 0770 bluetooth bluetooth
+    mkdir /data/vendor/bluetooth 0770 bluetooth bluetooth
+    chown bluetooth bluetooth /data/vendor/bluetooth/bluetooth_bdaddr
+    chmod 0770 /data/vendor/bluetooth/bluetooth_bdaddr
 
     # Create the directories used by the Wireless subsystem
     mkdir /data/vendor/wifi 0770 wifi wifi

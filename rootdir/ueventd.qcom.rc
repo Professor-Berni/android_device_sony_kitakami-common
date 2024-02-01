@@ -248,6 +248,7 @@
 /dev/block/bootdevice/by-name/config 0600  system      system
 
 # TA
+/dev/block/mmcblk0p1             0770  oem_2997      oem_2997
 /dev/block/bootdevice/by-name/TA 0770  oem_2997      oem_2997
 
 # Fingerprint sensor SPI device
