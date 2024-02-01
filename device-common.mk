@@ -135,13 +135,13 @@ PRODUCT_PACKAGES += \
 
 # Camera
 PRODUCT_PACKAGES += \
-    android.hardware.camera.provider@2.4-impl-kitakami \
+    android.hardware.camera.provider@2.4-service \
+    android.hardware.camera.provider@2.4-impl-kitakami:32 \
     camera.msm8994 \
     Aperture \
     libyuv \
     libexif \
-    vendor.qti.hardware.camera.device@1.0 \
-    vendor.qti.hardware.camera.device@1.0_vendor
+    vendor.qti.hardware.camera.device@1.0
 
 # Charger
 PRODUCT_PACKAGES += charger_res_images
