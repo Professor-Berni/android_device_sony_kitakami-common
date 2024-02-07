@@ -205,6 +205,14 @@ PRODUCT_PACKAGES += \
     libhidltransport \
     libhwbinder
 
+# IMS
+PRODUCT_PACKAGES += \
+    libbase_shim \
+    libui_shim \
+    libshims_ims \
+    libshim_libimsmedia \
+    libshims_boringssl
+
 # Init
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/fstab.qcom:$(TARGET_COPY_OUT_ROOT)/fstab.qcom \
