@@ -188,6 +188,12 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/flashled_calc_parameters.cfg:$(TARGET_COPY_OUT_SYSTEM)/etc/flashled_calc_parameters.cfg
 
+# FM
+#PRODUCT_PACKAGES += \
+#    FMRadio \
+#    brcm-uim-sysfs \
+#    libfmradio.v4l2-fm
+
 # Gatekeeper
 PRODUCT_PACKAGES += \
     android.hardware.gatekeeper@1.0-impl \
