@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2016 The CyanogenMod Project
-# Copyright (C) 2017-2020 The LineageOS Project
+# Copyright (C) 2017-2024 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -77,12 +77,11 @@ PRODUCT_PACKAGES += \
     android.hardware.audio@7.1-impl \
     android.hardware.audio.effect@7.0-impl \
     android.hardware.audio.service \
-    android.hardware.audio.effect@2.0-impl \
-    android.hardware.audio.effect@6.0-impl \
     android.hardware.bluetooth.audio@2.1-impl \
     android.hardware.soundtrigger@2.0 \
     android.hardware.soundtrigger@2.0-core \
     android.hardware.soundtrigger@2.0-impl \
+    audio.bluetooth.default \
     audio.primary.msm8994 \
     audio.r_submix.default \
     audio.usb.default \
@@ -127,18 +126,16 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     android.hardware.bluetooth@1.0-impl \
     android.hardware.bluetooth@1.0-service \
-    android.hardware.bluetooth.audio-impl \
-    audio.bluetooth.default \
     libbt-vendor
 
 # Camera
 PRODUCT_PACKAGES += \
-    android.hardware.camera.provider@2.4-service \
     android.hardware.camera.provider@2.4-impl-kitakami:32 \
+    android.hardware.camera.provider@2.4-service \
     camera.msm8994 \
     Aperture \
-    libyuv \
     libexif \
+    libyuv \
     vendor.qti.hardware.camera.device@1.0
 
 # Charger
@@ -164,8 +161,8 @@ PRODUCT_PACKAGES += \
     copybit.msm8994 \
     gralloc.msm8994 \
     hwcomposer.msm8994 \
-    memtrack.msm8994 \
-    libtinyxml
+    libtinyxml \
+    memtrack.msm8994
 
 # DRM
 PRODUCT_PACKAGES += \
@@ -281,6 +278,7 @@ PRODUCT_PACKAGES += \
     libOmxSwVencHevc \
     libOmxVdec \
     libOmxVenc \
+    libOmxVidcCommon \
     libstagefrighthw \
     libstagefright_soft_flacdec \
     android.hardware.media.c2@1.2 \
@@ -296,8 +294,8 @@ PRODUCT_COPY_FILES += \
 
 # Net
 PRODUCT_PACKAGES += \
-    libandroid_net \
-    android.system.net.netd@1.1
+    android.system.net.netd@1.1 \
+    libandroid_net
 
 # Neuralnetworks
 PRODUCT_PACKAGES += \
