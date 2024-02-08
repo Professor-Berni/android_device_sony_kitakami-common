@@ -78,16 +78,24 @@ LOCAL_SHARED_LIBRARIES := libui
 LOCAL_MODULE := libshim_ui
 LOCAL_MODULE_CLASS := SHARED_LIBRARIES
 LOCAL_MODULE_TAGS := optional
-LOCAL_MULTILIB := both
+LOCAL_VENDOR_MODULE := true
 
 include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 
+LOCAL_SRC_FILES := libshim_sensors.cpp
+LOCAL_MODULE := libshim_sensors
+LOCAL_SHARED_LIBRARIES := libsensor libutils
+LOCAL_MODULE_TAGS := optional
+LOCAL_MULTILIB := both
+
+include $(BUILD_SHARED_LIBRARY)
+
+include $(CLEAR_VARS)
 LOCAL_SRC_FILES := libshims_postproc.cpp
 LOCAL_CFLAGS := -Wno-unused-parameter
 LOCAL_MODULE := libshims_postproc
 LOCAL_MODULE_TAGS := optional
 LOCAL_VENDOR_MODULE := true
-
 include $(BUILD_SHARED_LIBRARY)
