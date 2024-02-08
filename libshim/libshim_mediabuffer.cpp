@@ -1,6 +1,5 @@
 /*
  * Copyright (C) 2016 The CyanogenMod Project
- * Copyright (C) 2017-2021 The LineageOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +25,4 @@ int _ZNK7android11MediaBuffer8refcountEv(android::MediaBuffer *thisptr) {
 
 void _ZN7android13GraphicBuffer4lockEjPPv() {}
 void _ZNK7android11MediaBuffer13graphicBufferEv() {}
-
-void _ZN7android7SurfaceC1ERKNS_2spINS_22IGraphicBufferProducerEEEb() {}
 }
-
