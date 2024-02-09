@@ -36,7 +36,7 @@ PRODUCT_PACKAGES += \
 # RIL
 PRODUCT_PACKAGES += \
     android.hardware.radio@1.2-radio-service \
-    android.hardware.secure_element@1.2
+    android.hardware.secure_element
 
 # Telephony
 PRODUCT_PACKAGES += \
