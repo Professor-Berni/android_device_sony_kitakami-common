@@ -574,7 +574,7 @@ service vendor.imsqmidaemon /system/vendor/bin/imsqmidaemon
     user system
     socket ims_qmid stream 0660 system radio
     group radio log diag
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 service vendor.imsdatadaemon /system/vendor/bin/imsdatadaemon
     class main
@@ -591,13 +591,13 @@ service vendor.ims_rtp_daemon /system/vendor/bin/ims_rtp_daemon
     user system
     socket ims_rtpd stream 0660 system radio
     group radio diag inet log
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 service vendor.imsrcsservice /system/vendor/bin/imsrcsd
    class main
    user system
    group radio diag inet log
-   writepid /dev/cpuset/system-background/tasks
+   task_profiles ServiceCapacityLow
 
 on property:vendor.ims.DATA_DAEMON_STATUS=1
     restart vendor.ims_rtp_daemon
@@ -637,19 +637,19 @@ service msm_irqbalance /system/bin/msm_irqbalance -f /system/vendor/etc/msm_irqb
     class main
     user root
     group root
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 service mm-qcamerad /system/bin/mm-qcamera-daemon
     class late_start
     user camera
     group camera system inet input graphics
-    writepid /dev/cpuset/camera-daemon/tasks
+    task_profiles ServiceCapacityLow
 
 service qseecomd /system/bin/qseecomd
     class core
     user root
     group root
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 on property:sys.listeners.registered=*
     setprop sys.keymaster.loaded ${vendor.sys.listeners.registered}
@@ -661,7 +661,7 @@ service vendor.perfd /system/vendor/bin/perfd
     group system
     disabled
     socket perfd seqpacket 0666 root system
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 service thermal-engine /system/vendor/bin/thermal-engine
    class main
@@ -682,34 +682,34 @@ service tad /system/bin/tad_static /dev/block/bootdevice/by-name/TA 0,16
     user oem_2997
     group oem_2997 root
     socket tad stream 0660 system oem_2993
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 # SONY misc
 service ta_qmi_service /system/bin/ta_qmi_service
     class main
     user root
     group wakelock
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 # SONY prop
 service sct_service /system/bin/sct_service
     class main
     user root
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 # SONY prop
 service mlog_qmi_service /system/bin/mlog_qmi_service
     class main
     user root
     group system wakelock drmrpc
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 # QCOM prop
 service rmt_storage /system/bin/rmt_storage
     class core
     user root
     group system wakelock drmrpc
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
     shutdown critical
 
 # DSDS second ril
@@ -735,13 +735,13 @@ service qmuxd /system/bin/qmuxd
     class main
     user radio
     group radio audio bluetooth gps diag drmrpc oem_2950
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 # QCOM prop
 service netmgrd /system/bin/netmgrd
     class main
     group root wifi wakelock radio inet oem_2950
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 service taimport /system/bin/taimport
     class late_start
@@ -765,7 +765,7 @@ service per_mgr /system/bin/pm-service
     class core
     user system
     group system net_raw
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 service per_proxy /system/bin/pm-proxy
     class core
@@ -784,14 +784,14 @@ service ppd /system/vendor/bin/mm-pp-daemon
     user system
     socket pps stream 0660 system system
     group system graphics
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 # brcm-uim-sysfs (BT/FM/ANT+)
 #service uim /system/vendor/bin/brcm-uim-sysfs
 #    class late_start
 #    user root
 #    group bluetooth net_bt_admin net_bt
-#    writepid /dev/cpuset/system-background/tasks
+#    task_profiles ServiceCapacityLow
 
 on property:persist.radio.multisim.config=dsds
     enable ril-daemon2
