@@ -632,7 +632,7 @@ on property:ro.data.large_tcp_window_size=true
 on property:dev.bootcomplete=1
     swapon_all fstab.qcom
 
-service msm_irqbalance /system/bin/msm_irqbalance -f /system/vendor/etc/msm_irqbalance.conf
+service msm_irqbalance /system/vendor/bin/msm_irqbalance -f /system/vendor/etc/msm_irqbalance.conf
     socket msm_irqbalance seqpacket 660 root system
     class main
     user root

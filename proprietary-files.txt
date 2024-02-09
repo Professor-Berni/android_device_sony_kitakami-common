@@ -134,7 +134,7 @@ vendor/lib64/libconnctrl.so
 vendor/lib/libconnctrl.so
 
 # Perf
-bin/msm_irqbalance
+bin/msm_irqbalance:vendor/bin/msm_irqbalance
 vendor/bin/perfd
 vendor/etc/perf-profile0.conf
 vendor/etc/perf-profile1.conf
