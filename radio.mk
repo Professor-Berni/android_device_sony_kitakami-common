@@ -26,17 +26,9 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     libqdMetaData.system
 
-# RCS
-PRODUCT_PACKAGES += \
-    rcs_service_aidl \
-    rcs_service_aidl.xml \
-    rcs_service_api \
-    rcs_service_api.xml
-
 # RIL
 PRODUCT_PACKAGES += \
-    android.hardware.radio@1.2-radio-service \
-    android.hardware.secure_element
+    android.hardware.radio@1.2-radio-service
 
 # Telephony
 PRODUCT_PACKAGES += \
