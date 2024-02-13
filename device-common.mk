@@ -278,9 +278,7 @@ PRODUCT_PACKAGES += \
     libOmxVenc \
     libOmxVidcCommon \
     libstagefrighthw \
-    libstagefright_soft_flacdec \
-    android.hardware.media.c2@1.2 \
-    android.hardware.media.omx@1.0-service
+    libstagefright_soft_flacdec
 
 PRODUCT_COPY_FILES += \
     frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_audio.xml \
