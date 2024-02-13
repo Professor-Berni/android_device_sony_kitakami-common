@@ -15,3 +15,4 @@ allow toolbox sysfs_devices_system_cpu:file write;
 allow toolbox sysfs:file r_file_perms;
 allow toolbox tmp_root_mount_file:dir create_dir_perms;
 allow toolbox unlabeled:dir create_dir_perms;
+allow toolbox vendor_file:file r_file_perms;

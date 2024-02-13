@@ -9,6 +9,7 @@ allow sensors socket_device:sock_file create_file_perms;
 allow sensors sysfs:dir r_dir_perms;
 allow sensors sysfs:file r_file_perms;
 allow sensors sysfs_wake_lock:file w_file_perms;
+allow sensors system_file:file r_file_perms;
 allow sensors tmp_root_mount_file:dir create_dir_perms;
 allow sensors tmp_root_mount_file:file rw_file_perms;
 allow sensors unlabeled:dir create_dir_perms;

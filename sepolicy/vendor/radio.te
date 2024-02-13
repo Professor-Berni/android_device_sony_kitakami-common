@@ -1,3 +1,5 @@
 allow radio default_android_hwservice:hwservice_manager find;
 allow radio device:chr_file rw_file_perms;
+allow radio rild:unix_stream_socket connectto;
 allow radio socket_device:sock_file write;
+allow radio vendor_file:file rwx_file_perms;

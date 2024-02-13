@@ -4,3 +4,4 @@ allow untrusted_app qemu_hw_prop:file r_file_perms;
 allow untrusted_app qemu_sf_lcd_density_prop:file r_file_perms;
 allow untrusted_app self:netlink_route_socket bind;
 allow untrusted_app serialno_prop:file r_file_perms;
+allow untrusted_app vendor_file:file rx_file_perms;

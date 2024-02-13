@@ -1,0 +1,1 @@
+allow prng_seeder vendor_file:file r_file_perms;

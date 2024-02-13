@@ -1,3 +1,4 @@
+allow crash_dump app_data_file:file r_file_perms;
 allow crash_dump bluetooth_data_file:file r_file_perms;
 allow crash_dump camera_prop:file r_file_perms;
 allow crash_dump device:chr_file r_file_perms;
@@ -7,3 +8,4 @@ allow crash_dump qemu_sf_lcd_density_prop:file r_file_perms;
 allow crash_dump resourcecache_data_file:file r_file_perms;
 allow crash_dump self:capability sys_nice;
 allow crash_dump vendor_default_prop:file r_file_perms;
+allow crash_dump vendor_overlay_file:file r_file_perms;

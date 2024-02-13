@@ -1,2 +1,3 @@
 allow mediaextractor logdr_socket:sock_file write;
 allow mediaextractor logd:unix_stream_socket connectto;
+allow mediaextractor vendor_file:file r_file_perms;

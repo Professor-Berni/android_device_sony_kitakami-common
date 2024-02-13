@@ -1,0 +1,17 @@
+type brcm_uim, domain;
+type brcm_uim_exec, exec_type, file_type;
+
+# Started by init
+init_daemon_domain(brcm_uim)
+
+r_dir_file(brcm_uim, ta_data_file)
+rw_dir_file(brcm_uim, bluetooth_data_file)
+rw_dir_file(brcm_uim, brcm_ldisc_sysfs)
+rw_dir_file(brcm_uim, sysfs)
+rw_dir_file(brcm_uim, sysfs_bluetooth_writable)
+
+allow brcm_uim bluetooth_prop:file r_file_perms;
+allow brcm_uim exported_bluetooth_prop:file r_file_perms;
+allow brcm_uim hci_attach_dev:chr_file rw_file_perms;
+allow brcm_uim property_socket:sock_file write;
+allow brcm_uim self:capability net_admin;

@@ -1,1 +1,2 @@
 allow lmkd device:file rw_file_perms;
+allow lmkd vendor_file:file r_file_perms;

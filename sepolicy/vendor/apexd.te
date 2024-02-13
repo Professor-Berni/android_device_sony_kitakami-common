@@ -1,0 +1,1 @@
+allow apexd vendor_file:file r_file_perms;

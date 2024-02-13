@@ -1,0 +1,1 @@
+allow blkid_untrusted vendor_file:file r_file_perms;

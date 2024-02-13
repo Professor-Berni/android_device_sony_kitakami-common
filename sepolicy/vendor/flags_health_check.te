@@ -1,5 +1,6 @@
 allow flags_health_check aac_drc_prop:file r_file_perms;
 allow flags_health_check ab_update_gki_prop:file open;
+allow flags_health_check vendor_file:file r_file_perms;
 allow flags_health_check vendor_security_patch_level_prop:file getattr;
 allow flags_health_check vendor_system_prop:file r_file_perms;
 allow flags_health_check vendor_wifi_prop:file r_file_perms;

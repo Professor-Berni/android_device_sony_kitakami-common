@@ -3,3 +3,4 @@ allow untrusted_app_30 proc_tty_drivers:file r_file_perms;
 allow untrusted_app_30 qemu_hw_prop:file r_file_perms;
 allow untrusted_app_30 qemu_sf_lcd_density_prop:file r_file_perms;
 allow untrusted_app_30 serialno_prop:file r_file_perms;
+allow untrusted_app_30 vendor_file:file rx_file_perms;

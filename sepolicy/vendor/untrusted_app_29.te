@@ -1,0 +1,2 @@
+allow untrusted_app_29 qemu_hw_prop:file r_file_perms;
+allow untrusted_app_29 vendor_file:file rx_file_perms;

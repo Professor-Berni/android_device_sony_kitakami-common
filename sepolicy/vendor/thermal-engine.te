@@ -10,6 +10,7 @@ allow thermal-engine socket_device:dir w_dir_perms;
 allow thermal-engine socket_device:sock_file create_file_perms;
 allow thermal-engine sysfs:dir r_dir_perms;
 allow thermal-engine sysfs:file rw_file_perms;
+allow thermal-engine system_file:file r_file_perms;
 allow thermal-engine ta_data_file:dir search;
 allow thermal-engine ta_data_file:file r_file_perms;
 allow thermal-engine tmp_root_mount_file:dir search;

@@ -9,6 +9,7 @@ allow mm-qcamerad hal_camera_default:fd use;
 allow mm-qcamerad ion_device:chr_file r_file_perms;
 allow mm-qcamerad sysfs:file rw_file_perms;
 allow mm-qcamerad sysfs_graphics:file r_file_perms;
+allow mm-qcamerad system_file:file r_file_perms;
 allow mm-qcamerad ta_data_file:dir search;
 allow mm-qcamerad ta_data_file:file r_file_perms;
 allow mm-qcamerad video_device:chr_file rw_file_perms;

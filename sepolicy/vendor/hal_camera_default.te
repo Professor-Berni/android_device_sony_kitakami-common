@@ -16,6 +16,7 @@ allow hal_camera_default sensorservice_service:service_manager find;
 allow hal_camera_default servicemanager:binder call;
 allow hal_camera_default socket_device:sock_file write;
 allow hal_camera_default sysfs:file r_file_perms;
+allow hal_camera_default system_file:file r_file_perms;
 allow hal_camera_default system_server:binder call;
 allow hal_camera_default ta_data_file:dir search;
 allow hal_camera_default ta_data_file:file r_file_perms;

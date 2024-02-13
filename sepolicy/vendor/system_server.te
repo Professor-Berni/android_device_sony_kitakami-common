@@ -36,5 +36,6 @@ allow system_server untrusted_app_29:process getattr;
 allow system_server untrusted_app_30:process getattr;
 allow system_server untrusted_app:process getattr;
 allow system_server vendor_default_prop:file r_file_perms;
+allow system_server vendor_file:file rx_file_perms;
 allow system_server vendor_security_patch_level_prop:file r_file_perms;
 allow system_server vold:process getattr;

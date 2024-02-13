@@ -1,1 +1,2 @@
 allow servicemanager init:binder transfer;
+allow servicemanager vendor_file:file r_file_perms;

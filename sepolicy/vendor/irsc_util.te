@@ -1,1 +1,2 @@
 allow irsc_util self:socket create_socket_perms;
+allow irsc_util system_file:file r_file_perms;

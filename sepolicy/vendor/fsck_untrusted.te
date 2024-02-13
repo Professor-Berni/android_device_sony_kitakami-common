@@ -1,0 +1,1 @@
+allow fsck_untrusted vendor_file:file r_file_perms;
