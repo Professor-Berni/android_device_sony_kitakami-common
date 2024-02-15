@@ -6,6 +6,7 @@ allow system_app hal_wifi_supplicant_default:binder call;
 allow system_app init:binder call;
 allow system_app installd:binder call;
 allow system_app proc_pagetypeinfo:file r_file_perms;
+allow system_app sysfs:file r_file_perms;
 allow system_app sysfs_rtc:dir search;
 allow system_app sysfs_zram:dir search;
 allow system_app sysfs_zram:file r_file_perms;
