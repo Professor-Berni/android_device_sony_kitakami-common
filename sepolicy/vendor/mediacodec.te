@@ -1,1 +1,2 @@
+allow mediacodec default_android_vndservice:service_manager find;
 allow mediacodec default_prop:file r_file_perms;

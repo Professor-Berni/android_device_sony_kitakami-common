@@ -10,7 +10,7 @@ allow rild netmgrd:unix_stream_socket connectto;
 allow rild qmuxd:unix_stream_socket connectto;
 allow rild radio_core_data_file:dir rw_dir_perms;
 allow rild radio_core_data_file:file create_file_perms;
-allow rild self:capability { chown dac_override sys_module };
+allow rild self:capability { chown dac_override sys_module sys_resource };
 allow rild self:socket ioctl;
 allow rild servicemanager:binder call;
 allow rild socket_device:dir rw_dir_perms;

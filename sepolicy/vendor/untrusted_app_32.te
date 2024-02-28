@@ -1,2 +1,3 @@
+allow untrusted_app_32 rootfs:dir r_dir_perms;
 allow untrusted_app_32 self:netlink_route_socket bind;
 allow untrusted_app_32 vendor_file:file rx_file_perms;
