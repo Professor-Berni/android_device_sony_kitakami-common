@@ -1,7 +1,3 @@
-# Camera
-/sys/devices(/soc\.0)?/pmi8994-flash-27(/.*)?              u:object_r:sysfs_camera_torch:s0
-/(system|system/vendor)/bin/cameraserver_kitakami          u:object_r:cameraserver_exec:s0
-
 # DRM
 /data/vendor/mediadrm(/.*)?                                u:object_r:mediadrm_vendor_data_file:s0
 /(system|system/vendor)/bin/hw/android\.hardware\.drm@1\.[0-9]-service.clearkey u:object_r:hal_drm_clearkey_exec:s0
@@ -27,7 +23,6 @@
 /(system|system/vendor)/bin/init\.qcom\.power\.sh          u:object_r:init-power-sh_exec:s0
 /(system|system/vendor)/bin/irsc_util                      u:object_r:irsc_util_exec:s0
 /(system|system/vendor)/bin/mlog_qmi_service               u:object_r:mlog_qmi_service_exec:s0
-/(system|system/vendor)/bin/mm-qcamera-daemon              u:object_r:mm-qcamerad_exec:s0
 /(system|system/vendor)/bin/mm-pp-daemon                   u:object_r:ppd_exec:s0
 /(system|system/vendor)/bin/msm_irqbalance                 u:object_r:msm_irqbalance_exec:s0
 /(system|system/vendor)/bin/netmgrd                        u:object_r:netmgrd_exec:s0
