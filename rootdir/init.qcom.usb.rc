@@ -36,7 +36,7 @@ on boot
     write /sys/class/android_usb/android0/f_rndis/manufacturer ${ro.product.manufacturer}
     setprop persist.sys.usb.config.extra none
 
-on charger
+on property:init.svc.vendor.charger=running
     setprop persist.sys.usb.config mass_storage
 
 on fs
