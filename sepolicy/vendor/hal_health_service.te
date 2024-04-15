@@ -1,7 +1,0 @@
-type hal_health_service, domain;
-type hal_health_service_exec, exec_type, file_type;
-
-# Started by init
-init_daemon_domain(hal_health_service)
-
-

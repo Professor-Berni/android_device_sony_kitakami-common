@@ -18,7 +18,7 @@
 /dev/ttyHS0                                                u:object_r:hci_attach_dev:s0
 
 # Health
-/(system|system/vendor)/bin/hw/android\.hardware\.health-service\.qti u:object_r:hal_health_service_exec:s0
+/(system|system/vendor)/bin/hw/android\.hardware\.health-service\.qti u:object_r:hal_health_service_qti_exec:s0
 
 # Misc
 /(system|system/vendor)/bin/adsprpcd                       u:object_r:adsprpcd_exec:s0
