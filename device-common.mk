@@ -200,8 +200,7 @@ PRODUCT_PACKAGES += \
 
 # Health HAL
 PRODUCT_PACKAGES += \
-    android.hardware.health-service.qti \
-    android.hardware.health-service.qti_recovery
+    android.hardware.health-service.qti
 
 # HIDL
 PRODUCT_PACKAGES += \
