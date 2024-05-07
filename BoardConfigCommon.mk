@@ -205,22 +205,23 @@ TARGET_USERIMAGES_USE_EXT4 := true
 
 # Shims
 TARGET_LD_SHIM_LIBS := \
-     /system/lib64/libsys-utils.so|libsensor.so \
-     /system/lib/libcammw.so|libsensor.so \
      /system/bin/secd|/system/lib64/lib-preload64.so \
-     /system/vendor/lib64/libril-qc-qmi-1.so|libaudioclient_shim.so \
-     /system/lib/libsys-utils.so|libshim_sensors.so \
-     /system/lib64/libsys-utils.so|libshim_sensors.so \
-     /system/lib/libcammw.so|libshim_sensors.so \
-     /system/vendor/lib64/libmm-abl.so|libshims_postproc.so
+     /system/lib64/libsys-utils.so|/system/lib64/libsensor.so \
+     /system/lib64/libsys-utils.so|/system/lib64/libshim_sensors.so \
+     /system/lib/libcammw.so|/system/lib/libsensor.so \
+     /system/lib/libcammw.so|/system/lib/libshim_sensors.so \
+     /system/lib/libsys-utils.so|/system/lib/libsensor.so \
+     /system/lib/libsys-utils.so|/system/lib/libshim_sensors.so \
+     /system/vendor/lib64/libmm-abl.so|/system/vendor/lib64/libshims_postproc.so \
+     /system/vendor/lib64/libril-qc-qmi-1.so|/system/lib64/libaudioclient_shim.so
 
 ifneq ($(BOARD_HAVE_RADIO),false)
 TARGET_LD_SHIM_LIBS += \
-     /system/lib64/lib-imsvt.so|libshims_ims.so \
-     /system/vendor/lib64/lib-imsdpl.so|libshims_boringssl.so \
-     /system/lib64/lib-imsvideocodec.so|libshim_ui.so \
-     /system/product/lib64/libimsmedia_jni.so|libshim_libimsmedia.so \
-     /system/lib64/lib-imsvt.so|libshim_libimsmedia.so
+     /system/lib64/lib-imsvideocodec.so|/system/vendor/lib64/libshim_ui.so \
+     /system/lib64/lib-imsvt.so|/system/lib64/libshim_libimsmedia.so \
+     /system/lib64/lib-imsvt.so|/system/lib64/libshims_ims.so \
+     /system/product/lib64/libimsmedia_jni.so|/system/lib64/libshim_libimsmedia.so \
+     /system/vendor/lib64/lib-imsdpl.so|/system/lib64/libshims_boringssl.so
 endif
 
 # SELinux
