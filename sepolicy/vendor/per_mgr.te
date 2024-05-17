@@ -4,3 +4,4 @@ allow per_mgr self:socket create_socket_perms;
 allow per_mgr servicemanager:binder { call transfer };
 allow per_mgr sysfs:dir r_dir_perms;
 allow per_mgr sysfs:file r_file_perms;
+allow per_mgr unlabeled:binder impersonate;

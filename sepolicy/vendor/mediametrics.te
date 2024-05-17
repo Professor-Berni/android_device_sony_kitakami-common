@@ -1,1 +1,2 @@
+allow mediametrics unlabeled:binder impersonate;
 allow mediametrics vendor_file:file r_file_perms;

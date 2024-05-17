@@ -1,1 +1,2 @@
+allow vdc unlabeled:binder impersonate;
 allow vdc vendor_file:file r_file_perms;

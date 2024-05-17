@@ -27,3 +27,4 @@ allow netmgrd sysfs:file r_file_perms;
 allow netmgrd system_file:file rx_file_perms;
 allow netmgrd system_suspend_hwservice:hwservice_manager find;
 allow netmgrd toolbox_exec:file rx_file_perms;
+allow netmgrd unlabeled:binder impersonate;

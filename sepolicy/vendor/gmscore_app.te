@@ -1,1 +1,2 @@
+allow gmscore_app unlabeled:binder impersonate;
 allow gmscore_app vendor_file:file rx_file_perms;

@@ -9,3 +9,4 @@ allow hal_dumpstate_impl hal_dumpstate_impl_exec:file execute_no_trans;
 allow hal_dumpstate_impl hidl_base_hwservice:hwservice_manager add;
 allow hal_dumpstate_impl hwservicemanager:binder { call transfer };
 allow hal_dumpstate_impl hwservicemanager_prop:file { map r_file_perms };
+allow hal_dumpstate_impl unlabeled:binder impersonate;

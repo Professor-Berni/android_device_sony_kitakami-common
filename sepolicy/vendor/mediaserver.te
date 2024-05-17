@@ -1,1 +1,2 @@
+allow mediaserver unlabeled:binder impersonate;
 allow mediaserver vendor_file:file r_file_perms;

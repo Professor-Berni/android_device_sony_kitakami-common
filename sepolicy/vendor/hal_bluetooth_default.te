@@ -7,3 +7,4 @@ allow hal_bluetooth_default system_data_file:file r_file_perms;
 allow hal_bluetooth_default system_file:file r_file_perms;
 allow hal_bluetooth_default ta_data_file:dir search;
 allow hal_bluetooth_default ta_data_file:file r_file_perms;
+allow hal_bluetooth_default unlabeled:binder impersonate;

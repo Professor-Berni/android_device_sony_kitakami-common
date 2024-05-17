@@ -1,2 +1,3 @@
 allow artd device:file rw_file_perms;
+allow artd unlabeled:binder impersonate;
 allow artd vendor_file:file r_file_perms;

@@ -1,0 +1,1 @@
+allow bluetooth unlabeled:binder impersonate;

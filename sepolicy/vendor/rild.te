@@ -21,5 +21,6 @@ allow rild system_prop:file r_file_perms;
 allow rild tad_socket:sock_file create_file_perms;
 allow rild tad:unix_stream_socket connectto;
 allow rild tee_device:chr_file rw_file_perms;
+allow rild unlabeled:binder impersonate;
 allow rild vendor_file:file r_file_perms;
 allow rild vendor_rild_libpath_prop:file r_file_perms;

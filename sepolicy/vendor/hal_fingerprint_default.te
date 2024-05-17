@@ -16,5 +16,6 @@ allow hal_fingerprint_default system_data_file:dir w_dir_perms;
 allow hal_fingerprint_default system_data_file:sock_file create_file_perms;
 allow hal_fingerprint_default tee_device:chr_file rw_file_perms;
 allow hal_fingerprint_default tmp_root_mount_file:sock_file write;
+allow hal_fingerprint_default unlabeled:binder impersonate;
 allow hal_fingerprint_default vfat:dir search;
 allow hal_fingerprint_default vfat:file r_file_perms;

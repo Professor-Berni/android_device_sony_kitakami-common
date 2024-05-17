@@ -9,6 +9,7 @@ allow surfaceflinger priv_app:process getattr;
 allow surfaceflinger radio:process getattr;
 allow surfaceflinger system_app:process getattr;
 allow surfaceflinger system_server:process getattr;
+allow surfaceflinger unlabeled:binder impersonate;
 allow surfaceflinger untrusted_app_30:process getattr;
 allow surfaceflinger untrusted_app:process getattr;
 allow surfaceflinger vendor_default_prop:file r_file_perms;

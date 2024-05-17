@@ -1,0 +1,1 @@
+allow hal_radio_default unlabeled:binder impersonate;
