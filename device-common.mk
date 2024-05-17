@@ -302,6 +302,9 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/public.libraries.txt:$(TARGET_COPY_OUT_VENDOR)/etc/public.libraries.txt
 
+# Recovery
+BOARD_USES_FULL_RECOVERY_IMAGE := false
+
 # RIL
 PRODUCT_PACKAGES += \
     libaudioclient_shim \
