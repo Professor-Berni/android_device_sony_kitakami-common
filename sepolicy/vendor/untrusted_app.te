@@ -1,3 +1,4 @@
+allow untrusted_app postinstall_mnt_dir:dir r_dir_perms;
 allow untrusted_app proc:file r_file_perms;
 allow untrusted_app proc_tty_drivers:file r_file_perms;
 allow untrusted_app qemu_hw_prop:file r_file_perms;
