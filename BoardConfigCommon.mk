@@ -215,15 +215,6 @@ TARGET_LD_SHIM_LIBS := \
      /system/vendor/lib64/libmm-abl.so|/system/vendor/lib64/libshims_postproc.so \
      /system/vendor/lib64/libril-qc-qmi-1.so|/system/lib64/libaudioclient_shim.so
 
-ifneq ($(BOARD_HAVE_RADIO),false)
-TARGET_LD_SHIM_LIBS += \
-     /system/lib64/lib-imsvideocodec.so|/system/vendor/lib64/libshim_ui.so \
-     /system/lib64/lib-imsvt.so|/system/lib64/libshim_libimsmedia.so \
-     /system/lib64/lib-imsvt.so|/system/lib64/libshims_ims.so \
-     /system/product/lib64/libimsmedia_jni.so|/system/lib64/libshim_libimsmedia.so \
-     /system/vendor/lib64/lib-imsdpl.so|/system/lib64/libshims_boringssl.so
-endif
-
 # SELinux
 include device/qcom/sepolicy-legacy/sepolicy.mk
 BOARD_VENDOR_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy/vendor

@@ -30,14 +30,6 @@ LOCAL_SHARED_LIBRARIES := libaudioclient
 include $(BUILD_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
-LOCAL_SRC_FILES := libshim_mediabuffer.cpp
-LOCAL_SHARED_LIBRARIES := libstagefright_foundation libui libgui libmedia
-LOCAL_MODULE := libshims_ims
-LOCAL_MODULE_TAGS := optional
-LOCAL_MULTILIB := 64
-include $(BUILD_SHARED_LIBRARY)
-
-include $(CLEAR_VARS)
 LOCAL_SRC_FILES := GraphicBuffer.cpp
 LOCAL_SHARED_LIBRARIES := libui
 LOCAL_MODULE := libshim_ui
