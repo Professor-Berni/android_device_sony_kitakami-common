@@ -14,7 +14,6 @@ allow init dnsmasq_exec:file r_file_perms;
 allow init dnsresolver_service:service_manager find;
 allow init flags_health_check:process setpgid;
 allow init hal_dumpstate_hwservice:hwservice_manager { add find };
-allow init hal_health_service_qti:binder call;
 allow init hal_health_service:service_manager add;
 allow init hal_health_service:service_manager find;
 allow init hidl_base_hwservice:hwservice_manager add;

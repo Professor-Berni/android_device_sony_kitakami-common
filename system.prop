@@ -33,6 +33,9 @@ camera.disable_zsl_mode=1
 vendor.camera.aux.packagelist=org.codeaurora.snapcam,com.android.camera
 ro.vendor.camera.provider24.disable_mem_init=1
 
+# Charger
+ro.charger.enable_suspend=true
+
 # Bluetooth
 bluetooth.enable_timeout_ms=12000
 ro.bluetooth.hfp.ver=1.6
