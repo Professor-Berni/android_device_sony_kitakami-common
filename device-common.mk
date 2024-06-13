@@ -181,7 +181,8 @@ PRODUCT_COPY_FILES += \
 # Gatekeeper
 PRODUCT_PACKAGES += \
     android.hardware.gatekeeper@1.0-impl \
-    android.hardware.gatekeeper@1.0-service
+    android.hardware.gatekeeper@1.0-service \
+    libion.vendor
 
 # GPS
 PRODUCT_PACKAGES += \
@@ -206,6 +207,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hidl.base@1.0 \
     android.hidl.manager@1.0 \
+    libhidlmemory.vendor \
     libhidltransport \
     libhwbinder
 
@@ -269,7 +271,10 @@ PRODUCT_COPY_FILES += \
 # Net
 PRODUCT_PACKAGES += \
     android.system.net.netd@1.1 \
-    libandroid_net
+    libandroid_net \
+    libnetutils.vendor \
+    libsqlite.vendor \
+    libsysutils.vendor
 
 # Neuralnetworks
 PRODUCT_PACKAGES += \
