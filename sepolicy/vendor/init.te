@@ -1,5 +1,6 @@
 allow init app_data_file:dir { getattr setattr };
 allow init app_data_file:file { getattr relabelfrom };
+allow init audioserver:process setpgid;
 allow init binder_per_mgr_service:service_manager add;
 allow init block_device:blk_file create_file_perms;
 allow init debugfs:file rw_file_perms;
