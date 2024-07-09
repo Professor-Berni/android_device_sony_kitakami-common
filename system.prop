@@ -24,6 +24,7 @@ ro.config.notification_sound=Notification.ogg
 ro.config.ringtone=CyanTone.ogg
 
 # BPF
+bpf.progs_loaded=1
 ro.kernel.ebpf.supported=false
 
 # Camera
