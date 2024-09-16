@@ -1,3 +1,6 @@
+# BRCM BT FM
+/sys/bus/platform/drivers/bcm_ldisc/bcmbt_ldisc(/.*)?      u:object_r:brcm_ldisc_sysfs:s0
+
 # DRM
 /data/vendor/mediadrm(/.*)?                                u:object_r:mediadrm_vendor_data_file:s0
 /(system|system/vendor)/bin/hw/android\.hardware\.drm@1\.[0-9]-service.clearkey u:object_r:hal_drm_clearkey_exec:s0
