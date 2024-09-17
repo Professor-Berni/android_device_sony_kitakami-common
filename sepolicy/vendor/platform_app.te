@@ -3,5 +3,6 @@ typeattribute platform_app mlstrustedsubject;
 allow platform_app app_data_file:dir create_dir_perms;
 allow platform_app app_data_file:file create_file_perms;
 allow platform_app device:chr_file rw_file_perms;
+allow platform_app pm_archiving_enabled_prop:file r_file_perms;
 allow platform_app unlabeled:binder impersonate;
 allow platform_app vendor_file:file rx_file_perms;
