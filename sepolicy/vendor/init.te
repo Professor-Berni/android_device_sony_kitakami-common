@@ -23,6 +23,7 @@ allow init ion_device:chr_file r_file_perms;
 allow init kernel:security { check_context setcheckreqprot };
 allow init modem_efs_partition_device:blk_file rw_file_perms;;
 allow init netd:binder call;
+allow init netd:process setpgid;
 allow init netd_service:service_manager find;
 allow init netutils_wrapper_exec:file r_file_perms;
 allow init privapp_data_file:dir { getattr relabelfrom relabelto setattr };
