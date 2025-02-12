@@ -314,7 +314,7 @@ PRODUCT_COPY_FILES += \
 
 # RIL
 PRODUCT_PACKAGES += \
-    libaudioclient_shim \
+    _libaudioclient_shim \
     libxml2
 
 PRODUCT_COPY_FILES += \
