@@ -151,13 +151,8 @@ on fs
     write /proc/sys/vm/swap_thresh_cma_free_pages 7680
 
     chown oem_2987 oem_2987 /idd
-    chmod 0751 /iddA
     exec /system/bin/rm -r /idd/lost+found
     symlink /idd /mnt/idd
-    chown oem_2987 oem_2987 /rca
-    chmod 0750 /rca
-    exec /system/bin/rm -r /rca/lost+found
-    symlink /rca /mnt/rca
 
 on boot
 
@@ -333,7 +328,6 @@ on post-fs-data
     mkdir /idd/socket 0711 oem_2987 oem_2987
     mkdir /idd/startup-prober 0700 root root
     restorecon_recursive /idd
-    mkdir /rca/plugins 0750 oem_2987 oem_2987
     restorecon_recursive /rca
 
     # KSM options
@@ -431,7 +425,6 @@ on post-fs-data
     chmod 0660 /sys/devices/virtual/input/maxim_sti/glove_en
 
     #Create the symlink to qcn wpa_supplicant folder for ar6000 wpa_supplicant
-    mkdir /data/system 0775 system system
     #symlink /data/misc/wifi/wpa_supplicant /data/system/wpa_supplicant
 
     #Create directories for Location services
@@ -454,7 +447,7 @@ on post-fs-data
     #Create directory for hostapd
     mkdir /data/hostapd 0770 system wifi encryption=None
 
-    mkdir /data/audio/ 0770 media audio
+    mkdir /data/audio/ 0770 media audio encryption=None
 
     # Create a folder for audio delta files
     mkdir /data/audio/acdbdata 0770 media audio
