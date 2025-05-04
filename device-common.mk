@@ -130,12 +130,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += charger_res_images
 
 # Configstore
-PRODUCT_PACKAGES += \
-    disable_configstore
+PRODUCT_PACKAGES += disable_configstore
 
 # Data services
-PRODUCT_PACKAGES += \
-    librmnetctl
+PRODUCT_PACKAGES += librmnetctl
 
 # Display
 PRODUCT_PACKAGES += \
@@ -159,15 +157,13 @@ PRODUCT_PACKAGES += \
     android.hardware.drm-service.clearkey
 
 # DumpState
-PRODUCT_PACKAGES += \
-    android.hardware.dumpstate@1.1-service-kitakami
+PRODUCT_PACKAGES += android.hardware.dumpstate@1.1-service-kitakami
 
 # Fingerprint
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.fingerprint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.fingerprint.xml
 
-PRODUCT_PACKAGES += \
-    android.hardware.biometrics.fingerprint@2.1-service
+PRODUCT_PACKAGES += android.hardware.biometrics.fingerprint@2.1-service
 
 # Flash LED config
 PRODUCT_COPY_FILES += \
@@ -233,8 +229,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/msm_irqbalance.conf:$(TARGET_COPY_OUT_VENDOR)/etc/msm_irqbalance.conf
 
 # Keymaster
-PRODUCT_PACKAGES += \
-    android.hardware.keymaster@4.1-service
+PRODUCT_PACKAGES += android.hardware.keymaster@4.1-service
 
 # Lights
 PRODUCT_PACKAGES += \
@@ -278,8 +273,7 @@ PRODUCT_PACKAGES += \
     libsysutils.vendor
 
 # Neuralnetworks
-PRODUCT_PACKAGES += \
-    android.hardware.neuralnetworks@1.3
+PRODUCT_PACKAGES += android.hardware.neuralnetworks@1.3
 
 # NFC
 PRODUCT_PACKAGES += \
@@ -289,8 +283,7 @@ PRODUCT_PACKAGES += \
     Tag
 
 # OTG
-PRODUCT_PACKAGES += \
-    SonyOtgSwitch
+PRODUCT_PACKAGES += SonyOtgSwitch
 
 # Power
 PRODUCT_PACKAGES += \
@@ -319,8 +312,7 @@ PRODUCT_COPY_FILES += \
     prebuilts/vndk/v33/arm64/arch-arm64-armv8-a/shared/vndk-sp/libutils.so:$(TARGET_COPY_OUT_VENDOR)/lib64/libutils-v33.so
 
 # RIL Wrapper
-PRODUCT_PACKAGES += \
-    libril-wrapper
+PRODUCT_PACKAGES += libril-wrapper
 
 # Seccomp
 PRODUCT_COPY_FILES += \
@@ -333,8 +325,7 @@ PRODUCT_PACKAGES += \
     libshim_sensors
 
 # Soong
-PRODUCT_SOONG_NAMESPACES += \
-    device/sony/kitakami-common
+PRODUCT_SOONG_NAMESPACES += device/sony/kitakami-common
 
 # Tethering
 PRODUCT_PACKAGES += \
@@ -348,8 +339,7 @@ PRODUCT_PACKAGES += \
     TimeKeep
 
 # USB
-PRODUCT_PACKAGES += \
-    android.hardware.usb@1.3-service.basic
+PRODUCT_PACKAGES += android.hardware.usb@1.3-service.basic
 
 # Vibrator
 PRODUCT_PACKAGES += \
