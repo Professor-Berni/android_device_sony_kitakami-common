@@ -16,29 +16,6 @@
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
-LOCAL_SRC_FILES := gps_shim.cpp
-LOCAL_MODULE := libshim_gps
-LOCAL_MODULE_TAGS := optional
-LOCAL_PROPRIETARY_MODULE := true
-include $(BUILD_SHARED_LIBRARY)
-
-include $(CLEAR_VARS)
-LOCAL_SRC_FILES := libaudioclient_shim.cpp
-LOCAL_MODULE := _libaudioclient_shim
-LOCAL_MODULE_CLASS := SHARED_LIBRARIES
-LOCAL_SHARED_LIBRARIES := libaudioclient
-include $(BUILD_SHARED_LIBRARY)
-
-include $(CLEAR_VARS)
-LOCAL_SRC_FILES := GraphicBuffer.cpp
-LOCAL_SHARED_LIBRARIES := libui
-LOCAL_MODULE := libshim_ui
-LOCAL_MODULE_CLASS := SHARED_LIBRARIES
-LOCAL_MODULE_TAGS := optional
-LOCAL_VENDOR_MODULE := true
-include $(BUILD_SHARED_LIBRARY)
-
-include $(CLEAR_VARS)
 LOCAL_SRC_FILES := libshim_sensors.cpp
 LOCAL_MODULE := libshim_sensors
 LOCAL_SHARED_LIBRARIES := libsensor libutils
