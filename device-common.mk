@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2016 The CyanogenMod Project
-# Copyright (C) 2017-2024 The LineageOS Project
+# Copyright (C) 2017-2025 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -130,12 +130,10 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += charger_res_images
 
 # Configstore
-PRODUCT_PACKAGES += \
-    disable_configstore
+PRODUCT_PACKAGES += disable_configstore
 
 # Data services
-PRODUCT_PACKAGES += \
-    librmnetctl
+PRODUCT_PACKAGES += librmnetctl
 
 # Display
 PRODUCT_PACKAGES += \
@@ -159,15 +157,13 @@ PRODUCT_PACKAGES += \
     android.hardware.drm-service.clearkey
 
 # DumpState
-PRODUCT_PACKAGES += \
-    android.hardware.dumpstate@1.1-service-kitakami
+PRODUCT_PACKAGES += android.hardware.dumpstate@1.1-service-kitakami
 
 # Fingerprint
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.fingerprint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.fingerprint.xml
 
-PRODUCT_PACKAGES += \
-    android.hardware.biometrics.fingerprint@2.1-service
+PRODUCT_PACKAGES += android.hardware.biometrics.fingerprint@2.1-service
 
 # Flash LED config
 PRODUCT_COPY_FILES += \
@@ -188,10 +184,16 @@ PRODUCT_PACKAGES += \
 # GPS
 PRODUCT_PACKAGES += \
     android.hardware.gnss@1.0-impl \
-    gps.msm8994 \
     flp.conf \
     gps.conf \
+    gps.msm8994 \
     izat.conf \
+    libgps.utils \
+    libgps.utils_headers \
+    libloc_core \
+    libloc_core_headers \
+    libloc_eng \
+    libloc_eng_headers \
     sap.conf
 
 # gRPC
@@ -240,8 +242,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/msm_irqbalance.conf:$(TARGET_COPY_OUT_VENDOR)/etc/msm_irqbalance.conf
 
 # Keymaster
-PRODUCT_PACKAGES += \
-    android.hardware.keymaster@4.1-service
+PRODUCT_PACKAGES += android.hardware.keymaster@4.1-service
 
 # Lights
 PRODUCT_PACKAGES += \
@@ -285,23 +286,21 @@ PRODUCT_PACKAGES += \
     libsysutils.vendor
 
 # Neuralnetworks
-PRODUCT_PACKAGES += \
-    android.hardware.neuralnetworks@1.3
+PRODUCT_PACKAGES += android.hardware.neuralnetworks@1.3
 
 # NFC
 PRODUCT_PACKAGES += \
     android.hardware.nfc@1.0-impl \
     com.android.nfc_extras \
-    NfcNci \
     Tag
 
 # OTG
-PRODUCT_PACKAGES += \
-    SonyOtgSwitch
+PRODUCT_PACKAGES += SonyOtgSwitch
 
 # Power
 PRODUCT_PACKAGES += \
-    android.hardware.power-service-qti \
+    android.hardware.power@1.0-impl \
+    android.hardware.power@1.0-service \
     android.hardware.power.stats@1.0-service.mock
 
 PRODUCT_COPY_FILES += \
@@ -324,8 +323,7 @@ PRODUCT_COPY_FILES += \
     prebuilts/vndk/v33/arm64/arch-arm64-armv8-a/shared/vndk-sp/libutils.so:$(TARGET_COPY_OUT_VENDOR)/lib64/libutils-v33.so
 
 # RIL Wrapper
-PRODUCT_PACKAGES += \
-    libril-wrapper
+PRODUCT_PACKAGES += libril-wrapper
 
 # Seccomp
 PRODUCT_COPY_FILES += \
@@ -338,8 +336,7 @@ PRODUCT_PACKAGES += \
     libshim_sensors
 
 # Soong
-PRODUCT_SOONG_NAMESPACES += \
-    device/sony/kitakami-common
+PRODUCT_SOONG_NAMESPACES += device/sony/kitakami-common
 
 # Tethering
 PRODUCT_PACKAGES += \
@@ -353,8 +350,7 @@ PRODUCT_PACKAGES += \
     TimeKeep
 
 # USB
-PRODUCT_PACKAGES += \
-    android.hardware.usb@1.3-service.basic
+PRODUCT_PACKAGES += android.hardware.usb@1.3-service.basic
 
 # Vibrator
 PRODUCT_PACKAGES += \
@@ -363,7 +359,7 @@ PRODUCT_PACKAGES += \
 
 # Wifi
 PRODUCT_PACKAGES += \
-    android.hardware.wifi@1.0-service.legacy \
+    android.hardware.wifi-service \
     hostapd \
     libwifi-hal-bcm \
     libwpa_client \
