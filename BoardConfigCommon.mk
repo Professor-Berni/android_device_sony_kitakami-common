@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2016 The CyanogenMod Project
-# Copyright (C) 2017-2024 The LineageOS Project
+# Copyright (C) 2017-2025 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -205,17 +205,6 @@ WITH_DEXPREOPT_BOOT_IMG_AND_SYSTEM_SERVER_ONLY ?= true
 # Recovery
 TARGET_RECOVERY_FSTAB := $(COMMON_PATH)/rootdir/fstab.qcom
 TARGET_USERIMAGES_USE_EXT4 := true
-
-# Shims
-TARGET_LD_SHIM_LIBS := \
-     /system/bin/secd|/system/lib64/lib-preload64.so \
-     /system/lib64/libsys-utils.so|/system/lib64/libsensor.so \
-     /system/lib64/libsys-utils.so|/system/lib64/libshim_sensors.so \
-     /system/lib/libcammw.so|/system/lib/libsensor.so \
-     /system/lib/libcammw.so|/system/lib/libshim_sensors.so \
-     /system/lib/libsys-utils.so|/system/lib/libsensor.so \
-     /system/lib/libsys-utils.so|/system/lib/libshim_sensors.so \
-     /system/vendor/lib64/libmm-abl.so|/system/vendor/lib64/libshims_postproc.so
 
 # SELinux
 include device/qcom/sepolicy-legacy/sepolicy.mk
