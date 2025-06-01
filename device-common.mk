@@ -18,9 +18,6 @@
 # Get non-open-source common files
 $(call inherit-product, vendor/sony/kitakami-common/kitakami-common-vendor.mk)
 
-# Get non-open-source common extra files
-$(call inherit-product, vendor/sony/kitakami-common-extras/kitakami-common-vendor-extras.mk)
-
 # Overlays
 DEVICE_PACKAGE_OVERLAYS += \
     $(LOCAL_PATH)/overlay \
@@ -190,6 +187,8 @@ PRODUCT_PACKAGES += \
     izat.conf \
     libgps.utils \
     libgps.utils_headers \
+    liblocation_api \
+    liblocation_api_headers \
     libloc_core \
     libloc_core_headers \
     libloc_eng \
@@ -252,7 +251,6 @@ PRODUCT_PACKAGES += \
 
 # LiveDisplay
 PRODUCT_PACKAGES += \
-    libshims_postproc \
     vendor.lineage.livedisplay@2.0-service-legacymm \
     vendor.lineage.livedisplay@2.0-service-sysfs
 
@@ -332,8 +330,7 @@ PRODUCT_COPY_FILES += \
 # Sensors
 PRODUCT_PACKAGES += \
     android.frameworks.sensorservice@1.0 \
-    android.hardware.sensors@1.0-impl \
-    libshim_sensors
+    android.hardware.sensors@1.0-impl
 
 # Soong
 PRODUCT_SOONG_NAMESPACES += device/sony/kitakami-common
