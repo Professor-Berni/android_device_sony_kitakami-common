@@ -184,16 +184,7 @@ PRODUCT_PACKAGES += \
     android.hardware.gnss@1.0-impl \
     flp.conf \
     gps.conf \
-    gps.msm8994 \
     izat.conf \
-    libgps.utils \
-    libgps.utils_headers \
-    liblocation_api \
-    liblocation_api_headers \
-    libloc_core \
-    libloc_core_headers \
-    libloc_eng \
-    libloc_eng_headers \
     sap.conf
 
 # gRPC
