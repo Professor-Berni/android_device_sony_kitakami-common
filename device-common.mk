@@ -326,6 +326,10 @@ PRODUCT_PACKAGES += \
     libsensor \
     libsensor_vendor
 
+# Shims
+PRODUCT_PACKAGES += \
+    libshims_get_process_name
+
 # Soong
 PRODUCT_SOONG_NAMESPACES += device/sony/kitakami-common
 
