@@ -144,6 +144,7 @@ PRODUCT_PACKAGES += \
     copybit.msm8994 \
     gralloc.msm8994 \
     hwcomposer.msm8994 \
+    libmemalloc \
     libtinyxml \
     memtrack.msm8994
 
@@ -330,7 +331,9 @@ PRODUCT_COPY_FILES += \
 # Sensors
 PRODUCT_PACKAGES += \
     android.frameworks.sensorservice@1.0 \
-    android.hardware.sensors@1.0-impl
+    android.hardware.sensors@1.0-impl \
+    libsensor \
+    libsensor_vendor
 
 # Soong
 PRODUCT_SOONG_NAMESPACES += device/sony/kitakami-common
