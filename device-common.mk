@@ -284,6 +284,7 @@ PRODUCT_PACKAGES += android.hardware.neuralnetworks@1.3
 PRODUCT_PACKAGES += \
     android.hardware.nfc@1.0-impl \
     com.android.nfc_extras \
+    NfcNci \
     Tag
 
 # OTG

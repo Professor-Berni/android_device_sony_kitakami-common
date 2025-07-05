@@ -16,8 +16,9 @@ cc_library_shared {
     name: "libshim_sensors",
     srcs: ["libshim_sensors.cpp"],
     compile_multilib: "both",
+    vendor: true,
     shared_libs: [
-        "libsensor",
+        "libsensor_vendor",
         "libutils",
     ],
 }
@@ -25,7 +26,7 @@ cc_library_shared {
 cc_library_shared {
     name: "libshims_postproc",
     srcs: ["libshims_postproc.cpp"],
-    compile_multilib: "64",
+    compile_multilib: "both",
     vendor: true,
     cflags: [
         "-Wno-unused-parameter",

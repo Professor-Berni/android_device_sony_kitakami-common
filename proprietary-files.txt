@@ -1,14 +1,14 @@
 # ADSP
-bin/adsprpcd
+bin/adsprpcd:vendor/bin/adsprpcd
 vendor/lib64/libadsprpc.so
 vendor/lib/libadsprpc.so
 vendor/lib/libfastcvopt.so
 
 # Audio
-lib64/libaudioresampler.so
-lib/libaudioresampler.so
-lib/soundfx/libsonypostprocbundle.so
-lib/soundfx/libsonysweffect.so
+lib64/libaudioresampler.so:vendor/lib64/libaudioresampler.so
+lib/libaudioresampler.so:vendor/lib/libaudioresampler.so
+lib/soundfx/libsonypostprocbundle.so:vendor/lib/soundfx/libsonypostprocbundle.so
+lib/soundfx/libsonysweffect.so:vendor/lib/soundfx/libsonysweffect.so
 vendor/lib64/libacdb-fts.so
 vendor/lib64/libacdbloader.so
 vendor/lib64/libacdbrtac.so
@@ -32,9 +32,9 @@ etc/firmware/cmnlib.b03
 etc/firmware/cmnlib.mdt
 
 # Extra files that are not included in the original file system.
-lib64/libjni_latinimegoogle.so
-lib64/libshims_boringssl.so
-lib/libshims_boringssl.so
+lib64/libjni_latinimegoogle.so:vendor/lib64/libjni_latinimegoogle.so
+lib64/libshims_boringssl.so:vendor/lib64/libshims_boringssl.so
+lib/libshims_boringssl.so:vendor/lib/libshims_boringssl.so
 vendor/lib64/libaptX_encoder.so
 vendor/lib64/libaptXHD_encoder.so
 vendor/lib64/libprotobuf-cpp-full-v28.so
@@ -53,19 +53,11 @@ vendor/lib64/hw/gatekeeper.msm8994.so
 vendor/lib/hw/gatekeeper.msm8994.so
 
 # GPS
-bin/loc_launcher
-lib64/hw/gps.default.so
-lib64/libgps.utils.so
-lib64/libloc_api_v02.so
-lib64/libloc_core.so
-lib64/libloc_ds_api.so
-lib64/libloc_eng.so
-lib/hw/gps.default.so
-lib/libgps.utils.so
-lib/libloc_api_v02.so
-lib/libloc_core.so
-lib/libloc_ds_api.so
-lib/libloc_eng.so
+bin/loc_launcher:vendor/bin/loc_launcher
+lib64/libloc_api_v02.so:vendor/lib64/libloc_api_v02.so
+lib64/libloc_ds_api.so:vendor/lib64/libloc_ds_api.so
+lib/libloc_api_v02.so:vendor/lib/libloc_api_v02.so
+lib/libloc_ds_api.so:vendor/lib/libloc_ds_api.so
 vendor/lib64/hw/flp.default.so
 vendor/lib64/libflp.so
 vendor/lib64/libgeofence.so
@@ -89,15 +81,17 @@ vendor/lib/libxtadapter.so
 
 # Graphics
 vendor/lib64/egl/eglSubDriverAndroid.so|03e2c66eebed80a91b08e2c18d011844682bdd7b
-vendor/lib64/egl/libEGL_adreno.so|3193346e9938e05ce611db0d0f9e456009289ebd
+vendor/lib64/egl/libEGL_adreno.so;SYMLINK=vendor/lib64/libEGL_adreno.so|3193346e9938e05ce611db0d0f9e456009289ebd
 vendor/lib64/egl/libGLESv1_CM_adreno.so|e429adb54d16ea1e359bc0a56b0a3a7336989a77
 vendor/lib64/egl/libGLESv2_adreno.so|f072b33a708cc81de6e6a2d09741696f8c9ce034
 vendor/lib64/egl/libq3dtools_adreno.so|c5fcb698418bf5aedb15e6cf87a6d649b7f09aba
 vendor/lib64/egl/libq3dtools_esx.so|82abcc5b16842e5ec32c1cdc6745c1e36f31d63e
+vendor/lib64/egl/libQTapGLES.so|e7dc4f4e47bfb74c31ff76f21671e795308949fc
 vendor/lib64/hw/vulkan.msm8994.so:vendor/lib64/vulkan.msm8994.so
 vendor/lib64/libadreno_utils.so|6e6252196f0b510989a6f4f54a4bb3492f56e695
 vendor/lib64/libbccQTI.so|e39a9a997196757a9830dd217dba086581b35a4d
 vendor/lib64/libC2D2.so|da5c955221f736361a3646870600744756a6bd87
+vendor/lib64/libc2d30-a3xx.so|5964557e87583d598748ce75bb5e021269cf2a4d
 vendor/lib64/libc2d30-a4xx.so|e40a2efbecaccd34970b981bb8d83f3fa58f3cec
 vendor/lib64/libCB.so|7bd8ce62b1f4e52b162481d89b9f4af5e94d588f
 vendor/lib64/libgsl.so|e6435ecf1baae08408a0cc43e1568ce42f1ddb56
@@ -111,15 +105,17 @@ vendor/lib64/librs_adreno.so|18e913b6d8f79e4b8563a8c8a0b2475e609d4813
 vendor/lib64/libRSDriver_adreno.so|05d94ad793ba74c1f6635762eb7871a611001c9c
 vendor/lib64/libscale.so|0200104e7c3ad58e16483a5353e7554ace561c47
 vendor/lib/egl/eglSubDriverAndroid.so|b88e4972d259e1e518793aa8fb9ab9ce7b574137
-vendor/lib/egl/libEGL_adreno.so|c34a55560cbe0dec10736ee48f1d3531b7eb30da
+vendor/lib/egl/libEGL_adreno.so;SYMLINK=vendor/lib/libEGL_adreno.so|c34a55560cbe0dec10736ee48f1d3531b7eb30da
 vendor/lib/egl/libGLESv1_CM_adreno.so|12559bdb260be99259c5114eb18141a6f55ec5c6
 vendor/lib/egl/libGLESv2_adreno.so|99b5d3351ff74dd80ce8788d8cf813f795c004d3
 vendor/lib/egl/libq3dtools_adreno.so|32f28df5844ed9826af5a77d7519db6b5db93ceb
 vendor/lib/egl/libq3dtools_esx.so|a7e233d9d6c3d61fa9b762e5c4c1772a5223ba14
+vendor/lib/egl/libQTapGLES.so|7596611d1ca94d9ac80f54b6956a3586bbbd2cf3
 vendor/lib/hw/vulkan.msm8994.so:vendor/lib/vulkan.msm8994.so|8bd98116b5a586839aad4c93468fc04f044d4ef4
 vendor/lib/libadreno_utils.so|4fd27f46943412ddbb69c4e32059a3a765db8b9a
 vendor/lib/libbccQTI.so|7cd380e1ce6c80fa57bec7d9f81f7826382ccea7
 vendor/lib/libC2D2.so|668aaec9820480a9f1b04a6994be28bc4fef5677
+vendor/lib/libc2d30-a3xx.so|371d6688b6140a2974da005a8f149a964884d0e3
 vendor/lib/libc2d30-a4xx.so|e9e4975a5e16e1799cd1883bbb8905ce4b51aa7c
 vendor/lib/libCB.so|ced7d5bfdbb5b5c0cb2b69e67942d568bedff4d5
 vendor/lib/libgsl.so|b90e66e879dfee14997282358ca4cf9cd3cbee83
@@ -153,6 +149,10 @@ vendor/lib/libOmxQcelp13Dec.so
 vendor/lib64/libconnctrl.so
 vendor/lib/libconnctrl.so
 
+# NFC
+vendor/lib64/hw/nfc_nci.msm8994.so|2ec9a6b86c0d1127344c44015576118b7de73a14
+vendor/lib/hw/nfc_nci.msm8994.so|eead0fa43ab037228cce7446968cae03fef683c8
+
 # Perf
 bin/msm_irqbalance:vendor/bin/msm_irqbalance
 vendor/bin/perfd
@@ -168,10 +168,10 @@ vendor/lib/libqti-perfd-client.so
 vendor/lib/libqti_performance.so
 
 # Peripheral manager
-bin/pm-proxy
-bin/pm-service
-vendor/lib64/libperipheral_client.so|a2d0d11de098d1b3d02218b087868b4fbc2ba466|108d7ddead4996726b0ef4f7172b109e1183b487
-vendor/lib/libperipheral_client.so|0c73ea6ebea730a981e011186ba620399d03fb3f|13e80c3bf4f01b1fbb8e7d5d5e18cd3f19d4c529
+bin/pm-proxy:vendor/bin/pm-proxy
+bin/pm-service:vendor/bin/pm-service
+vendor/lib64/libperipheral_client.so|a2d0d11de098d1b3d02218b087868b4fbc2ba466
+vendor/lib/libperipheral_client.so|0c73ea6ebea730a981e011186ba620399d03fb3f
 
 # Postprocessing
 bin/mm-pp-daemon:vendor/bin/mm-pp-daemon
@@ -186,23 +186,102 @@ vendor/lib/libmm-abl.so
 vendor/lib/libmm-als.so
 vendor/lib/libmm-qdcm.so
 
+# Radio
+bin/irsc_util:vendor/bin/irsc_util
+bin/netmgrd:vendor/bin/netmgrd
+bin/qmuxd:vendor/bin/qmuxd
+bin/rmt_storage:vendor/bin/rmt_storage
+lib64/libpin-cache.so:vendor/lib64/libpin-cache.so
+lib64/libstartup-reason.so:vendor/lib64/libstartup-reason.so
+lib64/libtpm.so:vendor/lib64/libtpm.so
+#lib64/libwpa_client.so:vendor/lib64/libwpa_client.so
+lib/libpin-cache.so:vendor/lib/libpin-cache.so
+lib/libstartup-reason.so:vendor/lib/libstartup-reason.so
+lib/libtpm.so:vendor/lib/libtpm.so
+#lib/libwpa_client.so:vendor/lib/libwpa_client.so
+vendor/lib64/libcne.so
+vendor/lib64/libcneapiclient.so|3aa5d84c3a0cc3e25e7f245610f3f34050c4b06b
+vendor/lib64/libcneqmiutils.so
+vendor/lib64/libconfigdb.so
+vendor/lib64/libdiag.so
+vendor/lib64/libdsi_netctrl.so
+vendor/lib64/libdsutils.so
+vendor/lib64/libidl.so
+vendor/lib64/liblqe.so
+vendor/lib64/libmdmdetect.so
+vendor/lib64/libnetmgr.so
+vendor/lib64/libprotobuf-cpp-N.so|bf79dcb10368db44dc42ac62a8bbd749453f8ad5
+vendor/lib64/libqcci_legacy.so
+vendor/lib64/libqdi.so
+vendor/lib64/libqdp.so
+vendor/lib64/libqmi_cci.so
+vendor/lib64/libqmi_client_helper.so
+vendor/lib64/libqmi_client_qmux.so
+vendor/lib64/libqmi_common_so.so
+vendor/lib64/libqmi_csi.so
+vendor/lib64/libqmi_encdec.so
+vendor/lib64/libqmiservices.so
+vendor/lib64/libqmi.so
+vendor/lib64/libril-qc-ltedirectdisc.so
+vendor/lib64/libril-qc-qmi-1.so
+vendor/lib64/libril-qc-radioconfig.so
+vendor/lib64/librilqmiservices.so
+vendor/lib64/libsettings.so|91047a98be1ab2b7552744509ffa96faa1f7df5c
+vendor/lib64/libsmemlog.so
+vendor/lib64/libsubsystem_control.so
+vendor/lib64/libsystem_health_mon.so
+vendor/lib64/libwqe.so|0e5accf0580bfdd6a3d3a1e961be7a90012844b6
+vendor/lib64/libxml.so
+vendor/lib/libcne.so
+vendor/lib/libcneapiclient.so
+vendor/lib/libcneqmiutils.so
+vendor/lib/libconfigdb.so
+vendor/lib/libdiag.so
+vendor/lib/libdsi_netctrl.so
+vendor/lib/libdsutils.so
+vendor/lib/libidl.so
+vendor/lib/liblqe.so
+vendor/lib/libmdmdetect.so
+vendor/lib/libnetmgr.so
+vendor/lib/libqcci_legacy.so
+vendor/lib/libqdi.so
+vendor/lib/libqdp.so
+vendor/lib/libqmi_cci.so
+vendor/lib/libqmi_client_helper.so
+vendor/lib/libqmi_client_qmux.so
+vendor/lib/libqmi_common_so.so
+vendor/lib/libqmi_csi.so
+vendor/lib/libqmi_encdec.so
+vendor/lib/libqmiservices.so
+vendor/lib/libqmi.so
+vendor/lib/libril-qc-ltedirectdisc.so
+vendor/lib/libril-qc-qmi-1.so
+vendor/lib/libril-qc-radioconfig.so
+vendor/lib/librilqmiservices.so
+vendor/lib/libsettings.so
+vendor/lib/libsmemlog.so
+vendor/lib/libsubsystem_control.so
+vendor/lib/libsystem_health_mon.so
+vendor/lib/libwqe.so|04e000f40eabee3fc333c5726d8f7720c7e1a144
+vendor/lib/libxml.so
+
 # Secd
-bin/iddd
-bin/secd
-lib64/lib_asb_tee.so
-lib64/libcredential-manager-service.so
-lib64/libdevice_security.so
-lib64/libplstorage.so
-lib64/lib-preload64.so|7c5582e9df7dfd98b70814b3792429b2d9a0231b
-lib64/libsuntory.so
-lib64/libsuntory_utils.so
-lib64/libtee.so
-lib/lib_asb_tee.so
-lib/libcredential-manager-service.so
-lib/libdevice_security.so
-lib/libplstorage.so
-lib/libsuntory.so
-lib/libsuntory_utils.so
+bin/iddd:vendor/bin/iddd
+bin/secd:vendor/bin/secd
+lib64/lib_asb_tee.so:vendor/lib64/lib_asb_tee.so
+lib64/libcredential-manager-service.so:vendor/lib64/libcredential-manager-service.so
+lib64/libdevice_security.so:vendor/lib64/libdevice_security.so
+lib64/libplstorage.so:vendor/lib64/libplstorage.so
+lib64/lib-preload64.so:vendor/lib64/lib-preload64.so|7c5582e9df7dfd98b70814b3792429b2d9a0231b
+lib64/libsuntory.so:vendor/lib64/libsuntory.so
+lib64/libsuntory_utils.so:vendor/lib64/libsuntory_utils.so
+lib64/libtee.so:vendor/lib64/libtee.so
+lib/lib_asb_tee.so:vendor/lib/lib_asb_tee.so
+lib/libcredential-manager-service.so:vendor/lib/libcredential-manager-service.so
+lib/libdevice_security.so:vendor/lib/libdevice_security.so
+lib/libplstorage.so:vendor/lib/libplstorage.so
+lib/libsuntory.so:vendor/lib/libsuntory.so
+lib/libsuntory_utils.so:vendor/lib/libsuntory_utils.so
 
 # Security firmware
 etc/firmware/tzdtcpkctl.b00
@@ -255,22 +334,24 @@ vendor/lib/libmmcamera_optizoom_lib.so
 vendor/lib/libmmcamera_ubifocus_lib.so
 
 # TA
-bin/mlog_qmi_service
-bin/sct_service
-bin/tad_static
-bin/taimport
-bin/ta_qmi_service
-bin/updatemiscta
-lib64/libMiscTaAccessor.so
-lib64/libmiscta.so
-lib64/libprotobuf-c.so
-lib64/libsys-utils.so
-lib64/libta.so
-lib/libMiscTaAccessor.so
-lib/libmiscta.so
-lib/libprotobuf-c.so
-lib/libsys-utils.so
-lib/libta.so
+bin/mlog_qmi_service:vendor/bin/mlog_qmi_service
+bin/sct_service:vendor/bin/sct_service
+bin/tad_static:vendor/bin/tad_static|09838bf6e1fbc19106b09f47b3f48963641faeed
+bin/taimport:vendor/bin/taimport
+bin/ta_qmi_service:vendor/bin/ta_qmi_service
+bin/updatemiscta:vendor/bin/updatemiscta
+lib64/libMiscTaAccessor.so:vendor/lib64/libMiscTaAccessor.so
+lib64/libmiscta.so:vendor/lib64/libmiscta.so
+lib64/libprotobuf-c.so:vendor/lib64/libprotobuf-c.so
+lib64/libsys-utils.so:vendor/lib64/libsys-utils.so
+lib64/libta.so:vendor/lib64/libta.so
+lib/libMiscTaAccessor.so:vendor/lib/libMiscTaAccessor.so
+lib/libmiscta.so:vendor/lib/libmiscta.so
+lib/libprotobuf-c.so:vendor/lib/libprotobuf-c.so
+lib/libsys-utils.so:vendor/lib/libsys-utils.so
+lib/libta.so:vendor/lib/libta.so
+vendor/lib64/libprotobuf-cpp-lite-3.9.1.so
+vendor/lib/libprotobuf-cpp-lite-3.9.1.so
 
 # Thermal
 etc/thermal-engine.conf
