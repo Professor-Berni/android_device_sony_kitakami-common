@@ -24,6 +24,15 @@ cc_library_shared {
 }
 
 cc_library_shared {
+    name: "libshims_get_process_name",
+    srcs: [
+      "get_process_name.c",
+    ],
+    vendor: true,
+    compile_multilib: "both",
+}
+
+cc_library_shared {
     name: "libshims_postproc",
     srcs: ["libshims_postproc.cpp"],
     compile_multilib: "both",
