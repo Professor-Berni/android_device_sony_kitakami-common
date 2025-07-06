@@ -94,6 +94,18 @@ blob_fixups: blob_fixups_user_type = {
         'vendor/lib/libcne.so',
     ): blob_fixup()
         .remove_needed('libwpa_client.so'),
+    (
+        'vendor/lib64/libdiag.so',
+        'vendor/lib/libdiag.so',
+        'vendor/lib64/libmdmdetect.so',
+        'vendor/lib/libmdmdetect.so',
+    ): blob_fixup()
+        .add_needed('liblog.so'),
+    (
+        'vendor/lib64/libloc_api_v02.so',
+        'vendor/lib/libloc_api_v02.so',
+    ): blob_fixup()
+        .add_needed('liblog.so'),
 }  # fmt: skip
 
 module = ExtractUtilsModule(
