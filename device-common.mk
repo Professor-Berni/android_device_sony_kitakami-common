@@ -321,6 +321,11 @@ PRODUCT_PACKAGES += \
     android.hardware.sensors@1.0-impl \
     libshim_sensors
 
+# Shims
+PRODUCT_PACKAGES += \
+    libshims_get_process_name \
+    libshims_GraphicBuffer
+
 # Soong
 PRODUCT_SOONG_NAMESPACES += device/sony/kitakami-common
 
