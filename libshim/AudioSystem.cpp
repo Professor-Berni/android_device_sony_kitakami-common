@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 The LineageOS Project
+ * Copyright (C) 2019 The LineageOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <stdint.h>
+#include <string>
 
-//android::IPowerManager::asInterface(android::sp<android::IBinder> const&)
-extern "C" void _ZN7android13IPowerManager11asInterfaceERKNS_2spINS_7IBinderEEE() { }
+extern "C" void _ZN7android11AudioSystem13getParametersEiRKNS_7String8E() {}
+extern "C" void _ZN7android11AudioSystem13setParametersEiRKNS_7String8E() {}
+extern "C" void _ZN7android11AudioSystem16setErrorCallbackEPFviE() {}
+

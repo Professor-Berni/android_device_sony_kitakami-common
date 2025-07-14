@@ -33,6 +33,15 @@ cc_library_shared {
 }
 
 cc_library_shared {
+    name: "libshims_AudioSystem",
+    srcs: [
+      "AudioSystem.cpp",
+    ],
+    vendor: true,
+    compile_multilib: "both",
+}
+
+cc_library_shared {
     name: "libshims_GraphicBuffer",
     srcs: [
       "GraphicBuffer.cpp",
