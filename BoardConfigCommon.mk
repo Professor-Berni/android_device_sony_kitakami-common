@@ -107,11 +107,11 @@ BOARD_HAVE_BLUETOOTH_BCM := true
 
 TARGET_PROCESS_SDK_VERSION_OVERRIDE := \
     /system/bin/mediaserver=25 \
-    /system/bin/iddd=25 \
-    /system/bin/secd=25 \
-    /system/bin/tad_static=25 \
-    /system/bin/loc_launcher=25 \
-    /system/bin/sensors.qcom=25
+    /system/vendor/bin/iddd=25 \
+    /system/vendor/bin/loc_launcher=25 \
+    /system/vendor/bin/secd=25 \
+    /system/vendor/bin/sensors.qcom=25 \
+    /system/vendor/bin/tad_static=25
 
 # Charger
 BOARD_CHARGER_SHOW_PERCENTAGE := true

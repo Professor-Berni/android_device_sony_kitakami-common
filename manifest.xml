@@ -16,6 +16,10 @@
             <name>IEffectsFactory</name>
             <instance>default</instance>
         </interface>
+        <interface>
+            <name>IFactory</name>
+            <instance>default</instance>
+        </interface>
     </hal>
     <hal format="hidl">
         <name>android.hardware.bluetooth</name>

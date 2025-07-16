@@ -1,4 +1,11 @@
 <compatibility-matrix version="1.0" type="framework"> 
+    <hal format="aidl" optional="true">
+        <name>android.hardware.audio.core</name>
+        <interface>
+            <name>IModule</name>
+            <instance>default</instance>
+        </interface>
+    </hal>
     <hal format="hidl" optional="true">
         <name>android.hardware.audio</name>
         <transport>hwbinder</transport>
@@ -14,6 +21,10 @@
         <version>7.0</version>
         <interface>
             <name>IEffectsFactory</name>
+            <instance>default</instance>
+        </interface>
+        <interface>
+            <name>IFactory</name>
             <instance>default</instance>
         </interface>
     </hal>
