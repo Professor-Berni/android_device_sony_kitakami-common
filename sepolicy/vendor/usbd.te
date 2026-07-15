@@ -1,2 +1,0 @@
-allow usbd unlabeled:binder impersonate;
-allow usbd vendor_file:file r_file_perms;

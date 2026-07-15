@@ -1,0 +1,9 @@
+service vendor.camera-provider-2-4 /vendor/bin/hw/android.hardware.camera.provider@2.4-service
+    interface android.hardware.camera.provider@2.4::ICameraProvider legacy/0
+    class hal
+    user cameraserver
+    group audio camera input drmrpc
+    ioprio rt 4
+    capabilities SYS_NICE
+    task_profiles CameraServiceCapacity MaxPerformance
+    setenv LD_PRELOAD libgbm_unlock_shim.so:libbinder_compat_shim.so:libsensor.so:libmutex_destroy_shim.so:libcammw_motionsensor_shim.so

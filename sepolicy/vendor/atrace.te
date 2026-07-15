@@ -1,2 +1,0 @@
-allow atrace unlabeled:binder impersonate;
-allow atrace vendor_file:file r_file_perms;

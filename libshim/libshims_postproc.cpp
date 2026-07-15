@@ -14,5 +14,4 @@
  * limitations under the License.
  */
 
-//android::IPowerManager::asInterface(android::sp<android::IBinder> const&)
 extern "C" void _ZN7android13IPowerManager11asInterfaceERKNS_2spINS_7IBinderEEE() { }

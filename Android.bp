@@ -2,5 +2,7 @@ soong_namespace {
 }
 
 subdirs = [
+    "camera",
+    "camera/prebuilt",
     "light",
 ]

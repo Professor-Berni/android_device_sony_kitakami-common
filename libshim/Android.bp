@@ -1,4 +1,5 @@
-// Copyright (C) 2016-2025 The Android Open Source Project
+//
+// Copyright (C) 2021 Carlos 'Klozz' Jesus
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,52 +12,173 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
 
+// IMS video decoder shim
 cc_library_shared {
-    name: "libshim_sensors",
-    srcs: ["libshim_sensors.cpp"],
-    compile_multilib: "both",
-    vendor: true,
+    name: "libshim_libimsmedia",
+    srcs: ["libshim_libimsmedia.cpp"],
+    compile_multilib: "64",
+}
+
+// libbinder compat (framework symbols for Sony A7 vendor blobs; rild + camera)
+cc_library_shared {
+    name: "libbinder_compat_shim",
+    srcs: ["libbinder_compat_shim.cpp"],
     shared_libs: [
-        "libsensor_vendor",
         "libutils",
     ],
+    vendor: true,
+    compile_multilib: "both",
 }
 
+// libandroid NDK stub (AS libandroid.so; Sony camera stats/cammw blobs)
 cc_library_shared {
-    name: "libshims_get_process_name",
-    srcs: [
-      "get_process_name.c",
+    name: "libandroid_vendor_shim",
+    stem: "libandroid",
+    srcs: ["libandroid_shim.cpp"],
+    vendor: true,
+    compile_multilib: "32",
+}
+
+// GraphicBufferMapper::unlock 1-arg + GraphicBuffer 7-arg ctor for camera.vendor
+cc_library_shared {
+    name: "libgbm_unlock_shim",
+    srcs: ["libgbm_unlock_shim.cpp"],
+    shared_libs: [
+        "libui",
+        "libutils",
+        "liblog",
+    ],
+    vendor: true,
+    compile_multilib: "32",
+}
+
+// Lenient pthread_mutex_destroy (Sony camera blobs double-destroy; A16 FORTIFY)
+cc_library_shared {
+    name: "libmutex_destroy_shim",
+    srcs: ["libmutex_destroy_shim.cpp"],
+    vendor: true,
+    compile_multilib: "32",
+}
+
+// cammw_sensor_open NULL stub (provider only; avoids decStrong SIGBUS)
+cc_library_shared {
+    name: "libcammw_motionsensor_shim",
+    srcs: ["libcammw_motionsensor_shim.cpp"],
+    vendor: true,
+    compile_multilib: "32",
+}
+
+// libsensor stub (AS libsensor.so; SensorManager symbols for libcammw)
+cc_library_shared {
+    name: "libsensor_vendor_shim",
+    stem: "libsensor",
+    srcs: ["libsensor_shim.cpp"],
+    vendor: true,
+    compile_multilib: "32",
+}
+
+// libpowermanager stub (AS libpowermanager.so; LiveDisplay legacymm blob chain)
+cc_library_shared {
+    name: "libpowermanager_vendor_shim",
+    stem: "libpowermanager",
+    srcs: ["libpowermanager_shim.cpp"],
+    shared_libs: [
+        "libutils",
     ],
     vendor: true,
     compile_multilib: "both",
 }
 
+// liblights-core stub (AS liblights-core.so; fingerprint.msm8994 dlopen)
 cc_library_shared {
-    name: "libshims_AudioSystem",
-    srcs: [
-      "AudioSystem.cpp",
+    name: "liblights-core_vendor_shim",
+    stem: "liblights-core",
+    srcs: ["liblights-core_shim.cpp"],
+    vendor: true,
+    compile_multilib: "both",
+}
+
+// libmedia stub (AS libmedia.so; libril-qc-qmi AudioSystem symbols)
+cc_library_shared {
+    name: "libmedia_vendor_shim",
+    stem: "libmedia",
+    srcs: ["libshim_libmedia_vendor.cpp"],
+    shared_libs: [
+        "libutils",
+        "liblog",
     ],
     vendor: true,
     compile_multilib: "both",
 }
 
+// secd HMAC_CTX/EVP_CIPHER_CTX heap-alloc shim (BoringSSL CTX size overflow)
 cc_library_shared {
-    name: "libshims_GraphicBuffer",
-    srcs: [
-      "GraphicBuffer.cpp",
+    name: "libsecd_crypto_shim",
+    srcs: ["libsecd_crypto_shim.cpp"],
+    shared_libs: [
+        "libcrypto",
+        "libdl",
     ],
+    compile_multilib: "64",
+}
+
+// set_sched_policy export for stock A7 libgps.utils.so
+cc_library_shared {
+    name: "libgps_utils_setpolicy_shim",
+    srcs: ["libgps_utils_setpolicy_shim.cpp"],
+    shared_libs: [
+        "libdl",
+    ],
+    vendor: true,
+    compile_multilib: "64",
+}
+
+// is_wifi_driver_loaded export for stock A7 liblowi_wifihal_nl.so
+cc_library_shared {
+    name: "libwifi_compat_shim",
+    srcs: ["libwifi_compat_shim.cpp"],
+    vendor: true,
+    compile_multilib: "both",
+}
+
+// get_process_name stub for stock A7 libizat_core.so
+cc_library_shared {
+    name: "libizat_compat_shim",
+    srcs: ["libizat_compat_shim.cpp"],
     vendor: true,
     compile_multilib: "both",
 }
 
 cc_library_shared {
-    name: "libshims_postproc",
-    srcs: ["libshims_postproc.cpp"],
+    name: "libizat_compat_shim_system",
+    stem: "libizat_compat_shim",
+    srcs: ["libizat_compat_shim.cpp"],
     compile_multilib: "both",
-    vendor: true,
-    cflags: [
-        "-Wno-unused-parameter",
-    ],
 }
 
+cc_library_shared {
+    name: "libwifi_compat_shim_system",
+    stem: "libwifi_compat_shim",
+    srcs: ["libwifi_compat_shim.cpp"],
+    compile_multilib: "both",
+}
+
+// BnRemoteDisplayClient::onTransact stub for stock A7 GPS daemon chain
+cc_library_shared {
+    name: "libmedia_remote_display_shim",
+    srcs: ["libmedia_remote_display_shim.cpp"],
+    compile_multilib: "64",
+}
+
+// System-installed companion of the GPS setpolicy shim (loc_launcher)
+cc_library_shared {
+    name: "libgps_utils_setpolicy_shim_system",
+    stem: "libgps_utils_setpolicy_shim",
+    srcs: ["libgps_utils_setpolicy_shim.cpp"],
+    shared_libs: [
+        "libdl",
+    ],
+    compile_multilib: "64",
+}

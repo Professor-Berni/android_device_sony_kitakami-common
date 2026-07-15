@@ -41,15 +41,15 @@ on early-init
     write /sys/module/msm_performance/parameters/managed_cpus 4-7
 
 on init
-    # default is root radio 0440
-    chmod 0644 /proc/cmdline
+    mkdir /persist/data 0700 system system
 
-    # E: Failed to open /dev/qseecom device
-    chmod 0666 /dev/qseecom
-    
-    # E system_server: open failed: /dev/mdm: No such file or directory
-    mkdir /dev/mdm 0775 system system
-#    mkdir /persist/data 0700 system system
+    # Synchronous TA-partition ownership before tad_static opens it (ueventd's rule is async)
+    wait /dev/block/mmcblk0p1
+    chown oem_2997 oem_2997 /dev/block/mmcblk0p1
+    chmod 0770 /dev/block/mmcblk0p1
+
+    # Mount modem firmware at /firmware (pil-q6v5-mss searches /firmware/image/; else SSR loops)
+    mount vfat /dev/block/bootdevice/by-name/modem /firmware ro shortname=lower uid=1000 gid=1000 dmask=222 fmask=222
 
     write /sys/devices/soc.0/f98a4900.sdhci/mmc_host/mmc1/clkgate_delay 1
     # Avoid long waits for rcu grace periods
@@ -108,36 +108,6 @@ on init
     write /sys/block/zram0/comp_algorithm lz4
     write /proc/sys/vm/page-cluster 0
 
-    # Create energy-aware scheduler tuning nodes
-    mkdir /dev/stune 0775 system system
-    mkdir /dev/stune/foreground 0775 system system
-    mkdir /dev/stune/background 0775 system system
-    mkdir /dev/stune/top-app 0775 system system
-    mkdir /dev/stune/rt 0775 system system
-    write /dev/stune/tasks 0
-    write /dev/stune/foreground/tasks 0
-    write /dev/stune/background/tasks 0
-    write /dev/stune/top-app/tasks 0
-    write /dev/stune/rt/tasks 0
-    chown system system /dev/stune
-    chown system system /dev/stune/foreground
-    chown system system /dev/stune/background
-    chown system system /dev/stune/top-app
-    chown system system /dev/stune/rt
-    chown system system /dev/stune/tasks
-    chown system system /dev/stune/foreground/tasks
-    chown system system /dev/stune/background/tasks
-    chown system system /dev/stune/top-app/tasks
-    chown system system /dev/stune/rt/tasks
-    chmod 0664 /dev/stune/tasks
-    chmod 0664 /dev/stune/foreground/tasks
-    chmod 0664 /dev/stune/background/tasks
-    chmod 0664 /dev/stune/top-app/tasks
-    chmod 0664 /dev/stune/rt/tasks
-
-    # Charger
-    chown system system /sys/class/power_supply/battery/batt_slate_mode
-
 on early-boot
     # set RLIMIT_MEMLOCK to 64MB
     setrlimit 8 67108864 67108864
@@ -146,15 +116,40 @@ on early-boot
 on fs
     wait /dev/block/platform/soc.0/${ro.boot.bootdevice}
     symlink /dev/block/platform/soc.0/${ro.boot.bootdevice} /dev/block/bootdevice
-    mount_all fstab.qcom
+    # Split mount_all: --early skips latemount entries (/data) so init reaches late-fs and
+    # class_start's early_hal (keystore2 + QSEE keymaster). Mounting encrypted /data inline
+    # here would block vold on keystore2, which late-fs hasn't started yet -> deadlock.
+    mount_all fstab.qcom --early
     # Threshold for cma page reclaim
     write /proc/sys/vm/swap_thresh_cma_free_pages 7680
 
+# qseecomd (class core) auto-starts too late; start it here and wait for its TA
+# listeners before mounting /data, or the keymaster HAL never registers and vold blocks.
+on late-fs
+    start qseecomd
+    wait_for_prop sys.listeners.registered true
+    mount_all fstab.qcom --late
+
     chown oem_2987 oem_2987 /idd
+    chmod 0751 /iddA
     exec /system/bin/rm -r /idd/lost+found
     symlink /idd /mnt/idd
+    chown oem_2987 oem_2987 /rca
+    chmod 0750 /rca
+    exec /system/bin/rm -r /rca/lost+found
+    symlink /rca /mnt/rca
 
 on boot
+
+    # VM tuning to reduce kswapd0 shrink_slab panic risk (keep more memory free)
+    write /proc/sys/vm/min_free_kbytes 98304
+    write /proc/sys/vm/watermark_scale_factor 200
+    write /proc/sys/vm/extra_free_kbytes 32768
+    write /proc/sys/vm/swappiness 10
+
+    # deadline, not CFQ: 3.10 CFQ __cfq_slice_expired corrupts memory in shrink_slab (panic)
+    write /sys/block/mmcblk0/queue/scheduler deadline
+    write /sys/block/mmcblk1/queue/scheduler deadline
 
     # execute script to set initial CPU settings
     # don't run as a service to avoid race conditions
@@ -189,12 +184,34 @@ on boot
     chown system system /sys/bus/spi/devices/spi0.1/irq
     chmod 0660 /sys/bus/spi/devices/spi0.1/irq
 
+    # Required for vendor.lineage.health-service.default (charging control HAL).
+    # The HAL runs as user system and writes 0/1 to disable/enable charging,
+    # but kernel sysfs creates the node 0644 root:root. Without these chown
+    # /chmod the HAL's access() probe with W_OK fails forever in its
+    # constructor's `while (!mChargingEnabledNode)` loop and the AIDL service
+    # never registers, blocking boot completion.
+    chown system system /sys/class/power_supply/battery/charging_enabled
+    chmod 0660 /sys/class/power_supply/battery/charging_enabled
+    chown system system /sys/class/power_supply/battery/battery_charging_enabled
+    chmod 0660 /sys/class/power_supply/battery/battery_charging_enabled
+
+    # add a cpuset for the camera daemon
+    # we want all the little cores for camera
+    mkdir /dev/cpuset/camera-daemon
+    write /dev/cpuset/camera-daemon/cpus 0
+    write /dev/cpuset/camera-daemon/mems 0 
+    chown system system /dev/cpuset/camera-daemon
+    chown system system /dev/cpuset/camera-daemon/tasks
+    chmod 0664 /dev/cpuset/camera-daemon/tasks
+
     # update foreground cpuset now that processors are up
+    # reserve CPU 3 for the top app and camera daemon
     write /dev/cpuset/foreground/cpus 0-2,4-7
     write /dev/cpuset/foreground/boost/cpus 4-7
     write /dev/cpuset/background/cpus 0
     write /dev/cpuset/system-background/cpus 0-2
     write /dev/cpuset/top-app/cpus 0-7
+    write /dev/cpuset/camera-daemon/cpus 0-3
     write /dev/cpuset/restricted/cpus 0-3
 
     write /proc/sys/kernel/sched_boost 1
@@ -287,48 +304,32 @@ on boot
     write /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal 1
 
     # NFC local data and nfcee xml storage
-    mkdir /data/nfc 0770 nfc nfc encryption=None
+    mkdir /data/nfc 0770 nfc nfc
     mkdir /data/nfc/param 0770 nfc nfc
 
-    # Set the console loglevel to lt. KERN_INFO
+    # Set the console loglevel to < KERN_INFO
     # Set the default message loglevel to KERN_INFO
     write /proc/sys/kernel/printk "6 6 1 7"
 
     # Disable audio jack impedance detection
     write /sys/module/snd_soc_wcd9xxx/parameters/impedance_detect_en 0
 
-    # Missing statements
-    mkdir /data/adbroot 0700 system system encryption=None
-    mkdir /data/time 0770 system system encryption=None
-
 on post-fs
 
 on post-fs-data
-    # Create directory for radio
-    mkdir /data/vendor/radio 0770 system radio
-
-    # Mark the copy complete flag to not completed
-    write /data/vendor/radio/copy_complete 0
-    chown radio radio /data/vendor/radio/copy_complete
-    chmod 0660 /data/vendor/radio/copy_complete
-
-    # copy prebuilt qcril.db files always
-    copy /system/vendor/qcril.db /data/vendor/radio/qcril_prebuilt.db
-    chown radio radio /data/vendor/radio/qcril_prebuilt.db
-    chmod 0660 /data/vendor/radio/qcril_prebuilt.db
-
     # Fingerprint data folder
-    mkdir /data/fpc 0770 system system encryption=None
+    mkdir /data/fpc 0770 system system
 
     #Secd
-    mkdir /data/credmgr 0770 system oem_2996 encryption=None
+    mkdir /data/credmgr 0770 system oem_2996
 
     mkdir /idd/lost+found 0770 root root
     mkdir /idd/output 0755 oem_2987 oem_2987
     mkdir /idd/socket 0711 oem_2987 oem_2987
     mkdir /idd/startup-prober 0700 root root
     restorecon_recursive /idd
-#    restorecon_recursive /rca
+    mkdir /rca/plugins 0750 oem_2987 oem_2987
+    restorecon_recursive /rca
 
     # KSM options
     write /sys/kernel/mm/ksm/pages_to_scan 100
@@ -337,19 +338,35 @@ on post-fs-data
     write /sys/kernel/mm/ksm/run 1
 
     # SONY: Import MiscTA to System properties
-    mkdir /data/etc 0775 system system encryption=None
+    mkdir /data/etc 0775 system system
 
     # Create directory for TZ Apps
     mkdir /data/misc/qsee 0770 system system
 
-    mkdir /data/media 0770 media_rw media_rw encryption=None
+    #Create folder for mm-qcamera-daemon
+    mkdir /data/misc/camera 0770 camera camera
+    mkdir /data/vendor/qcam 0770 camera camera
+
+    mkdir /data/media 0770 media_rw media_rw
+    chown media_rw media_rw /data/media
 
     mkdir /data/misc/ipa 0700 net_admin net_admin
+
+    # Pre-copy qcril.db so rild can read it.
+    mkdir /data/vendor/radio 0770 system radio
+    write /data/vendor/radio/copy_complete 0
+    chown radio radio /data/vendor/radio/copy_complete
+    chmod 0660 /data/vendor/radio/copy_complete
+    copy /system/vendor/qcril.db /data/vendor/radio/qcril_prebuilt.db
+    chown radio radio /data/vendor/radio/qcril_prebuilt.db
+    chmod 0660 /data/vendor/radio/qcril_prebuilt.db
 
     mkdir /data/misc/bluetooth 0770 bluetooth bluetooth
     mkdir /data/vendor/bluetooth 0770 bluetooth bluetooth
     chown bluetooth bluetooth /data/vendor/bluetooth/bluetooth_bdaddr
     chmod 0770 /data/vendor/bluetooth/bluetooth_bdaddr
+
+    # taimport force-started via the tad_static trigger below (late_start never fires under FBE)
 
     # Create the directories used by the Wireless subsystem
     mkdir /data/vendor/wifi 0770 wifi wifi
@@ -363,7 +380,8 @@ on post-fs-data
     mkdir /data/vendor/wifi/wigig_hostapd 0770 wifi wifi
     mkdir /data/vendor/wifi/wpa 0770 wifi wifi
     mkdir /data/vendor/wifi/wpa/sockets 0770 wifi wifi
-    mkdir /data/misc/dhcp 0770 dhcp system
+    mkdir /data/misc/dhcp 0770 dhcp dhcp
+    chown dhcp system /data/misc/dhcp
 
     # Create directory used by audio subsystem
     mkdir /data/misc/audio 0770 audio audio
@@ -383,7 +401,7 @@ on post-fs-data
     mkdir /data/vendor/display 0770 system graphics
 
     # QCOM Sensors
-    mkdir /data/system 0775 system system encryption=None
+    mkdir /data/system 0775 system system
     mkdir /data/system/sensors 0775 system system
     mkdir /data/misc/sensors 0775 system system
     write /data/system/sensors/settings 1
@@ -405,6 +423,21 @@ on post-fs-data
     chown system system /sys/devices/platform/msm_sdcc.3/polling
     chown system system /sys/devices/platform/msm_sdcc.4/polling
 
+    # PM8994 flash
+    chown cameraserver camera /sys/class/misc/pmi8994-flash/device/current1
+    chown cameraserver camera /sys/class/misc/pmi8994-flash/device/current2
+    chown cameraserver camera /sys/class/misc/pmi8994-flash/device/fault_status
+    chown cameraserver camera /sys/class/misc/pmi8994-flash/device/fine_current1
+    chown cameraserver camera /sys/class/misc/pmi8994-flash/device/fine_current2
+    chown cameraserver camera /sys/class/misc/pmi8994-flash/device/flash_timer
+    chown cameraserver camera /sys/class/misc/pmi8994-flash/device/mask_clamp_current
+    chown cameraserver camera /sys/class/misc/pmi8994-flash/device/mask_enable
+    chown cameraserver camera /sys/class/misc/pmi8994-flash/device/max_current
+    chown cameraserver camera /sys/class/misc/pmi8994-flash/device/mode
+    chown cameraserver camera /sys/class/misc/pmi8994-flash/device/startup_delay
+    chown cameraserver camera /sys/class/misc/pmi8994-flash/device/strobe
+    chown cameraserver camera /sys/class/misc/pmi8994-flash/device/vph_pwr_droop
+
     # Cover mode
     chown system system /sys/devices/virtual/input/clearpad/cover_mode_enabled
     chown system system /sys/devices/virtual/input/clearpad/cover_win_bottom
@@ -425,6 +458,7 @@ on post-fs-data
     chmod 0660 /sys/devices/virtual/input/maxim_sti/glove_en
 
     #Create the symlink to qcn wpa_supplicant folder for ar6000 wpa_supplicant
+    mkdir /data/system 0775 system system
     #symlink /data/misc/wifi/wpa_supplicant /data/system/wpa_supplicant
 
     #Create directories for Location services
@@ -439,15 +473,17 @@ on post-fs-data
     mkdir /dev/socket/location/xtra 0770 gps gps
 
     #Create directory from IMS services
-    mkdir /data/shared 0755 system system encryption=None
+    mkdir /data/shared 0755
+    chown system system /data/shared
 
     #Create directory for FOTA
-    mkdir /data/fota 0771 system system encryption=None
+    mkdir /data/fota 0771
+    chown system system /data/fota
 
     #Create directory for hostapd
-    mkdir /data/hostapd 0770 system wifi encryption=None
+    mkdir /data/hostapd 0770 system wifi
 
-    mkdir /data/audio/ 0770 media audio encryption=None
+    mkdir /data/audio/ 0770 media audio
 
     # Create a folder for audio delta files
     mkdir /data/audio/acdbdata 0770 media audio
@@ -461,8 +497,13 @@ on post-fs-data
     chmod 2755 /data/misc/perfd
     mkdir /data/system/perfd 0770 root system
     chmod 2770 /data/system/perfd
-    rm /data/system/perfd/default_values
-    start perfd
+
+    # SONY: Camera
+    mkdir /data/camera 0770 media camera
+    chown media camera /sys/devices/sony_camera_0/info
+    chmod 0770 /sys/devices/sony_camera_0/info
+    chown media camera /sys/devices/sony_camera_1/info
+    chmod 0770 /sys/devices/sony_camera_1/info
 
     chown system /dev/block/bootdevice/by-name
 
@@ -528,12 +569,67 @@ on enable-low-power
     chmod 0664 /sys/module/workqueue/parameters/power_efficient
     write /sys/module/workqueue/parameters/power_efficient Y
 
-service irsc_util /system/vendor/bin/irsc_util "/etc/sec_config"
+    # Enable kernel deep sleep post-boot (cmdline sets sleep_disabled=1 during driver init)
+    write /sys/module/lpm_levels/parameters/sleep_disabled N
+
+    # msm-core sampling 50ms -> 1000ms (50ms kept the do_sampling kthread permanently D-state)
+    write /sys/module/msm_core/parameters/polling_interval 1000
+
+    # A57 core_ctl task_thres 4 -> 8 (4 forced the A57 cluster always-online under kthread load)
+    write /sys/devices/system/cpu/cpu4/core_ctl/task_thres 8
+
+    # Doze/AOD disabled via overlay (IPS LCD: a held DOZE_WAKE_LOCK blocks suspend)
+
+    # Do NOT stop the camera daemons at boot (cold-reset loses the sensor-subdev priming)
+    # stop cameraserver
+    # stop qcamerasvr
+    # stop vendor.camera-provider-2-4
+
+service vendor.imsqmidaemon /system/vendor/bin/imsqmidaemon
+    class main
+    user system
+    socket ims_qmid stream 0660 system radio
+    group radio log diag
+    writepid /dev/cpuset/system-background/tasks
+
+service vendor.imsdatadaemon /system/vendor/bin/imsdatadaemon
+    class main
+    user system
+    socket ims_datad stream 0660 system radio
+    group system wifi radio inet log diag
+    disabled
+
+on property:vendor.ims.QMI_DAEMON_STATUS=1
+    start vendor.imsdatadaemon
+
+# ims_rtp_daemon (VoLTE RTP) and imsrcsd (RCS) crash-loop ~every 5s on A16 and are both
+# non-functional here; keep them disabled to stop the respawn churn.
+service vendor.ims_rtp_daemon /system/vendor/bin/ims_rtp_daemon
+    class main
+    user system
+    socket ims_rtpd stream 0660 system radio
+    group radio diag inet log
+    writepid /dev/cpuset/system-background/tasks
+    disabled
+
+service vendor.imsrcsservice /system/vendor/bin/imsrcsd
+   class main
+   user system
+   group radio diag inet log
+   writepid /dev/cpuset/system-background/tasks
+   disabled
+
+service vendor.imscmservice /system/vendor/bin/imscmservice
+   class main
+   user system
+   group radio diag log
+
+service irsc_util /system/bin/irsc_util "/etc/sec_config"
     class main
     user root
     oneshot
 
-service sensors /system/vendor/bin/sensors.qcom
+service sensors /system/bin/sensors.qcom
     class main
     user root
     group radio system
@@ -552,89 +648,98 @@ on property:ro.data.large_tcp_window_size=true
 
 on property:dev.bootcomplete=1
     swapon_all fstab.qcom
+    # Enable AOSP-native logpersistd (rotated logcat in /data/misc/logd/logcat),
+    # which survives reboots for diagnosing crashes.
+    setprop persist.logd.logpersistd logcatd
+    setprop persist.logd.logpersistd.size 16
+    setprop persist.logd.logpersistd.rotate_kbytes 4096
 
-service msm_irqbalance /system/vendor/bin/msm_irqbalance -f /system/vendor/etc/msm_irqbalance.conf
+service msm_irqbalance /system/bin/msm_irqbalance -f /system/vendor/etc/msm_irqbalance.conf
     socket msm_irqbalance seqpacket 660 root system
     class main
     user root
     group root
-    task_profiles ServiceCapacityLow
+    writepid /dev/cpuset/system-background/tasks
 
-service qseecomd /system/vendor/bin/qseecomd
+# qcamerasvr service def lives in rootdir/etc/init/qcamerasvr.rc
+
+service qseecomd /system/bin/qseecomd
     class core
     user root
     group root
-    task_profiles ServiceCapacityLow
+    writepid /dev/cpuset/system-background/tasks
 
+# qseecomd sets legacy sys.listeners.registered; mirror to sys.* + vendor.* keymaster.loaded
 on property:sys.listeners.registered=*
-    setprop sys.keymaster.loaded ${vendor.sys.listeners.registered}
-    setprop vendor.sys.keymaster.loaded ${vendor.sys.listeners.registered}
+    setprop sys.keymaster.loaded ${sys.listeners.registered}
+    setprop vendor.keymaster.loaded ${sys.listeners.registered}
 
-service vendor.perfd /system/vendor/bin/perfd
+service vendor.perfd /vendor/bin/perfd
     class main
     user root
-    group system
+    group root readproc
     disabled
-    socket perfd seqpacket 0666 root system
-    task_profiles ServiceCapacityLow
+    writepid /dev/cpuset/system-background/tasks
 
-service thermal-engine /system/vendor/bin/thermal-engine
-   class main
-   user root
-   group root
-   socket thermal-send-client stream 0666 system system
-   socket thermal-recv-client stream 0660 system system
-   socket thermal-recv-passive-client stream 0666 system system
+service thermal-engine /vendor/bin/thermal-engine
+    class main charger
+    user root
+    socket thermal-send-client stream 0666 system system
+    socket thermal-recv-client stream 0660 system system
+    socket thermal-recv-passive-client stream 0666 system system
+    group root
+    writepid /dev/cpuset/system-background/tasks
 
-service adsprpcd /system/vendor/bin/adsprpcd
+service adsprpcd /system/bin/adsprpcd
    class main
    user media 
    group media drmrpc
 
 # SONY misc
-service tad /system/vendor/bin/tad_static /dev/block/bootdevice/by-name/TA 0,16
+service tad_static /system/bin/tad_static /dev/block/bootdevice/by-name/TA 0,16
     class core
     user oem_2997
     group oem_2997 root
     socket tad stream 0660 system oem_2993
-    task_profiles ServiceCapacityLow
+    writepid /dev/cpuset/system-background/tasks
 
 # SONY misc
-service ta_qmi_service /system/vendor/bin/ta_qmi_service
+service ta_qmi_service /system/bin/ta_qmi_service
     class main
     user root
     group wakelock
-    task_profiles ServiceCapacityLow
+    writepid /dev/cpuset/system-background/tasks
 
 # SONY prop
-service sct_service /system/vendor/bin/sct_service
+service sct_service /system/bin/sct_service
     class main
     user root
-    task_profiles ServiceCapacityLow
+    writepid /dev/cpuset/system-background/tasks
 
 # SONY prop
-service mlog_qmi_service /system/vendor/bin/mlog_qmi_service
+service mlog_qmi_service /system/bin/mlog_qmi_service
     class main
     user root
     group system wakelock drmrpc
-    task_profiles ServiceCapacityLow
+    writepid /dev/cpuset/system-background/tasks
 
 # QCOM prop
-service rmt_storage /system/vendor/bin/rmt_storage
+service rmt_storage /system/bin/rmt_storage
     class core
     user root
     group system wakelock drmrpc
-    task_profiles ServiceCapacityLow
+    writepid /dev/cpuset/system-background/tasks
     shutdown critical
 
-# DSDS second ril
+# Second ril daemon (rild -c 2) for dual-SIM, owning physical slot 2
 service vendor.ril-daemon2 /vendor/bin/hw/rild -c 2
     class main
     socket rild2 stream 660 root radio
     socket sap_uim_socket2 stream 660 bluetooth bluetooth
     socket rild-debug2 stream 660 radio system
     user root
-    group radio cache inet misc audio log readproc wakelock oem_2993
+    group radio cache inet misc audio log readproc wakelock oem_2950 oem_2993
+    setenv LD_PRELOAD libbinder_compat_shim.so
 
 service vendor.ril-daemon /vendor/bin/hw/rild
     override
@@ -644,49 +749,61 @@ service vendor.ril-daemon /vendor/bin/hw/rild
     socket rild-debug stream 660 radio system
     user root
     group radio cache inet misc audio log readproc wakelock oem_2950 oem_2993
+    setenv LD_PRELOAD libbinder_compat_shim.so
 
 # QCOM prop
-service qmuxd /system/vendor/bin/qmuxd
+service qmuxd /system/bin/qmuxd
     class main
     user radio
     group radio audio bluetooth gps diag drmrpc oem_2950
-    task_profiles ServiceCapacityLow
+    writepid /dev/cpuset/system-background/tasks
+
+# loc_launcher GPS supervisor daemon (spawns gpsone_daemon/lowi-server/xtwifi per izat.conf)
+service loc_launcher /system/bin/loc_launcher
+    class late_start
+    user root
+    group gps inet net_raw diag net_admin wifi vendor_qcom_diag vendor_rfs_shared system
+    capabilities NET_BIND_SERVICE NET_RAW NET_ADMIN SETUID SETGID WAKE_ALARM BLOCK_SUSPEND
+    writepid /dev/cpuset/system-background/tasks
 
 # QCOM prop
-service netmgrd /system/vendor/bin/netmgrd
+service netmgrd /system/bin/netmgrd
     class main
+    user root
     group root wifi wakelock radio inet oem_2950
-    task_profiles ServiceCapacityLow
+    writepid /dev/cpuset/system-background/tasks
 
-service taimport /system/vendor/bin/taimport
+service taimport /system/bin/taimport
     class late_start
     user root
     group system drmrpc
     oneshot
 
-service updatemiscta /system/vendor/bin/updatemiscta
+service updatemiscta /system/bin/updatemiscta
     class main
     user oem_2991
     group oem_2993
     oneshot
 
-service charger /system/bin/charger
-    class charger
-    group log system graphics
-    capabilities SYS_BOOT
-    seclabel u:r:charger:s0
-
-service per_mgr /system/vendor/bin/pm-service
+service per_mgr /system/bin/pm-service
     class core
     user system
     group system net_raw
-    task_profiles ServiceCapacityLow
+    writepid /dev/cpuset/system-background/tasks
 
-service per_proxy /system/vendor/bin/pm-proxy
+service per_proxy /system/bin/pm-proxy
     class core
     user system
     group system net_raw
     disabled
+
+service ppd /system/vendor/bin/mm-pp-daemon
+    class hal
+    user system
+    socket pps stream 0660 system system
+    group system graphics
+    writepid /dev/cpuset/system-background/tasks
+    setenv LD_PRELOAD libppd_ppoll_shim.so
 
 on property:init.svc.per_mgr=running
     start per_proxy
@@ -694,33 +811,29 @@ on property:init.svc.per_mgr=running
 on property:sys.shutdown.requested=*
     stop per_proxy
 
-service ppd /system/vendor/bin/mm-pp-daemon
-    class hal
-    user system
-    socket pps stream 0660 system system
-    group system graphics
-    task_profiles ServiceCapacityLow
-
 # brcm-uim-sysfs (BT/FM/ANT+)
-#service uim /system/vendor/bin/brcm-uim-sysfs
-#    class late_start
-#    user root
-#    group bluetooth net_bt_admin net_bt
-#    task_profiles ServiceCapacityLow
+service uim /system/vendor/bin/brcm-uim-sysfs
+    class late_start
+    user root
+    group bluetooth net_bt_admin net_bt
+    writepid /dev/cpuset/system-background/tasks
 
 on property:init.svc.fuse_sdcard1=running
-    write /sys/class/block/mmcblk1/queue/scheduler cfq
+    # deadline, not CFQ: CFQ __cfq_slice_expired corrupts memory on 3.10 (kswapd0 panic)
+    write /sys/class/block/mmcblk1/queue/scheduler deadline
     write /sys/class/block/mmcblk1/bdi/max_ratio 1
 
-service secd /system/vendor/bin/secd
+service secd /system/bin/secd
     class main
     user system
     group system
+    # secd CTX buffer-overflow shim (Sony's 288B HMAC_CTX vs BoringSSL ~400B)
+    setenv LD_PRELOAD libsecd_crypto_shim.so
     socket secd_ebl_sock stream 0660 system oem_2996
     socket secd_devsec_sock stream 0660 system oem_2996
     socket secd_credmgr_sock stream 0660 system oem_2996
 
-service iddd /system/vendor/bin/iddd
+service iddd /system/bin/iddd
     class core
     user oem_2987
     group oem_2987 log inet oem_2993
@@ -740,3 +853,8 @@ on property:service.usb.otg.switch.timeout=*
 
 on property:apexd.status=ready
     mount none /system/etc/swcodec/ld.config.txt /apex/com.android.media.swcodec/etc/ld.config.txt bind
+
+# Fire taimport once tad_static is up (wait guards the /dev/socket/tad bind race)
+on property:init.svc.tad_static=running
+    wait /dev/socket/tad 5
+    start taimport

@@ -45,6 +45,13 @@
     <!-- Indicates that AP mode MAC randomization is supported on this device -->
     <bool translatable="false" name="config_wifi_ap_mac_randomization_supported">false</bool>
 
+    <!-- Explicit SoftAp channel lists. The bcmdhd HAL does not reliably report
+         5GHz SoftAp channels, so force them here to keep the 5GHz band option
+         selectable. 36/40/44/48 are the non-DFS UNII-1 channels usable for AP
+         without DFS support. -->
+    <string translatable="false" name="config_wifiSoftap2gChannelList">1-11</string>
+    <string translatable="false" name="config_wifiSoftap5gChannelList">36,40,44,48</string>
+
     <!-- Wifi driver supports batched scan -->
     <bool translatable="false" name="config_wifi_batched_scan_supported">true</bool>
 

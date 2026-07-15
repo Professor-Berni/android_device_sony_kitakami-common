@@ -1,2 +1,2 @@
-allow hal_power_default sysfs:file rw_file_perms;
-allow hal_power_default unlabeled:binder impersonate;
+allow hal_power_default sysfs:file { open write };
+allow hal_power_default perfd:unix_stream_socket connectto;

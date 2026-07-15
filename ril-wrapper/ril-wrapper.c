@@ -106,7 +106,16 @@ do_not_handle:
     ossRilEnv->OnRequestComplete(t, e, response, responselen);
 }
 
+/*
+ * Under ANDROID_MULTI_SIM the OnUnsolicitedResponse callback gains a RIL_SOCKET_ID
+ * arg; the shim must forward it or the slot id is garbage -> radioService[] OOB SIGSEGV.
+ */
+#if defined(ANDROID_MULTI_SIM)
+static void onUnsolicitedResponseShim(int unsolResponse, const void* data, size_t datalen,
+                                      RIL_SOCKET_ID socket_id) {
+#else
 static void onUnsolicitedResponseShim(int unsolResponse, const void* data, size_t datalen) {
+#endif
     if (!data) {
         ALOGV("%s: data is NULL", __func__);
         goto do_not_handle;
@@ -124,7 +133,11 @@ static void onUnsolicitedResponseShim(int unsolResponse, const void* data, size_
     }
 
 do_not_handle:
+#if defined(ANDROID_MULTI_SIM)
+    ossRilEnv->OnUnsolicitedResponse(unsolResponse, data, datalen, socket_id);
+#else
     ossRilEnv->OnUnsolicitedResponse(unsolResponse, data, datalen);
+#endif
 }
 
 const RIL_RadioFunctions* RIL_Init(const struct RIL_Env* env, int argc, char** argv) {

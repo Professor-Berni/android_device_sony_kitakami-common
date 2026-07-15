@@ -1,23 +1,25 @@
 # Android fstab file.
 # The filesystem that contains the filesystem checker binary (typically /system) cannot
-# specify 'check', and must come before any filesystems that do specify 'check'.
+# specify MF_CHECK, and must come before any filesystems that do specify MF_CHECK
 
-# NOTE: /system partition is now early-mounted and the fstab entry is specified in device tree (duplicated below for recovery image purposes only):
-#       /proc/device-tree/firmware/android/fstab/system
+# /system is early-mounted via device tree; the entry below is for the recovery image only
 
 /dev/block/bootdevice/by-name/system       /system         ext4 ro,barrier=1                                                                 wait,recoveryonly
-/dev/block/bootdevice/by-name/userdata     /data           ext4 noatime,nosuid,nodev,barrier=1,noauto_da_alloc                               wait,check,length=-16384
-/dev/block/bootdevice/by-name/cache        /cache          ext4 noatime,nosuid,nodev,barrier=1,noauto_da_alloc                               wait,check
+# cache repurposed as /metadata (vold key, APEX, OTA); MUST precede /data (key lives in /metadata/vold/)
+/dev/block/bootdevice/by-name/cache        /metadata       ext4 nosuid,nodev,barrier=1                                                       wait,formattable
+# /data metadata-encryption (dm-crypt Adiantum) under fscrypt FBE; MUST stay byte-identical to fstab.qcom.vendor
+/dev/block/bootdevice/by-name/userdata     /data           ext4 nosuid,nodev,noatime,barrier=1                                              latemount,wait,check,formattable,quota,reservedsize=128M,fileencryption=adiantum::v1,keydirectory=/metadata/vold/metadata_encryption,metadata_encryption=adiantum
 /dev/block/bootdevice/by-name/misc         /misc           emmc defaults                                                                     defaults
 /dev/block/bootdevice/by-name/modem        /firmware       vfat ro,shortname=lower,uid=1000,gid=1000,dmask=222,fmask=222                     wait
 /dev/block/bootdevice/by-name/persist      /persist        ext4 nosuid,nodev,barrier=1,data=ordered,nodelalloc,nomblk_io_submit,errors=panic wait,notrim
 /dev/block/bootdevice/by-name/config       /persistent     emmc defaults                                                                     defaults
 /dev/block/bootdevice/by-name/boot         /boot           emmc defaults                                                                     defaults
 /dev/block/bootdevice/by-name/FOTAKernel   /recovery       emmc defaults                                                                     defaults
+/dev/block/bootdevice/by-name/config       /persistent     emmc defaults                                                                     defaults
 /dev/block/bootdevice/by-name/diag         /idd            ext4 nosuid,nodev,noatime,noexec,barrier=0,discard                                wait
 /devices/soc.0/f98a4900.sdhci/mmc_host*    auto            auto defaults                                                                     wait,voldmanaged=sdcard1:auto,encryptable=userdata
 
 /devices/soc.0/f9200000.ssusb/f9200000.dwc3/xhci-hcd.0.auto/usb* auto auto defaults voldmanaged=usbdisk:auto
 
 # Zram
-/dev/block/zram0                           none            swap defaults                                                                     zramsize=1073741824,max_comp_streams=4,notrim
+/dev/block/zram0                            none                swap    defaults                                                                                zramsize=1073741824,max_comp_streams=4,notrim

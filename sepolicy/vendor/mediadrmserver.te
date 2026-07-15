@@ -1,0 +1,1 @@
+allow mediadrmserver hal_drm_clearkey:binder { call transfer };

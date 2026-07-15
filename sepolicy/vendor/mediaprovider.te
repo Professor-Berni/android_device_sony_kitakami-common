@@ -1,2 +1,0 @@
-allow mediaprovider unlabeled:binder impersonate;
-allow mediaprovider vendor_file:file rx_file_perms;

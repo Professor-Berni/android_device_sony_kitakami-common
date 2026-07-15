@@ -1,0 +1,16 @@
+//
+// Copyright (C) 2026 The LineageOS Project
+//
+// SPDX-License-Identifier: Apache-2.0
+//
+
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+cc_library_shared {
+    name: "libwvcbs_shim",
+    srcs: ["cbs_shim.c"],
+    vendor: true,
+    compile_multilib: "64",
+}

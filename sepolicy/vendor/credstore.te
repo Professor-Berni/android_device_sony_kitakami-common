@@ -1,2 +1,0 @@
-allow credstore unlabeled:binder impersonate;
-allow credstore vendor_file:file r_file_perms;

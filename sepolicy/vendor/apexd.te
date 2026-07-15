@@ -1,3 +1,0 @@
-allow apexd sysfs_mmc_host:file rw_file_perms;
-allow apexd unlabeled:binder impersonate;
-allow apexd vendor_file:file r_file_perms;

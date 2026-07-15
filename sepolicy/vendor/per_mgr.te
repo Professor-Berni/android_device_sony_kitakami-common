@@ -1,7 +1,8 @@
-allow per_mgr default_android_service:service_manager add;
+# Started by init (pm-service) -> transition into the per_mgr domain
+init_daemon_domain(per_mgr)
+
+allow per_mgr per_mgr_service:service_manager add;
+allow per_mgr subsys_modem_device:chr_file r_file_perms;
 allow per_mgr self:capability net_raw;
 allow per_mgr self:socket create_socket_perms;
-allow per_mgr servicemanager:binder { call transfer };
-allow per_mgr sysfs:dir r_dir_perms;
-allow per_mgr sysfs:file r_file_perms;
-allow per_mgr unlabeled:binder impersonate;
+allow per_mgr per_proxy:binder call;

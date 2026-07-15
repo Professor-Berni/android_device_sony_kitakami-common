@@ -1,91 +1,184 @@
-# BRCM BT FM
-/sys/bus/platform/drivers/bcm_ldisc/bcmbt_ldisc(/.*)?      u:object_r:brcm_ldisc_sysfs:s0
-
-# DRM
-/data/vendor/mediadrm(/.*)?                                u:object_r:mediadrm_vendor_data_file:s0
-/(system|system/vendor)/bin/hw/android\.hardware\.drm@1\.[0-9]-service.clearkey u:object_r:hal_drm_clearkey_exec:s0
-/(system|system/vendor)/bin/hw/android\.hardware\.drm@1\.[0-9]-service.widevine u:object_r:hal_drm_widevine_exec:s0
-
-# Dumpstate HAL
-/(system|system/vendor)/bin/hw/android\.hardware\.dumpstate@1\.1-service-kitakami u:object_r:hal_dumpstate_impl_exec:s0
-
-# Fingerprint sensor SPI device
-/data/fpc(/.*)?                                            u:object_r:fpc_data_file:s0
-/data/fpcd(/.*)?                                           u:object_r:fpc_data_file:s0
-
-# FM
-/(system|system/vendor)/bin/brcm-uim-sysfs                 u:object_r:brcm_uim_exec:s0
-
-# HCI
-/dev/brcm_bt_drv                                           u:object_r:hci_attach_dev:s0
-/dev/ttyHS0                                                u:object_r:hci_attach_dev:s0
-
-# Misc
-/(system|system/vendor)/bin/adsprpcd                       u:object_r:adsprpcd_exec:s0
-/(system|system/vendor)/bin/clean_scratch_files            u:object_r:clean_scratch_files_exec:s0
-/(system|system/vendor)/bin/init\.qcom\.power\.sh          u:object_r:init-power-sh_exec:s0
-/(system|system/vendor)/bin/irsc_util                      u:object_r:irsc_util_exec:s0
-/(system|system/vendor)/bin/mlog_qmi_service               u:object_r:mlog_qmi_service_exec:s0
-/(system|system/vendor)/bin/mm-pp-daemon                   u:object_r:ppd_exec:s0
-/(system|system/vendor)/bin/msm_irqbalance                 u:object_r:msm_irqbalance_exec:s0
-/(system|system/vendor)/bin/netmgrd                        u:object_r:netmgrd_exec:s0
-/(system|system/vendor)/bin/perfd                          u:object_r:perfd_exec:s0
-/(system|system/vendor)/bin/pm-proxy                       u:object_r:per_mgr_exec:s0
-/(system|system/vendor)/bin/pm-service                     u:object_r:per_mgr_exec:s0
-/(system|system/vendor)/bin/qmuxd                          u:object_r:qmuxd_exec:s0
-/(system|system/vendor)/bin/qseecomd                       u:object_r:tee_exec:s0
-/(system|system/vendor)/bin/rmt_storage                    u:object_r:rmt_storage_exec:s0
-/(system|system/vendor)/bin/sct_service                    u:object_r:sct_service_exec:s0
-/(system|system/vendor)/bin/secd                           u:object_r:secd_exec:s0
-/(system|system/vendor)/bin/sensors\.qcom                  u:object_r:sensors_exec:s0
-/(system|system/vendor)/bin/tad_static                     u:object_r:tad_exec:s0
-/(system|system/vendor)/bin/taimport                       u:object_r:taimport_exec:s0
-/(system|system/vendor)/bin/ta_qmi_service                 u:object_r:ta_qmi_service_exec:s0
-/(system|system/vendor)/bin/timekeep                       u:object_r:timekeep_exec:s0
-/(system|system/vendor)/bin/updatemiscta                   u:object_r:updatemiscta_exec:s0
-
-# Modem
-/dev/subsys_modem                                          u:object_r:subsys_modem_device:s0
+# Gatekeeper
+/metadata/gatekeeper(/.*)?                                 u:object_r:gatekeeper_metadata_file:s0
 
 # NFC
 /dev/pn54x                                                 u:object_r:nfc_device:s0
 
-# Partitions
-/dev/block/bootdevice/by-name/diag                         u:object_r:diag_partition_device:s0
-/dev/block/bootdevice/by-name/TA                           u:object_r:trim_area_partition_device:s0
-/dev/block/bootdevice/by-num/p39                           u:object_r:diag_partition_device:s0
-/dev/block/bootdevice/mmcblk0p39                           u:object_r:diag_partition_device:s0
+/(vendor|system/vendor)/bin/hw/android\.hardware\.power-service-qti           u:object_r:hal_power_default_exec:s0
+/(vendor|system/vendor)/bin/hw/android\.hardware\.health-service\.kitakami    u:object_r:hal_health_default_exec:s0
+/(vendor|system/vendor)/bin/hw/vendor\.lineage\.livedisplay-service\.legacymm u:object_r:hal_lineage_livedisplay_sysfs_exec:s0
+/(vendor|system/vendor)/bin/hw/android\.hardware\.radio\.config@1\.1-service\.satsuki u:object_r:hal_radio_config_default_exec:s0
+
+/system/bin/qseecomd                                       u:object_r:tee_exec:s0
+
+# GPU (Adreno)
+/dev/kgsl-3d0                                              u:object_r:gpu_device:s0
+/dev/kgsl                                                  u:object_r:gpu_device:s0
+
+# Camera
+/dev/media[0-9]*                                           u:object_r:video_device:s0
+/dev/v4l-subdev[0-9]*                                      u:object_r:video_device:s0
+
+# QSEE / TrustZone
+/dev/qseecom                                               u:object_r:tee_device:s0
+/dev/adsprpc-smd                                           u:object_r:qdsp_device:s0
+/dev/msm_thermal_query                                     u:object_r:thermal_device:s0
+/dev/block/mmcblk0rpmb                                      u:object_r:rpmb_device:s0
+
+# Adreno GPU + Qualcomm display same-process libs
+/(vendor|system/vendor)/lib(64)?/libEGL_adreno\.so                  u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libGLESv1_CM_adreno\.so            u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libGLESv2_adreno\.so               u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/eglSubDriverAndroid\.so            u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libQTapGLES\.so                    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libq3dtools_adreno\.so             u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libq3dtools_esx\.so                u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libgsl\.so                         u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libCB\.so                          u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libmemalloc\.so                    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libadreno_utils\.so                u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libllvm-glnext\.so                 u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libllvm-qcom\.so                   u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libllvm-qgl\.so                    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libgpudataproducer\.so             u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libqdMetaData\.so                  u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libqdutils\.so                     u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libqdi\.so                         u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libqdp\.so                         u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libqservice\.so                    u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libbinder\.so                      u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libui\.so                          u:object_r:same_process_hal_file:s0
+# Do not re-specify libs already same_process_hal_file in AOSP base: checkfc fails on duplicates.
+/(vendor|system/vendor)/lib(64)?/android\.hardware\.graphics\.allocator@[0-9.]+\.so  u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/android\.hardware\.graphics\.allocator-V[0-9]+-ndk\.so  u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/android\.hardware\.graphics\.mapper@[0-9.]+\.so     u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/android\.hardware\.graphics\.common@[0-9.]+\.so     u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/android\.hardware\.common-V[0-9]+-ndk\.so           u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/hw/gralloc\.msm8994\.so            u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/hw/memtrack\.msm8994\.so           u:object_r:same_process_hal_file:s0
+
 /dev/block/mmcblk0p1                                       u:object_r:trim_area_partition_device:s0
-/dev/block/mmcblk0p39                                      u:object_r:diag_partition_device:s0
-/dev/block/platform/msm_sdcc\.1/by-name/TA                 u:object_r:trim_area_partition_device:s0
-/dev/block/platform/soc\.0/7824900\.sdhci/by-name/diag     u:object_r:diag_partition_device:s0
 /dev/block/platform/soc\.0/7824900\.sdhci/by-name/TA       u:object_r:trim_area_partition_device:s0
-/dev/block/platform/soc\.0/f9824900\.sdhci/by-name/diag    u:object_r:diag_partition_device:s0
 /dev/block/platform/soc\.0/f9824900\.sdhci/by-name/TA      u:object_r:trim_area_partition_device:s0
+/dev/block/platform/msm_sdcc\.1/by-name/TA                 u:object_r:trim_area_partition_device:s0
+/dev/block/bootdevice/by-name/TA                           u:object_r:trim_area_partition_device:s0
+/dev/block/platform/soc\.0/7824900\.sdhci/by-name/diag     u:object_r:diag_partition_device:s0
+/dev/block/platform/soc\.0/f9824900\.sdhci/by-name/diag    u:object_r:diag_partition_device:s0
 /dev/block/platform/soc\.0/f9824900\.sdhci/by-num/p39      u:object_r:diag_partition_device:s0
 /dev/block/platform/soc\.0/f9824900\.sdhci/mmcblk0p39      u:object_r:diag_partition_device:s0
+/dev/block/bootdevice/by-name/diag                         u:object_r:diag_partition_device:s0
+/dev/block/bootdevice/by-num/p39                           u:object_r:diag_partition_device:s0
+/dev/block/bootdevice/mmcblk0p39                           u:object_r:diag_partition_device:s0
+/dev/block/mmcblk0p39                                      u:object_r:diag_partition_device:s0
+
+# ssd (Sony Secure Storage Device)
+/dev/block/mmcblk0p14                                      u:object_r:ssd_device:s0
+/dev/block/platform/soc\.0/7824900\.sdhci/by-name/ssd      u:object_r:ssd_device:s0
+/dev/block/platform/soc\.0/f9824900\.sdhci/by-name/ssd     u:object_r:ssd_device:s0
+/dev/block/platform/msm_sdcc\.1/by-name/ssd                u:object_r:ssd_device:s0
+/dev/block/bootdevice/by-name/ssd                          u:object_r:ssd_device:s0
+
+# userdata
+/dev/block/mmcblk0p42                                      u:object_r:userdata_block_device:s0
+/dev/block/platform/soc\.0/7824900\.sdhci/by-name/userdata u:object_r:userdata_block_device:s0
+/dev/block/platform/soc\.0/f9824900\.sdhci/by-name/userdata u:object_r:userdata_block_device:s0
+/dev/block/platform/msm_sdcc\.1/by-name/userdata           u:object_r:userdata_block_device:s0
+/dev/block/bootdevice/by-name/userdata                     u:object_r:userdata_block_device:s0
 /lta-label                                                 u:object_r:rootfs:s0
 
-# Power Stats
-/(system|system/vendor)/bin/hw/android\.hardware\.power\.stats@1\.0-service\.mock u:object_r:hal_power_stats_default_exec:s0
+# WiFi MAC address
+/sys/devices/platform/bcmdhd_wlan/macaddr                  u:object_r:sysfs_addrsetup:s0
+/sys/devices(/soc\.0)?/bcmdhd_wlan.83/macaddr              u:object_r:sysfs_addrsetup:s0
 
-# TA
-/data/credmgr                                              u:object_r:secd_data_file:s0
-/data/credmgr(/.*)                                         u:object_r:secd_data_file:s0
-/dev/socket/secd_credmgr_sock                              u:object_r:secd_socket:s0
-/dev/socket/secd_devsec_sock                               u:object_r:secd_socket:s0
-/dev/socket/secd_ebl_sock                                  u:object_r:secd_socket:s0
-/dev/socket/tad                                            u:object_r:tad_socket:s0
-/idd                                                       u:object_r:diag_data_file:s0
-/idd(/.*)?                                                 u:object_r:diag_data_file:s0
-/rca(/.*)?                                                 u:object_r:firmware_file:s0
+# Camera
+/sys/devices(/soc\.0)?/pmi8994-flash-27(/.*)?              u:object_r:sysfs_camera_torch:s0
+
+# DRM
+/data/vendor/mediadrm(/.*)?                                u:object_r:mediadrm_vendor_data_file:s0
+/(vendor|system/vendor)/bin/hw/android\.hardware\.drm@1\.3-service.clearkey u:object_r:hal_drm_clearkey_exec:s0
+/(vendor|system/vendor)/bin/hw/android\.hardware\.drm@1\.3-service.widevine u:object_r:hal_drm_widevine_exec:s0
+
+# Dumpstate HAL
+/(vendor|system/vendor)/bin/hw/android\.hardware\.dumpstate@1\.1-service-kitakami u:object_r:hal_dumpstate_impl_exec:s0
+
+# FM
+/(vendor|system/vendor)/bin/brcm-uim-sysfs                 u:object_r:brcm_uim_exec:s0
+
+# HCI
+/dev/ttyHS0                                                u:object_r:hci_attach_dev:s0
+/dev/brcm_bt_drv                                           u:object_r:hci_attach_dev:s0
+
+/dev/subsys_modem                                          u:object_r:subsys_modem_device:s0
 
 # Taimport
 /data/etc                                                  u:object_r:ta_data_file:s0
 /data/etc(/.*)                                             u:object_r:ta_data_file:s0
 
+# Fingerprint
+/(vendor|system/vendor)/bin/hw/android\.hardware\.biometrics\.fingerprint@2\.1-service.kitakami u:object_r:hal_fingerprint_default_exec:s0
+
+# Fingerprint sensor SPI device
+/data/fpc(/.*)?                                            u:object_r:fpc_data_file:s0
+/data/fpcd(/.*)?                                           u:object_r:fpc_data_file:s0
+
+# TA
+/dev/socket/tad                                            u:object_r:tad_socket:s0
+/dev/socket/secd_credmgr_sock                              u:object_r:secd_socket:s0
+/dev/socket/secd_devsec_sock                               u:object_r:secd_socket:s0
+/dev/socket/secd_ebl_sock                                  u:object_r:secd_socket:s0
+/data/credmgr                                              u:object_r:secd_data_file:s0
+/data/credmgr(/.*)                                         u:object_r:secd_data_file:s0
+#/idd                                                       u:object_r:diag_data_file:s0
+#/idd(/.*)?                                                 u:object_r:diag_data_file:s0
+#/rca(/.*)?                                                 u:object_r:firmware_file:s0
+
+# Broadcom WLAN firmware (bcmdhd)
+/system/etc/firmware/wlan(/.*)?                             u:object_r:firmware_file:s0
+
+# Power Stats
+/(vendor|system/vendor)/bin/hw/android\.hardware\.power\.stats@1\.0-service\.mock u:object_r:hal_power_stats_default_exec:s0
+
 # TimeKeep
 /data/time(/.*)                                            u:object_r:timekeep_data_file:s0
 
+# Misc
+/system/bin/adsprpcd                                       u:object_r:adsprpcd_exec:s0
+/(vendor|system/vendor)/bin/thermal-engine                 u:object_r:thermal_engine_exec:s0
+/(vendor|system/vendor)/bin/macaddrsetup                   u:object_r:macaddrsetup_exec:s0
+/(vendor|system/vendor)/bin/imscmservice                   u:object_r:imscmservice_exec:s0
+/system/bin/hwservicemanager                               u:object_r:hwservicemanager_exec:s0
+/system/bin/iddd                                           u:object_r:iddd_exec:s0
+/system/bin/init\.qcom\.power\.sh                          u:object_r:init-power-sh_exec:s0
+/system/bin/irsc_util                                      u:object_r:irsc_util_exec:s0
+/system/bin/loc_launcher                                   u:object_r:loc_launcher_exec:s0
+/system/bin/garden_app                                     u:object_r:loc_launcher_exec:s0
+/system/bin/gpsone_daemon                                  u:object_r:loc_launcher_exec:s0
+/system/bin/lowi-server                                    u:object_r:loc_launcher_exec:s0
+/system/bin/xtwifi-client                                  u:object_r:loc_launcher_exec:s0
+/system/bin/xtwifi-inet-agent                              u:object_r:loc_launcher_exec:s0
+/system/bin/mlog_qmi_service                               u:object_r:mlog_qmi_service_exec:s0
+/(vendor|system/vendor)/bin/mm-qcamera-daemon              u:object_r:qcamerasvr_exec:s0
+/system/bin/msm_irqbalance                                 u:object_r:msm_irqbalance_exec:s0
+/system/bin/netmgrd                                        u:object_r:netmgrd_exec:s0
+/system/bin/pm-proxy                                       u:object_r:per_proxy_exec:s0
+/system/bin/pm-service                                     u:object_r:per_mgr_exec:s0
+/system/bin/qmuxd                                          u:object_r:qmuxd_exec:s0
+/system/bin/rmt_storage                                    u:object_r:rmt_storage_exec:s0
+/system/bin/sct_service                                    u:object_r:sct_service_exec:s0
+/system/bin/secd                                           u:object_r:secd_exec:s0
+/system/bin/sensors\.qcom                                  u:object_r:sensors_exec:s0
+/system/bin/tad_static                                     u:object_r:tad_exec:s0
+/system/bin/taimport                                       u:object_r:taimport_exec:s0
+/system/bin/ta_qmi_service                                 u:object_r:ta_qmi_service_exec:s0
+/system/bin/updatemiscta                                   u:object_r:updatemiscta_exec:s0
+/system/vendor/bin/mm-pp-daemon                            u:object_r:ppd_exec:s0
+/system/vendor/bin/perfd                                   u:object_r:perfd_exec:s0
+/system/vendor/bin/timekeep                                u:object_r:timekeep_exec:s0
+/system/vendor/bin/imsdatadaemon                           u:object_r:ims_exec:s0
+/system/vendor/bin/imsqmidaemon                            u:object_r:ims_exec:s0
+/system/vendor/bin/ims_rtp_daemon                          u:object_r:ims_exec:s0
+
+/system/vendor/(lib|lib64)/libril-wrapper\.so              u:object_r:hal_ril_wrapper_exec:s0
+
 # Vulkan
-/(system|system/vendor)/lib(64)?/vulkan\.[a-z0-9]*\.so     u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/vulkan\.[a-z0-9]*\.so             u:object_r:same_process_hal_file:s0

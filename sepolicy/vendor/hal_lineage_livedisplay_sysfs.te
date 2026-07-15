@@ -1,1 +1,0 @@
-allow hal_lineage_livedisplay_sysfs unlabeled:binder impersonate;

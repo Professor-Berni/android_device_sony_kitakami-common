@@ -1,3 +1,14 @@
-allow ims ctl_stop_prop:property_service set;
-allow ims default_prop:file r_file_perms;
-allow ims unlabeled:binder impersonate;
+# Started by init
+init_daemon_domain(ims)
+
+allow ims system_prop:property_service set;
+allow ims ion_device:chr_file rw_file_perms;
+allow ims hidl_base_hwservice:hwservice_manager { add find };
+allow ims hal_imsrtp_hwservice:hwservice_manager { add find };
+
+set_prop(ims, vendor_ims_prop)
+
+allow ims self:udp_socket { create ioctl };
+allowxperm ims self:udp_socket ioctl { 0x8900-0x89ff };
+
+allow ims qmuxd:unix_stream_socket connectto;

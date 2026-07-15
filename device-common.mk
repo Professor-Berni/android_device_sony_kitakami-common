@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2016 The CyanogenMod Project
-# Copyright (C) 2017-2025 The LineageOS Project
+# Copyright (C) 2017-2026 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,6 +18,10 @@
 # Get non-open-source common files
 $(call inherit-product, vendor/sony/kitakami-common/kitakami-common-vendor.mk)
 
+# Build
+PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false
+PRODUCT_CHECK_PREBUILT_MAX_PAGE_SIZE := false
+
 # Overlays
 DEVICE_PACKAGE_OVERLAYS += \
     $(LOCAL_PATH)/overlay \
@@ -34,13 +38,21 @@ PRODUCT_ENFORCE_RRO_TARGETS := *
 PRODUCT_ENFORCE_RRO_EXCLUDED_OVERLAYS += \
      $(LOCAL_PATH)/overlay/packages/apps/Snap/res/values
 
+# Empty HIDL compat stubs for /vendor/lib64. 
+PRODUCT_COPY_FILES += \
+    device/sony/kitakami-common/hidl-compat-libs/lib64/libhwbinder.so:$(TARGET_COPY_OUT_VENDOR)/lib64/libhwbinder.so \
+    device/sony/kitakami-common/hidl-compat-libs/lib64/libhidltransport.so:$(TARGET_COPY_OUT_VENDOR)/lib64/libhidltransport.so \
+    device/sony/kitakami-common/hidl-compat-libs/lib64/android.hidl.base@1.0.so:$(TARGET_COPY_OUT_VENDOR)/lib64/android.hidl.base@1.0.so
+
 # Permissions
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.bluetooth_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth_le.xml \
+    frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.flash-autofocus.xml \
+    frameworks/native/data/etc/android.hardware.camera.front.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.front.xml \
     frameworks/native/data/etc/android.hardware.ethernet.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.ethernet.xml \
     frameworks/native/data/etc/android.hardware.location.gps.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.location.gps.xml \
-    frameworks/native/data/etc/android.hardware.nfc.hce.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.hce.xml \
     frameworks/native/data/etc/android.hardware.nfc.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.xml \
+    frameworks/native/data/etc/android.hardware.nfc.hce.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.hce.xml \
     frameworks/native/data/etc/android.hardware.opengles.aep.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.opengles.aep.xml \
     frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.accelerometer.xml \
     frameworks/native/data/etc/android.hardware.sensor.barometer.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.barometer.xml \
@@ -53,32 +65,40 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
     frameworks/native/data/etc/android.hardware.usb.accessory.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.accessory.xml \
     frameworks/native/data/etc/android.hardware.usb.host.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.host.xml \
-    frameworks/native/data/etc/android.hardware.vulkan.level-0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.level.xml \
-    frameworks/native/data/etc/android.hardware.vulkan.version-1_0_3.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.version.xml \
     frameworks/native/data/etc/android.hardware.wifi.direct.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.direct.xml \
     frameworks/native/data/etc/android.hardware.wifi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.wifi.xml \
     frameworks/native/data/etc/android.software.midi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.midi.xml \
-    frameworks/native/data/etc/android.software.opengles.deqp.level-2020-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.opengles.deqp.level.xml \
     frameworks/native/data/etc/android.software.sip.voip.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.sip.voip.xml \
-    frameworks/native/data/etc/android.software.vulkan.deqp.level-2020-03-01.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.vulkan.deqp.level.xml \
-    frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/handheld_core_hardware.xml
+    frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/handheld_core_hardware.xml \
+    frameworks/native/data/etc/android.hardware.vulkan.level-0.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.level.xml \
+    frameworks/native/data/etc/android.hardware.vulkan.version-1_0_3.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.vulkan.version.xml
 
 # APEX
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/ld.config.txt:$(TARGET_COPY_OUT_SYSTEM)/etc/swcodec/ld.config.txt
 
+# Hardware Manager
+PRODUCT_PACKAGES += \
+    hwservicemanager
+
 # Audio
 PRODUCT_PACKAGES += \
-    android.hardware.audio@7.1-impl \
-    android.hardware.audio.effect@7.0-impl \
+    audio.bluetooth.default \
+    android.hardware.audio@2.0-impl \
+    android.hardware.audio@6.0-impl \
+    android.hardware.audio.common@6.0 \
+    android.hardware.audio.common@6.0-util \
     android.hardware.audio.service \
-    android.hardware.bluetooth.audio@2.1-impl \
+    android.hardware.audio.effect@2.0-impl \
+    android.hardware.audio.effect@6.0-impl \
+    android.hardware.bluetooth.audio-impl \
     android.hardware.soundtrigger@2.0 \
     android.hardware.soundtrigger@2.0-core \
     android.hardware.soundtrigger@2.0-impl \
-    audio.bluetooth.default \
+    android.hidl.allocator@1.0-service \
     audio.primary.msm8994 \
     audio.r_submix.default \
+    android.hardware.media.omx@1.0-service \
     audio.usb.default \
     libaudioroute \
     libqcompostprocbundle \
@@ -123,18 +143,42 @@ PRODUCT_PACKAGES += \
     android.hardware.bluetooth@1.0-service \
     libbt-vendor
 
+# Camera
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/etc/init/qcamerasvr.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/qcamerasvr.rc
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/etc/init/android.hardware.camera.provider@2.4-service.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/android.hardware.camera.provider@2.4-service.rc
+
+PRODUCT_PACKAGES += \
+    android.hardware.camera.provider@2.4-service \
+    android.hardware.camera.provider@2.4-impl-kitakami:32 \
+    camera.device@1.0-impl-kitakami:32 \
+    libjpeg.vendor:32 \
+    Aperture \
+    libyuv \
+    libexif \
+    vendor.qti.hardware.camera.device@1.0 \
+    libandroid_vendor_shim:32 \
+    libgbm_unlock_shim:32 \
+    libsensor_vendor_shim:32 \
+    libmutex_destroy_shim:32 \
+    libcammw_motionsensor_shim:32
+
 # Charger
-PRODUCT_PACKAGES += charger_res_images
+PRODUCT_PACKAGES += \
+    charger_res_images
 
 # Configstore
-PRODUCT_PACKAGES += disable_configstore
+PRODUCT_PACKAGES += \
+    disable_configstore
 
 # Data services
-PRODUCT_PACKAGES += librmnetctl
+PRODUCT_PACKAGES += \
+    librmnetctl
 
 # Display
 PRODUCT_PACKAGES += \
-    android.frameworks.displayservice@1.0 \
     android.hardware.graphics.allocator@2.0-impl \
     android.hardware.graphics.allocator@2.0-service \
     android.hardware.graphics.composer@2.1-service \
@@ -149,18 +193,11 @@ PRODUCT_PACKAGES += \
 
 # DRM
 PRODUCT_PACKAGES += \
-    android.hardware.drm@1.0-impl \
-    android.hardware.drm@1.0-service \
     android.hardware.drm-service.clearkey
 
 # DumpState
-PRODUCT_PACKAGES += android.hardware.dumpstate@1.1-service-kitakami
-
-# Fingerprint
-PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/android.hardware.fingerprint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.fingerprint.xml
-
-PRODUCT_PACKAGES += android.hardware.biometrics.fingerprint@2.1-service
+PRODUCT_PACKAGES += \
+    android.hardware.dumpstate@1.1-service-kitakami
 
 # Flash LED config
 PRODUCT_COPY_FILES += \
@@ -178,24 +215,34 @@ PRODUCT_PACKAGES += \
     android.hardware.gatekeeper@1.0-service \
     libion.vendor
 
-# GPS
+# GPS 
 PRODUCT_PACKAGES += \
-    android.hardware.gnss@1.0-impl \
     flp.conf \
     gps.conf \
     izat.conf \
-    sap.conf
+    lowi.conf \
+    sap.conf \
+    xtwifi.conf
+
+PRODUCT_PACKAGES += \
+    android.hardware.gnss@1.0-impl \
+    libgps_utils_setpolicy_shim \
+    libgps_utils_setpolicy_shim_system \
+    libwifi_compat_shim \
+    libwifi_compat_shim_system \
+    libizat_compat_shim \
+    libizat_compat_shim_system \
+    libmedia_remote_display_shim \
+    libcurl
 
 # gRPC
 PRODUCT_PACKAGES += \
     libgrpc++ \
     libgrpc_wrap
 
-# Health HAL
+# Health HAL 
 PRODUCT_PACKAGES += \
-    android.hardware.health@2.1-impl \
-    android.hardware.health@2.1-service \
-    android.hardware.health@2.1.vendor \
+    android.hardware.health-service.kitakami \
     vendor.lineage.health-service.default
 
 # HIDL
@@ -204,7 +251,18 @@ PRODUCT_PACKAGES += \
     android.hidl.manager@1.0 \
     libhidlmemory.vendor \
     libhidltransport \
-    libhwbinder
+    libhwbinder \
+    vndservicemanager
+
+# IMS
+PRODUCT_PACKAGES += \
+    libbase_shim \
+    libshim_ui \
+    libshims_ims_sony \
+    libshim_libimsmedia \
+    libmedia_vendor_shim \
+    libbinder_compat_shim \
+    libsecd_crypto_shim
 
 # Init
 PRODUCT_COPY_FILES += \
@@ -213,6 +271,10 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/init.qcom.rc:$(TARGET_COPY_OUT_ROOT)/init.qcom.rc \
     $(LOCAL_PATH)/rootdir/ueventd.qcom.rc:$(TARGET_COPY_OUT_ROOT)/ueventd.qcom.rc \
     $(LOCAL_PATH)/rootdir/ueventd.qcom.rc:$(TARGET_COPY_OUT_VENDOR)/etc/ueventd.rc
+
+# minimal vendor-side fstab with ONLY the voldmanaged entries
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/rootdir/fstab.qcom.vendor:$(TARGET_COPY_OUT_VENDOR)/etc/fstab.qcom
 
 # Input
 PRODUCT_COPY_FILES += \
@@ -227,7 +289,9 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/msm_irqbalance.conf:$(TARGET_COPY_OUT_VENDOR)/etc/msm_irqbalance.conf
 
 # Keymaster
-PRODUCT_PACKAGES += android.hardware.keymaster@4.1-service
+PRODUCT_PACKAGES += \
+    android.hardware.keymaster@3.0-impl \
+    android.hardware.keymaster@3.0-service \
 
 # Lights
 PRODUCT_PACKAGES += \
@@ -237,9 +301,12 @@ PRODUCT_PACKAGES += \
 
 # LiveDisplay
 PRODUCT_PACKAGES += \
+    libpowermanager_vendor_shim \
+    vendor.lineage.livedisplay-service.legacymm
+
+PRODUCT_PACKAGES += \
     libshims_postproc \
-    vendor.lineage.livedisplay@2.0-service-legacymm \
-    vendor.lineage.livedisplay@2.0-service-sysfs
+    libppd_ppoll_shim
 
 # Media
 PRODUCT_PACKAGES += \
@@ -264,14 +331,10 @@ PRODUCT_COPY_FILES += \
 
 # Net
 PRODUCT_PACKAGES += \
-    android.system.net.netd@1.1 \
     libandroid_net \
     libnetutils.vendor \
     libsqlite.vendor \
     libsysutils.vendor
-
-# Neuralnetworks
-PRODUCT_PACKAGES += android.hardware.neuralnetworks@1.3
 
 # NFC
 PRODUCT_PACKAGES += \
@@ -281,12 +344,12 @@ PRODUCT_PACKAGES += \
     Tag
 
 # OTG
-PRODUCT_PACKAGES += SonyOtgSwitch
+PRODUCT_PACKAGES += \
+    SonyOtgSwitch
 
 # Power
 PRODUCT_PACKAGES += \
-    android.hardware.power@1.0-impl \
-    android.hardware.power@1.0-service \
+    android.hardware.power-service-qti \
     android.hardware.power.stats@1.0-service.mock
 
 PRODUCT_COPY_FILES += \
@@ -303,13 +366,17 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/public.libraries.txt:$(TARGET_COPY_OUT_VENDOR)/etc/public.libraries.txt
 
 # RIL
-PRODUCT_PACKAGES += libxml2
+PRODUCT_PACKAGES += \
+    libaudioclient_shim \
+    libxml2
 
 PRODUCT_COPY_FILES += \
     prebuilts/vndk/v33/arm64/arch-arm64-armv8-a/shared/vndk-sp/libutils.so:$(TARGET_COPY_OUT_VENDOR)/lib64/libutils-v33.so
 
 # RIL Wrapper
-PRODUCT_PACKAGES += libril-wrapper
+PRODUCT_PACKAGES += \
+    libril-wrapper \
+    libril_sony_kitakami
 
 # Seccomp
 PRODUCT_COPY_FILES += \
@@ -317,23 +384,21 @@ PRODUCT_COPY_FILES += \
 
 # Sensors
 PRODUCT_PACKAGES += \
-    android.frameworks.sensorservice@1.0 \
     android.hardware.sensors@1.0-impl \
     libshim_sensors
 
-# Shims
-PRODUCT_PACKAGES += \
-    libshims_get_process_name \
-    libshims_GraphicBuffer
-
 # Soong
-PRODUCT_SOONG_NAMESPACES += device/sony/kitakami-common
+PRODUCT_SOONG_NAMESPACES += \
+    device/sony/kitakami-common \
+    hardware/broadcom/libbt \
+    hardware/qcom/audio
+
+$(call soong_config_set,brcm_libbt,bdroid_buildcfg_include_dir,device/sony/kitakami-common/bluetooth)
+$(call soong_config_set,brcm_libbt,device,satsuki)
 
 # Tethering
 PRODUCT_PACKAGES += \
-    TetheringConfigOverlay \
-    android.hardware.tetheroffload.config@1.0 \
-    android.hardware.tetheroffload.control@1.0
+    TetheringConfigOverlay
 
 # TimeKeep
 PRODUCT_PACKAGES += \
@@ -341,12 +406,13 @@ PRODUCT_PACKAGES += \
     TimeKeep
 
 # USB
-PRODUCT_PACKAGES += android.hardware.usb@1.3-service.basic
+PRODUCT_PACKAGES += \
+    android.hardware.usb@1.3-service.basic
 
 # Vibrator
 PRODUCT_PACKAGES += \
-    android.hardware.vibrator@1.0-impl \
-    android.hardware.vibrator@1.0-service
+    vibrator.default \
+    android.hardware.vibrator-service.legacy
 
 # Wifi
 PRODUCT_PACKAGES += \
@@ -366,3 +432,6 @@ PRODUCT_COPY_FILES += \
 ## For details of the root cause and the cts vts tests comparison between
 ## the preloading and non-preloading builds, please check the above issue.
 PRODUCT_PROPERTY_OVERRIDES += ro.zygote.disable_gl_preload=1
+
+$(call inherit-product, hardware/broadcom/wlan/bcmdhd/config/config-bcm.mk)
+

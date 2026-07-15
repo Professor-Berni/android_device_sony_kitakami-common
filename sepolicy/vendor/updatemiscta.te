@@ -1,15 +1,13 @@
-type updatemiscta, domain;
-type updatemiscta_exec, exec_type, file_type;
+# updatemiscta service
+type updatemiscta, domain, coredomain;
+type updatemiscta_exec, exec_type, file_type, system_file_type;
 
 # Started by init
 init_daemon_domain(updatemiscta)
 
-allow updatemiscta default_prop:file r_file_perms;
-allow updatemiscta default_prop:property_service set;
-allow updatemiscta init:unix_stream_socket connectto;
-allow updatemiscta property_socket:sock_file write;
+unix_socket_connect(taimport, tad, tad)
+
 allow updatemiscta socket_device:sock_file write;
-allow updatemiscta tad_socket:sock_file write;
 allow updatemiscta tad:unix_stream_socket connectto;
-allow updatemiscta ta_prop:file r_file_perms;
-allow updatemiscta ta_prop:property_service set;
+allow updatemiscta vendor_ta_prop:file { getattr open read };
+allow updatemiscta tad_socket:sock_file write;

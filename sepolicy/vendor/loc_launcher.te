@@ -1,0 +1,41 @@
+# loc_launcher
+type loc_launcher, domain, coredomain;
+type loc_launcher_exec, exec_type, file_type, system_file_type;
+
+init_daemon_domain(loc_launcher)
+
+# baseline
+allow loc_launcher self:capability { setuid setgid net_admin net_raw net_bind_service };
+allow loc_launcher self:capability2 wake_alarm;
+allow loc_launcher self:process { fork setpgid getsched setsched };
+allow loc_launcher self:fifo_file { read write };
+
+# exec children
+allow loc_launcher loc_launcher_exec:file { execute read open getattr map };
+allow loc_launcher self:process execmem;
+
+# location data
+allow loc_launcher system_data_file:dir { add_name remove_name write search };
+allow loc_launcher system_data_file:sock_file { create setattr unlink };
+allow loc_launcher location_data_file:dir { add_name remove_name write search getattr };
+allow loc_launcher location_data_file:sock_file { create setattr unlink read write };
+allow loc_launcher location_data_file:file { create read write open getattr setattr unlink };
+
+# qmux_gps QMI client socket
+allow loc_launcher qmuxd:unix_stream_socket connectto;
+
+# qc.izat.* GTP tuning props
+dontaudit loc_launcher default_prop:property_service set;
+
+# network
+allow loc_launcher self:udp_socket { create connect setopt getopt write read };
+allow loc_launcher self:netlink_socket { create bind read write setopt };
+allow loc_launcher self:netlink_route_socket { create bind nlmsg_read read write };
+
+# WiFi
+allow loc_launcher wifi_data_file:dir { search getattr };
+allow loc_launcher wifi_data_file:file { read open getattr };
+allow loc_launcher sysfs_addrsetup:file { read open getattr };
+
+dontaudit loc_launcher proc:dir { search getattr };
+dontaudit loc_launcher self:netlink_socket { getopt };

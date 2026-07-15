@@ -1,1 +1,0 @@
-allow shared_relro unlabeled:binder impersonate;

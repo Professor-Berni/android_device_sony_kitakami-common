@@ -202,14 +202,6 @@
     <!-- Is the device capable of hot swapping an ICC Card -->
     <bool name="config_hotswapCapable">true</bool>
 
-    <!-- Enable doze mode
-         ComponentName of a dream to show whenever the system would otherwise have gone to sleep. -->
-    <string name="config_dozeComponent">com.android.systemui/com.android.systemui.doze.DozeService</string>
-
-    <!-- If true, the doze component is not started until after the screen has been turned off
-         and the screen off animation has been performed. -->
-    <bool name="config_dozeAfterScreenOffByDefault">true</bool>
-
     <!-- Vibrator pattern for feedback about a long screen/key press -->
     <integer-array name="config_longPressVibePattern">
         <item>0</item>
@@ -250,6 +242,15 @@
 
     <!-- Whether device supports double tap to wake -->
     <bool name="config_supportDoubleTapWake">true</bool>
+
+    <!-- Disable AOSP Night Light so LiveDisplay manages day/night color
+         temperature itself. AOSP defaults config_nightDisplayAvailable to
+         config_setColorTransformAccelerated; vendor/lineage forces the
+         latter to true, which silently hides LiveDisplay's mode selector
+         (Off / Day / Night / Auto). Forcing this to false re-enables the
+         LiveDisplay UI and keeps accelerated color transform usable for
+         LiveDisplay's setAdditionalAdjustment path. -->
+    <bool name="config_nightDisplayAvailable">false</bool>
 
     <!-- Whether WiFi display is supported by this device.
          There are many prerequisites for this feature to work correctly.
@@ -294,12 +295,44 @@
     <!-- List of biometric sensors on the device, in decreasing strength. Consumed by AuthService
          when registering authenticators with BiometricService. Format must be ID:Modality:Strength,
          where: IDs are unique per device, Modality as defined in BiometricAuthenticator.java,
-         and Strength as defined in Authenticators.java -->
+         and Strength as defined in Authenticators.java
+
+         IMPORTANT: leave this empty when the fingerprint HAL is AIDL
+         (android.hardware.biometrics.fingerprint-service.lineage). AuthService
+         decides resetLockoutRequiresHardwareAuthToken from this array:
+           !empty -> HIDL path (HidlToAidlSensorAdapter), which then calls
+                    IBiometricsFingerprint@2.1.getService() and fails because
+                    we don't ship the HIDL wrapper.
+           empty  -> AIDL path, which uses the IFingerprint/default service
+                    we DO ship (sensor strength is read from the AIDL HAL's
+                    SensorProps.sensorStrength, configured via the
+                    persist.vendor.fingerprint.sensor_strength sysprop). -->
     <string-array name="config_biometric_sensors" translatable="false">
-        <!-- ID0:Fingerprint:Strong -->
-        <item>0:2:15</item>
     </string-array>
     
     <!-- Whether to cancel fingerprint operation if not idle -->
     <bool name="config_fpCancelIfNotIdle">true</bool>
+
+    <!-- GNSS framework configuration. GnssLocationProvider reads PSDS
+         server URLs from this resource (not from /system/etc/gps.conf,
+         which is legacy and only read by the Qualcomm daemon chain).
+         Without LONGTERM_PSDS_SERVER_* entries here, GnssPsdsDownloader
+         never downloads assistance data and cold-start TTFF stays high.
+         URLs are Qualcomm's public XTRA cloud. -->
+    <string-array name="config_gnssParameters" translatable="false">
+        <item>LONGTERM_PSDS_SERVER_1=https://xtrapath1.izatcloud.net/xtra3grc.bin</item>
+        <item>LONGTERM_PSDS_SERVER_2=https://xtrapath2.izatcloud.net/xtra3grc.bin</item>
+        <item>LONGTERM_PSDS_SERVER_3=https://xtrapath3.izatcloud.net/xtra3grc.bin</item>
+        <item>NORMAL_PSDS_SERVER=http://xtrapath1.izatcloud.net/xtra2.bin</item>
+        <item>NTP_SERVER=time.gpsonextra.net</item>
+        <item>SUPL_HOST=supl.google.com</item>
+        <item>SUPL_PORT=7275</item>
+        <item>SUPL_VER=0x20000</item>
+        <item>SUPL_MODE=1</item>
+        <item>SUPL_ES=1</item>
+        <item>USE_EMERGENCY_PDN_FOR_EMERGENCY_SUPL=1</item>
+        <item>LPP_PROFILE=2</item>
+        <item>A_GLONASS_POS_PROTOCOL_SELECT=0</item>
+        <item>GPS_LOCK=0</item>
+    </string-array>
 </resources>

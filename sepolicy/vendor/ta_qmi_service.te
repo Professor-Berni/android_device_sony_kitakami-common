@@ -1,13 +1,22 @@
-type ta_qmi_service, domain;
-type ta_qmi_service_exec, exec_type, file_type;
+# ta_qmi_service service
+type ta_qmi_service, domain, coredomain;
+type ta_qmi_service_exec, exec_type, system_file_type, file_type;
 
 # Started by init
 init_daemon_domain(ta_qmi_service)
 
+# Allow ta_qmi_service to access tad
+unix_socket_connect(ta_qmi_service, tad, tad)
+
+# Allow ta_qmi_service to use net_raw, setgid and setuid capabilities
 allow ta_qmi_service self:capability { net_raw setgid setuid };
-allow ta_qmi_service self:capability2 block_suspend;
+
+# Allow ta_qmi_service to create self:socket
 allow ta_qmi_service self:socket create_socket_perms;
+allow ta_qmi_service self:socket { create read write };
+
+allow ta_qmi_service self:capability2 block_suspend;
 allow ta_qmi_service socket_device:sock_file write;
-allow ta_qmi_service sysfs_wake_lock:file w_file_perms;
-allow ta_qmi_service tad_socket:sock_file write;
+allow ta_qmi_service sysfs_wake_lock:file { append open };
 allow ta_qmi_service tad:unix_stream_socket connectto;
+allow ta_qmi_service tad_socket:sock_file write;

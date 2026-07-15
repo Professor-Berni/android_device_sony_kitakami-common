@@ -1,0 +1,7 @@
+# qcamerasvr service
+service qcamerasvr /vendor/bin/mm-qcamera-daemon
+    class late_start
+    user camera
+    group camera system inet input graphics
+    writepid /dev/cpuset/camera-daemon/tasks
+    setenv LD_PRELOAD libsensor.so:libmutex_destroy_shim.so

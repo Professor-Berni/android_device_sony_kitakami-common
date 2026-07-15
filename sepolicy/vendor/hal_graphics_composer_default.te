@@ -1,14 +1,2 @@
-allow hal_graphics_composer_default bootanim_system_prop:file r_file_perms;
-allow hal_graphics_composer_default default_android_vndservice:service_manager { add find };
-allow hal_graphics_composer_default default_prop:file r_file_perms;
-allow hal_graphics_composer_default device:chr_file rw_file_perms;
 allow hal_graphics_composer_default mpctl_socket:dir search;
-allow hal_graphics_composer_default perfd:unix_stream_socket connectto;
-allow hal_graphics_composer_default self:netlink_kobject_uevent_socket { bind create read setopt };
-allow hal_graphics_composer_default socket_device:sock_file write;
-allow hal_graphics_composer_default sysfs:file rw_file_perms;
-allow hal_graphics_composer_default system_prop:file r_file_perms;
-allow hal_graphics_composer_default system_prop:property_service set;
-allow hal_graphics_composer_default unlabeled:binder impersonate;
-allow hal_graphics_composer_default vndbinder_device:chr_file rw_file_perms;
-allow hal_graphics_composer_default vndservicemanager:binder { call transfer };
+allow hal_graphics_composer_default sysfs_graphics:lnk_file read;

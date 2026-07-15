@@ -36,6 +36,12 @@ on boot
     write /sys/class/android_usb/android0/f_rndis/manufacturer ${ro.product.manufacturer}
     setprop persist.sys.usb.config.extra none
 
+    # USB PM: dwc3 CORE control=on keeps adb out of LPM; ssusb WRAPPER control=auto allows suspend
+    write /sys/bus/platform/devices/f9200000.ssusb/power/control auto
+    write /sys/bus/platform/devices/f9200000.dwc3/power/control on
+    write /sys/bus/platform/devices/f9200000.dwc3/power/autosuspend_delay_ms -1
+    write /sys/module/usbcore/parameters/autosuspend -1
+
 on charger
     setprop persist.sys.usb.config mass_storage
 
@@ -149,13 +155,12 @@ on property:sys.usb.config=mtp
     setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=mtp,adb
-    stop adbd
+    # Do NOT stop/start adbd here: UsbHandlerLegacy cycles sys.usb.config rapidly; let adbd survive it
     write /sys/class/android_usb/android0/enable 0
     write /sys/class/android_usb/android0/idVendor 0FCE
     write /sys/class/android_usb/android0/idProduct 51D9
     write /sys/class/android_usb/android0/functions mtp,adb
     write /sys/class/android_usb/android0/enable 1
-    start adbd
     setprop sys.usb.state ${sys.usb.config}
 
 on property:sys.usb.config=mass_storage,adb

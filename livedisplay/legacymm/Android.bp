@@ -1,0 +1,25 @@
+//
+// SPDX-FileCopyrightText: 2019 The LineageOS Project
+// SPDX-FileCopyrightText: 2026 The LineageOS Project (AIDL port)
+// SPDX-License-Identifier: Apache-2.0
+//
+
+cc_binary {
+    name: "vendor.lineage.livedisplay-service.legacymm",
+    relative_install_path: "hw",
+    vendor: true,
+    init_rc: ["vendor.lineage.livedisplay-service.legacymm.rc"],
+    vintf_fragments: ["vendor.lineage.livedisplay-service.legacymm.xml"],
+    srcs: [
+        "DisplayModes.cpp",
+        "PictureAdjustment.cpp",
+        "service.cpp",
+    ],
+    shared_libs: [
+        "libbase",
+        "libbinder_ndk",
+        "libdl",
+        "libutils",
+        "vendor.lineage.livedisplay-V1-ndk",
+    ],
+}

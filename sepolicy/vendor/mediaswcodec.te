@@ -1,4 +1,1 @@
-allow mediaswcodec logd:unix_stream_socket connectto;
-allow mediaswcodec logdr_socket:sock_file rw_file_perms;
-allow mediaswcodec unlabeled:binder impersonate;
-allow mediaswcodec vendor_file:file rx_file_perms;
+allow mediaswcodec servicemanager:binder call;

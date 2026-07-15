@@ -1,1 +1,0 @@
-allow hal_cas_default unlabeled:binder impersonate;

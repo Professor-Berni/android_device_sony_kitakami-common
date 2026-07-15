@@ -1,0 +1,14 @@
+// mm-qcamera-daemon — legacy Sony/QTI camera daemon binary extracted from
+// LOS19.1 (Android 7.1, 32-bit ARM). Shipped to /system/bin/ for
+// init.qcom.rc's `service qcamerasvr`. cc_prebuilt_binary preserves +x.
+cc_prebuilt_binary {
+    name: "mm-qcamera-daemon",
+    srcs: ["mm-qcamera-daemon"],
+    compile_multilib: "32",
+    strip: { none: true },
+    check_elf_files: false,
+    // Install to /vendor/bin/ so the vendor linker namespace can resolve
+    // its DT_NEEDED libmmcamera2_*.so chain (those libs live in
+    // /vendor/lib/ and aren't accessible from system namespace).
+    vendor: true,
+}

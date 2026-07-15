@@ -31,8 +31,7 @@ ro.kernel.ebpf.supported=false
 ro.qc.sdk.gestures.camera=false
 ro.qc.sdk.camera.facialproc=false
 camera.disable_zsl_mode=1
-vendor.camera.aux.packagelist=org.codeaurora.snapcam,com.android.camera
-persist.camera.HAL3.enabled=1
+ro.vendor.camera.provider24.disable_mem_init=1
 
 # Charger
 ro.charger.enable_suspend=true
@@ -84,6 +83,9 @@ ro.surface_flinger.clear_slots_with_set_layer_buffer=true
 ro.surface_flinger.max_frame_buffer_acquired_buffers=3
 ro.surface_flinger.vsync_event_phase_offset_ns=2000000
 ro.surface_flinger.vsync_sf_event_phase_offset_ns=6000000
+
+# this enables notification-shade blur path.
+ro.surface_flinger.supports_background_blur=1
 
 # Dalvik dex2oat
 dalvik.vm.dex2oat64.enabled=true
@@ -151,6 +153,22 @@ ro.sony.sensors.dpc=false
 ro.sony.sensors.pug=false
 ro.qc.sdk.sensors.gestures=true
 
+# SoC
+ro.soc.manufacturer=Qualcomm
+ro.soc.model=MSM8994
+
 # Wifi
 wifi.interface=wlan0
+wifi.direct.interface=p2p-dev-wlan0
 ro.vendor.wifi.addr_path=/dev/null
+
+# Android 16 properties
+ro.build.version.codename=REL
+ro.vendor.api_level=36
+
+# enables "expressive" theme in Settings.
+is_expressive_design_enabled=true
+
+# Performance tweaks
+ro.sys.fw.bg_apps_limit=32
+ro.config.max_starting_bg=8

@@ -1,8 +1,13 @@
-type mlog_qmi_service, domain;
-type mlog_qmi_service_exec, exec_type, file_type;
+# mlog_qmi_service service
+type mlog_qmi_service, domain, coredomain;
+type mlog_qmi_service_exec, exec_type, system_file_type, file_type;
 
 # Started by init
 init_daemon_domain(mlog_qmi_service)
 
-allow mlog_qmi_service self:capability net_raw;
+# Allow mlog_qmi_service to create self:socket
 allow mlog_qmi_service self:socket create_socket_perms;
+allow mlog_qmi_service self:socket { create read write };
+
+# Allow mlog_qmi_service to use net_raw capability
+allow mlog_qmi_service self:capability net_raw;

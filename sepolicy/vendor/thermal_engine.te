@@ -1,0 +1,9 @@
+allow thermal_engine ta_data_file:dir search;
+allow thermal_engine ta_data_file:file r_file_perms;
+allow thermal_engine diag_partition_device:dir search;
+allow thermal_engine diag_data_file:dir search;
+allow thermal_engine diag_data_file:sock_file write;
+allow thermal_engine socket_device:sock_file { create setattr };
+allow thermal_engine init:unix_dgram_socket sendto;
+allow thermal_engine iddd:unix_dgram_socket sendto;
+allow thermal_engine device:chr_file { ioctl open read write };
