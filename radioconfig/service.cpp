@@ -2,7 +2,7 @@
  * Copyright (C) 2026 The LineageOS Project
  * SPDX-License-Identifier: Apache-2.0
  */
-#define LOG_TAG "android.hardware.radio.config@1.1-service.satsuki"
+#define LOG_TAG "android.hardware.radio.config@1.1-service.suzuran"
 
 #include <android/hardware/radio/config/1.1/IRadioConfig.h>
 #include <hidl/HidlTransportSupport.h>
@@ -24,7 +24,7 @@ int main() {
     sp<IRadioConfig> radioConfig = new RadioConfig;
     status_t status = radioConfig->registerAsService();
     ALOGW_IF(status != OK, "Could not register IRadioConfig 1.1");
-    ALOGD("RadioConfig 1.1 service (satsuki) is ready.");
+    ALOGD("RadioConfig 1.1 service (suzuran) is ready.");
 
     joinRpcThreadpool();
     return 0;

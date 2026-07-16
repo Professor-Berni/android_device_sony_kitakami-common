@@ -7,7 +7,7 @@
 /(vendor|system/vendor)/bin/hw/android\.hardware\.power-service-qti           u:object_r:hal_power_default_exec:s0
 /(vendor|system/vendor)/bin/hw/android\.hardware\.health-service\.kitakami    u:object_r:hal_health_default_exec:s0
 /(vendor|system/vendor)/bin/hw/vendor\.lineage\.livedisplay-service\.legacymm u:object_r:hal_lineage_livedisplay_sysfs_exec:s0
-/(vendor|system/vendor)/bin/hw/android\.hardware\.radio\.config@1\.1-service\.satsuki u:object_r:hal_radio_config_default_exec:s0
+/(vendor|system/vendor)/bin/hw/android\.hardware\.radio\.config@1\.1-service\.suzuran u:object_r:hal_radio_config_default_exec:s0
 
 /system/bin/qseecomd                                       u:object_r:tee_exec:s0
 

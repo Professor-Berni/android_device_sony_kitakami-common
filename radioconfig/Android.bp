@@ -9,12 +9,12 @@ package {
 }
 
 cc_binary {
-    name: "android.hardware.radio.config@1.1-service.satsuki",
+    name: "android.hardware.radio.config@1.1-service.suzuran",
     owner: "lineage",
     relative_install_path: "hw",
     vendor: true,
-    init_rc: ["android.hardware.radio.config@1.1-service.satsuki.rc"],
-    vintf_fragments: ["android.hardware.radio.config@1.1-service.satsuki.xml"],
+    init_rc: ["android.hardware.radio.config@1.1-service.suzuran.rc"],
+    vintf_fragments: ["android.hardware.radio.config@1.1-service.suzuran.xml"],
     srcs: [
         "RadioConfig.cpp",
         "service.cpp",
