@@ -394,7 +394,7 @@ PRODUCT_SOONG_NAMESPACES += \
     hardware/qcom/audio
 
 $(call soong_config_set,brcm_libbt,bdroid_buildcfg_include_dir,device/sony/kitakami-common/bluetooth)
-$(call soong_config_set,brcm_libbt,device,suzuran)
+$(call soong_config_set,brcm_libbt,device,satsuki)
 
 # Tethering
 PRODUCT_PACKAGES += \
