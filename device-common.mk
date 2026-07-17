@@ -78,8 +78,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/ld.config.txt:$(TARGET_COPY_OUT_SYSTEM)/etc/swcodec/ld.config.txt
 
 # Hardware Manager
-PRODUCT_PACKAGES += \
-    hwservicemanager
+PRODUCT_PACKAGES += hwservicemanager
 
 # Audio
 PRODUCT_PACKAGES += \
@@ -166,16 +165,13 @@ PRODUCT_PACKAGES += \
     libcammw_motionsensor_shim:32
 
 # Charger
-PRODUCT_PACKAGES += \
-    charger_res_images
+PRODUCT_PACKAGES += charger_res_images
 
 # Configstore
-PRODUCT_PACKAGES += \
-    disable_configstore
+PRODUCT_PACKAGES += disable_configstore
 
 # Data services
-PRODUCT_PACKAGES += \
-    librmnetctl
+PRODUCT_PACKAGES += librmnetctl
 
 # Display
 PRODUCT_PACKAGES += \
@@ -192,22 +188,14 @@ PRODUCT_PACKAGES += \
     memtrack.msm8994
 
 # DRM
-PRODUCT_PACKAGES += \
-    android.hardware.drm-service.clearkey
+PRODUCT_PACKAGES += android.hardware.drm-service.clearkey
 
 # DumpState
-PRODUCT_PACKAGES += \
-    android.hardware.dumpstate@1.1-service-kitakami
+PRODUCT_PACKAGES += android.hardware.dumpstate@1.1-service-kitakami
 
 # Flash LED config
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/flashled_calc_parameters.cfg:$(TARGET_COPY_OUT_SYSTEM)/etc/flashled_calc_parameters.cfg
-
-# FM
-#PRODUCT_PACKAGES += \
-#    FMRadio \
-#    brcm-uim-sysfs \
-#    libfmradio.v4l2-fm
 
 # Gatekeeper
 PRODUCT_PACKAGES += \
@@ -344,8 +332,7 @@ PRODUCT_PACKAGES += \
     Tag
 
 # OTG
-PRODUCT_PACKAGES += \
-    SonyOtgSwitch
+PRODUCT_PACKAGES += SonyOtgSwitch
 
 # Power
 PRODUCT_PACKAGES += \
@@ -397,8 +384,7 @@ $(call soong_config_set,brcm_libbt,bdroid_buildcfg_include_dir,device/sony/kitak
 $(call soong_config_set,brcm_libbt,device,satsuki)
 
 # Tethering
-PRODUCT_PACKAGES += \
-    TetheringConfigOverlay
+PRODUCT_PACKAGES += TetheringConfigOverlay
 
 # TimeKeep
 PRODUCT_PACKAGES += \
@@ -406,8 +392,7 @@ PRODUCT_PACKAGES += \
     TimeKeep
 
 # USB
-PRODUCT_PACKAGES += \
-    android.hardware.usb@1.3-service.basic
+PRODUCT_PACKAGES += android.hardware.usb@1.3-service.basic
 
 # Vibrator
 PRODUCT_PACKAGES += \
