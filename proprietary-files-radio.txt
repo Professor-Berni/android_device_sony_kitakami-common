@@ -151,7 +151,7 @@ framework/imscmlibrary.jar|0c24d6540c06efede52169c1445272f43748180f
 framework/qcrilhook.jar
 framework/qti-telephony-common.jar:system_ext/framework/qti-telephony-common.jar
 framework/QtiTelephonyServicelibrary.jar
-framework/qti-vzw-ims-internal.jar
+framework/qti-vzw-ims-internal.jar:vendor/framework/qti-vzw-ims-internal.jar
 framework/rcsimssettings.jar|566a0f637344ca3182aca33753e404977fc77ecc
 framework/vendor.qti.data.factory-V1.0-java.jar
 framework/vendor.qti.hardware.data.qmi-V1.0-java.jar
@@ -165,17 +165,11 @@ lib64/lib-imsvtutils.so:vendor/lib64/lib-imsvtutils.so
 lib64/librmnetctl.so
 lib64/vendor.qti.imsrtpservice@1.0.so
 lib/com.qualcomm.qti.imscmservice@1.0.so
-lib/lib-imsvideocodec.so
-lib/lib-imsvideocodec.so:vendor/lib/lib-imsvideocodec.so
-lib/lib-imsvtextutils.so
-lib/lib-imsvtextutils.so:vendor/lib/lib-imsvtextutils.so
-lib/lib-imsvtutils.so
-lib/lib-imsvtutils.so:vendor/lib/lib-imsvtutils.so
 lib/librmnetctl.so
 lib/vendor.qti.imsrtpservice@1.0.so
 priv-app/qcrilmsgtunnel/qcrilmsgtunnel.apk
-vendor/app/ims/ims.apk:product/priv-app/ims/ims.apk
-vendor/app/imssettings/imssettings.apk:app/imssettings/imssettings.apk
+vendor/app/ims/ims.apk:priv-app/ims/ims.apk
+vendor/app/imssettings/imssettings.apk:priv-app/imssettings/imssettings.apk
 vendor/lib64/com.qualcomm.qti.imscmservice@1.0_vendor.so
 vendor/lib64/lib-dplmedia.so
 vendor/lib64/libimscamera_jni.so:lib64/libimscamera_jni.so
@@ -223,12 +217,8 @@ vendor/lib64/vendor.qti.imsrtpservice@1.0-service-Impl.so
 vendor/lib64/vendor.qti.imsrtpservice@1.0_vendor.so
 vendor/lib64/vendor.qti.latency@2.0.so
 vendor/lib/com.qualcomm.qti.imscmservice@1.0_vendor.so
-#vendor/lib/libimscamera_jni.so:lib/libimscamera_jni.so
-vendor/lib/lib-imscamera.so
-vendor/lib/lib-imscamera.so:lib/lib-imscamera.so
 vendor/lib/lib-imscmservice.so
 vendor/lib/lib-imsdpl.so
-#vendor/lib/libimsmedia_jni.so:lib/libimsmedia_jni.so
 vendor/lib/lib-imsqimf.so
 vendor/lib/lib-imsSDP.so
 vendor/lib/lib-imsxml.so
@@ -254,4 +244,3 @@ vendor/lib/vendor.qti.hardware.radio.uim_remote_server@1.0_vendor.so
 vendor/lib/vendor.qti.ims.rcsconfig@1.0.so
 vendor/lib/vendor.qti.imsrtpservice@1.0-service-Impl.so
 vendor/lib/vendor.qti.imsrtpservice@1.0_vendor.so
-vendor/lib/vendor.qti.latency@2.0.so
