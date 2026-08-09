@@ -399,6 +399,10 @@ PRODUCT_PACKAGES += \
     vibrator.default \
     android.hardware.vibrator-service.legacy
 
+# Widevine
+PRODUCT_PACKAGES += \
+    libwvcbs_shim
+
 # Wifi
 PRODUCT_PACKAGES += \
     android.hardware.wifi-service \
