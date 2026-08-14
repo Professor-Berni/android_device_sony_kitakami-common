@@ -297,7 +297,7 @@ on boot
     write /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal 1
 
     # NFC local data and nfcee xml storage
-    mkdir /data/nfc 0770 nfc nfc
+    mkdir /data/nfc 0770 nfc nfc encryption=None
     mkdir /data/nfc/param 0770 nfc nfc
 
     # Set the console loglevel to KERN_INFO
@@ -311,10 +311,10 @@ on post-fs
 
 on post-fs-data
     # Fingerprint data folder
-    mkdir /data/fpc 0770 system system
+    mkdir /data/fpc 0770 system system encryption=None
 
     #Secd
-    mkdir /data/credmgr 0770 system oem_2996
+    mkdir /data/credmgr 0770 system oem_2996 encryption=None
 
     mkdir /idd/lost+found 0770 root root
     mkdir /idd/output 0755 oem_2987 oem_2987
@@ -329,7 +329,7 @@ on post-fs-data
     write /sys/kernel/mm/ksm/run 1
 
     # SONY: Import MiscTA to System properties
-    mkdir /data/etc 0775 system system
+    mkdir /data/etc 0775 system system encryption=None
 
     # Create directory for TZ Apps
     mkdir /data/misc/qsee 0770 system system
@@ -338,7 +338,7 @@ on post-fs-data
     mkdir /data/misc/camera 0770 camera camera
     mkdir /data/vendor/qcam 0770 camera camera
 
-    mkdir /data/media 0770 media_rw media_rw
+    mkdir /data/media 0770 media_rw media_rw encryption=None
     chown media_rw media_rw /data/media
 
     mkdir /data/misc/ipa 0700 net_admin net_admin
@@ -392,7 +392,7 @@ on post-fs-data
     mkdir /data/vendor/display 0770 system graphics
 
     # QCOM Sensors
-    mkdir /data/system 0775 system system
+    mkdir /data/system 0775 system system encryption=None
     mkdir /data/system/sensors 0775 system system
     mkdir /data/misc/sensors 0775 system system
     write /data/system/sensors/settings 1
@@ -449,7 +449,6 @@ on post-fs-data
     chmod 0660 /sys/devices/virtual/input/maxim_sti/glove_en
 
     #Create the symlink to qcn wpa_supplicant folder for ar6000 wpa_supplicant
-    mkdir /data/system 0775 system system
     #symlink /data/misc/wifi/wpa_supplicant /data/system/wpa_supplicant
 
     #Create directories for Location services
@@ -464,17 +463,17 @@ on post-fs-data
     mkdir /dev/socket/location/xtra 0770 gps gps
 
     #Create directory from IMS services
-    mkdir /data/shared 0755
+    mkdir /data/shared system system 0755 encryption=None
     chown system system /data/shared
 
     #Create directory for FOTA
-    mkdir /data/fota 0771
+    mkdir /data/fota 0771 system system encryption=None
     chown system system /data/fota
 
     #Create directory for hostapd
-    mkdir /data/hostapd 0770 system wifi
+    mkdir /data/hostapd 0770 system wifi encryption=None
 
-    mkdir /data/audio/ 0770 media audio
+    mkdir /data/audio 0770 media audio encryption=None
 
     # Create a folder for audio delta files
     mkdir /data/audio/acdbdata 0770 media audio
@@ -490,7 +489,7 @@ on post-fs-data
     chmod 2770 /data/system/perfd
 
     # SONY: Camera
-    mkdir /data/camera 0770 media camera
+    mkdir /data/camera 0770 media camera encryption=None
     chown media camera /sys/devices/sony_camera_0/info
     chmod 0770 /sys/devices/sony_camera_0/info
     chown media camera /sys/devices/sony_camera_1/info
