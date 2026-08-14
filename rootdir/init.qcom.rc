@@ -41,8 +41,6 @@ on early-init
     write /sys/module/msm_performance/parameters/managed_cpus 4-7
 
 on init
-    mkdir /persist/data 0700 system system
-
     # Synchronous TA-partition ownership before tad_static opens it (ueventd's rule is async)
     wait /dev/block/mmcblk0p1
     chown oem_2997 oem_2997 /dev/block/mmcblk0p1
@@ -134,8 +132,6 @@ on late-fs
     chmod 0751 /iddA
     exec /system/bin/rm -r /idd/lost+found
     symlink /idd /mnt/idd
-    chown oem_2987 oem_2987 /rca
-    chmod 0750 /rca
     exec /system/bin/rm -r /rca/lost+found
     symlink /rca /mnt/rca
 
@@ -263,9 +259,6 @@ on boot
     chown system system /sys/devices/virtual/graphics/fb0/rgb
     chmod 0660 /sys/devices/virtual/graphics/fb0/rgb
 
-    #Remove SUID bit for iproute2 ip tool
-    chmod 0755 /system/bin/ip
-
     chmod 0444 /sys/devices/platform/msm_hsusb/gadget/usb_state
 
 #   Assign TCP buffer thresholds to be ceiling value of technology maximums
@@ -307,7 +300,7 @@ on boot
     mkdir /data/nfc 0770 nfc nfc
     mkdir /data/nfc/param 0770 nfc nfc
 
-    # Set the console loglevel to < KERN_INFO
+    # Set the console loglevel to KERN_INFO
     # Set the default message loglevel to KERN_INFO
     write /proc/sys/kernel/printk "6 6 1 7"
 
@@ -328,8 +321,6 @@ on post-fs-data
     mkdir /idd/socket 0711 oem_2987 oem_2987
     mkdir /idd/startup-prober 0700 root root
     restorecon_recursive /idd
-    mkdir /rca/plugins 0750 oem_2987 oem_2987
-    restorecon_recursive /rca
 
     # KSM options
     write /sys/kernel/mm/ksm/pages_to_scan 100
