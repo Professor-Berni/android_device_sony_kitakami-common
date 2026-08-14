@@ -803,11 +803,11 @@ on property:sys.shutdown.requested=*
     stop per_proxy
 
 # brcm-uim-sysfs (BT/FM/ANT+)
-service uim /system/vendor/bin/brcm-uim-sysfs
-    class late_start
-    user root
-    group bluetooth net_bt_admin net_bt
-    writepid /dev/cpuset/system-background/tasks
+#service uim /system/vendor/bin/brcm-uim-sysfs
+#    class late_start
+#    user root
+#    group bluetooth net_bt_admin net_bt
+#    writepid /dev/cpuset/system-background/tasks
 
 on property:init.svc.fuse_sdcard1=running
     # deadline, not CFQ: CFQ __cfq_slice_expired corrupts memory on 3.10 (kswapd0 panic)
