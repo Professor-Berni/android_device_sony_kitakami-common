@@ -1,6 +1,3 @@
-# Gatekeeper
-/metadata/gatekeeper(/.*)?                                 u:object_r:gatekeeper_metadata_file:s0
-
 # NFC
 /dev/pn54x                                                 u:object_r:nfc_device:s0
 

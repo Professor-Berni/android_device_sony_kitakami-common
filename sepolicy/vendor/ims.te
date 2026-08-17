@@ -12,3 +12,5 @@ allow ims self:udp_socket { create ioctl };
 allowxperm ims self:udp_socket ioctl { 0x8900-0x89ff };
 
 allow ims qmuxd:unix_stream_socket connectto;
+
+allow ims socket_device:dir remove_name;
