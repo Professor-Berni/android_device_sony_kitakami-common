@@ -160,8 +160,7 @@ BOARD_HAVE_BCM_FM_SYSFS := "/sys/bus/platform/drivers/bcm_ldisc/bcm_ldisc/"
 BOARD_BRCM_HCI_NUM := 26
 
 # Partitions types
-# Cache partition is repurposed as /metadata (encryption)
-# BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
+BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 
@@ -232,9 +231,6 @@ WITH_DEXPREOPT_BOOT_IMG_AND_SYSTEM_SERVER_ONLY ?= true
 TARGET_RECOVERY_FSTAB := $(COMMON_PATH)/rootdir/fstab.qcom
 TARGET_USERIMAGES_USE_EXT4 := true
 
-# Create /metadata as an empty dir in the root structure so it persists as a mountpoint
-BOARD_USES_METADATA_PARTITION := true
-
 # Shims
 TARGET_LD_SHIM_LIBS := \
      /system/lib64/libsys-utils.so|libsensor.so \
@@ -242,11 +238,12 @@ TARGET_LD_SHIM_LIBS := \
      /system/vendor/lib64/libril-qc-qmi-1.so|libaudioclient_shim.so \
      /system/lib/libsys-utils.so|libshim_sensors.so \
      /system/lib64/libsys-utils.so|libshim_sensors.so \
-     /system/vendor/lib64/libmm-abl.so|libshims_postproc.so
+     /system/vendor/lib64/libmm-abl.so|libshims_postproc.so \
+     /vendor/lib/hw/camera.msm8994.so|libgui_shim_vendor.so
 
 ifneq ($(BOARD_HAVE_RADIO),false)
 TARGET_LD_SHIM_LIBS += \
-     /system/vendor/lib64/lib-imsvt.so|/system/lib64/libshims_ims.so \
+     /system/vendor/lib64/lib-imsvt.so|/system/lib64/libshims_ims_sony.so \
      /system/vendor/lib64/lib-imsdpl.so|/system/lib64/libshims_boringssl.so \
      /system/lib64/lib-imsvideocodec.so|libshim_ui.so \
      /system/lib64/libimsmedia_jni.so|/system/lib64/libshim_libimsmedia.so \
