@@ -162,7 +162,8 @@ PRODUCT_PACKAGES += \
     libgbm_unlock_shim:32 \
     libsensor_vendor_shim:32 \
     libmutex_destroy_shim:32 \
-    libcammw_motionsensor_shim:32
+    libcammw_motionsensor_shim:32 \
+    libgui_shim_vendor:32
 
 # Charger
 PRODUCT_PACKAGES += charger_res_images
@@ -411,11 +412,11 @@ PRODUCT_PACKAGES += \
     libwpa_client \
     WifiOverlay \
     wpa_supplicant \
-    wpa_supplicant.conf
+    wpa_supplicant.conf \
+    macaddrsetup
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/wpa_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wpa_supplicant_overlay.conf
-
 ## This is a workaround for the Bluetooth sanitize shadow call stack (SCS)
 ## crash reported here: https://issuetracker.google.com/issues/302408537.
 ## For details of the root cause and the cts vts tests comparison between
