@@ -1,3 +1,11 @@
+#
+# Some of the files listed here come from sources other than Sony's original Android 7 file archive.
+# Therefore, several files have a specific checksum, determined using “shasum” (filename|checksum).
+# Other files with the same name but a different checksum will not work!
+# For this reason, I expressly state that this file list is for reference only.
+# Bernhard Thoben 2026-08-16
+#
+
 # Radio
 bin/irsc_util
 bin/netmgrd
@@ -68,8 +76,8 @@ vendor/lib64/libril-qc-radioconfig.so
 vendor/lib64/libril-qc-radioconfig.so:lib64/libril-qc-radioconfig.so
 vendor/lib64/librilqmiservices.so
 vendor/lib64/librilqmiservices.so:lib64/librilqmiservices.so
-vendor/lib64/libsettings.so
-vendor/lib64/libsettings.so:lib64/libsettings.so
+vendor/lib64/libsettings.so|91047a98be1ab2b7552744509ffa96faa1f7df5c
+vendor/lib64/libsettings.so:lib64/libsettings.so|91047a98be1ab2b7552744509ffa96faa1f7df5c
 vendor/lib64/libsmemlog.so
 vendor/lib64/libsmemlog.so:lib64/libsmemlog.so
 vendor/lib64/libsubsystem_control.so

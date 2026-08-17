@@ -1,2 +1,10 @@
+#
+# Some of the files listed here come from sources other than Sony's original Android 7 file archive.
+# Therefore, several files have a specific checksum, determined using “shasum” (filename|checksum).
+# Other files with the same name but a different checksum will not work!
+# For this reason, I expressly state that this file list is for reference only.
+# Bernhard Thoben 2026-08-16
+#
+
 -vendor/lib/hw/nfc_nci.msm8994.so|eead0fa43ab037228cce7446968cae03fef683c8
 -vendor/lib64/hw/nfc_nci.msm8994.so|2ec9a6b86c0d1127344c44015576118b7de73a14
