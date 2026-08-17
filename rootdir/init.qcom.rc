@@ -580,7 +580,7 @@ service vendor.imsqmidaemon /system/vendor/bin/imsqmidaemon
     user system
     socket ims_qmid stream 0660 system radio
     group radio log diag
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 service vendor.imsdatadaemon /system/vendor/bin/imsdatadaemon
     class main
@@ -599,14 +599,14 @@ service vendor.ims_rtp_daemon /system/vendor/bin/ims_rtp_daemon
     user system
     socket ims_rtpd stream 0660 system radio
     group radio diag inet log
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
     disabled
 
 service vendor.imsrcsservice /system/vendor/bin/imsrcsd
    class main
    user system
    group radio diag inet log
-   writepid /dev/cpuset/system-background/tasks
+   task_profiles ServiceCapacityLow
    disabled
 
 service vendor.imscmservice /system/vendor/bin/imscmservice
@@ -649,7 +649,7 @@ service msm_irqbalance /system/bin/msm_irqbalance -f /system/vendor/etc/msm_irqb
     class main
     user root
     group root
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 # qcamerasvr service def lives in rootdir/etc/init/qcamerasvr.rc
 
@@ -657,7 +657,7 @@ service qseecomd /system/bin/qseecomd
     class core
     user root
     group root
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 # qseecomd sets legacy sys.listeners.registered; mirror to sys.* + vendor.* keymaster.loaded
 on property:sys.listeners.registered=*
@@ -669,7 +669,7 @@ service vendor.perfd /vendor/bin/perfd
     user root
     group root readproc
     disabled
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 service thermal-engine /vendor/bin/thermal-engine
     class main charger
@@ -678,7 +678,7 @@ service thermal-engine /vendor/bin/thermal-engine
     socket thermal-recv-client stream 0660 system system
     socket thermal-recv-passive-client stream 0666 system system
     group root
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 service adsprpcd /system/bin/adsprpcd
    class main
@@ -691,34 +691,34 @@ service tad_static /system/bin/tad_static /dev/block/bootdevice/by-name/TA 0,16
     user oem_2997
     group oem_2997 root
     socket tad stream 0660 system oem_2993
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 # SONY misc
 service ta_qmi_service /system/bin/ta_qmi_service
     class main
     user root
     group wakelock
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 # SONY prop
 service sct_service /system/bin/sct_service
     class main
     user root
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 # SONY prop
 service mlog_qmi_service /system/bin/mlog_qmi_service
     class main
     user root
     group system wakelock drmrpc
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 # QCOM prop
 service rmt_storage /system/bin/rmt_storage
     class core
     user root
     group system wakelock drmrpc
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
     shutdown critical
 
 # Second ril daemon (rild -c 2) for dual-SIM, owning physical slot 2
@@ -746,7 +746,7 @@ service qmuxd /system/bin/qmuxd
     class main
     user radio
     group radio audio bluetooth gps diag drmrpc oem_2950
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 # loc_launcher GPS supervisor daemon (spawns gpsone_daemon/lowi-server/xtwifi per izat.conf)
 service loc_launcher /system/bin/loc_launcher
@@ -754,14 +754,14 @@ service loc_launcher /system/bin/loc_launcher
     user root
     group gps inet net_raw diag net_admin wifi vendor_qcom_diag vendor_rfs_shared system
     capabilities NET_BIND_SERVICE NET_RAW NET_ADMIN SETUID SETGID WAKE_ALARM BLOCK_SUSPEND
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 # QCOM prop
 service netmgrd /system/bin/netmgrd
     class main
     user root
     group root wifi wakelock radio inet oem_2950
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 service taimport /system/bin/taimport
     class late_start
@@ -779,7 +779,7 @@ service per_mgr /system/bin/pm-service
     class core
     user system
     group system net_raw
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
 
 service per_proxy /system/bin/pm-proxy
     class core
@@ -792,7 +792,7 @@ service ppd /system/vendor/bin/mm-pp-daemon
     user system
     socket pps stream 0660 system system
     group system graphics
-    writepid /dev/cpuset/system-background/tasks
+    task_profiles ServiceCapacityLow
     setenv LD_PRELOAD libppd_ppoll_shim.so
 
 on property:init.svc.per_mgr=running
@@ -806,7 +806,7 @@ on property:sys.shutdown.requested=*
 #    class late_start
 #    user root
 #    group bluetooth net_bt_admin net_bt
-#    writepid /dev/cpuset/system-background/tasks
+#    task_profiles ServiceCapacityLow
 
 on property:init.svc.fuse_sdcard1=running
     # deadline, not CFQ: CFQ __cfq_slice_expired corrupts memory on 3.10 (kswapd0 panic)
