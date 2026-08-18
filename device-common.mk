@@ -20,6 +20,7 @@ $(call inherit-product, vendor/sony/kitakami-common/kitakami-common-vendor.mk)
 
 # Build
 PRODUCT_OTA_ENFORCE_VINTF_KERNEL_REQUIREMENTS := false
+PRODUCT_SHIPPING_API_LEVEL := 36
 PRODUCT_CHECK_PREBUILT_MAX_PAGE_SIZE := false
 
 # Overlays
