@@ -101,6 +101,9 @@
 # Lights
 /(vendor|system/vendor)/bin/hw/android\.hardware\.light-service\.kitakami u:object_r:hal_light_default_exec:s0
 
+# Memtrack
+/(vendor|system/vendor)/bin/hw/android\.hardware\.memtrack-service\.kitakami u:object_r:hal_memtrack_default_exec:s0
+
 # FM
 /(vendor|system/vendor)/bin/fmd                            u:object_r:fmd_exec:s0
 /dev/socket/fmd                                            u:object_r:fmd_socket:s0
