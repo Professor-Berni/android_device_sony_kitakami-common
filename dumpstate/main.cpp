@@ -14,105 +14,65 @@
  * limitations under the License.
  */
 
+#include <aidl/android/hardware/dumpstate/BnDumpstateDevice.h>
 #include <android-base/properties.h>
-#include <android/hardware/dumpstate/1.1/IDumpstateDevice.h>
-#include <android/hardware/dumpstate/1.1/types.h>
-#include <hidl/HidlLazyUtils.h>
-#include <hidl/HidlSupport.h>
-#include <hidl/HidlTransportSupport.h>
+#include <android/binder_manager.h>
+#include <android/binder_process.h>
 #include <log/log.h>
 
-#include "DumpstateUtil.h"
-
 namespace {
-using ::android::hardware::hidl_handle;
-using ::android::hardware::Return;
-using ::android::hardware::Void;
-
-using ::android::hardware::dumpstate::V1_1::DumpstateMode;
-using ::android::hardware::dumpstate::V1_1::DumpstateStatus;
-using ::android::hardware::dumpstate::V1_1::IDumpstateDevice;
-
-using ::android::os::dumpstate::DumpFileToFd;
+using ::aidl::android::hardware::dumpstate::BnDumpstateDevice;
+using ::aidl::android::hardware::dumpstate::IDumpstateDevice;
+using ::ndk::ScopedAStatus;
+using ::ndk::ScopedFileDescriptor;
 
 const char kVerboseLoggingProperty[] = "persist.dumpstate.verbose_logging.enabled";
 
-struct DumpstateDevice : public IDumpstateDevice {
-    // 1.1
-    Return<DumpstateStatus> dumpstateBoard_1_1(const hidl_handle& handle, const DumpstateMode mode,
-                                               uint64_t /*timeoutMillis*/) override {
-        if (handle == nullptr || handle->numFds < 1) {
+struct DumpstateDevice : public BnDumpstateDevice {
+    ScopedAStatus dumpstateBoard(const std::vector<ScopedFileDescriptor>& fds,
+                                 IDumpstateDevice::DumpstateMode mode,
+                                 int64_t /*timeoutMillis*/) override {
+        if (fds.empty()) {
             ALOGE("no FDs\n");
-            return DumpstateStatus::ILLEGAL_ARGUMENT;
-        }
-
-        int fd = handle->data[0];
-        if (fd < 0) {
-            ALOGE("invalid FD: %d\n", fd);
-            return DumpstateStatus::ILLEGAL_ARGUMENT;
+            return ScopedAStatus::fromExceptionCodeWithMessage(EX_ILLEGAL_ARGUMENT, "No FDs");
         }
 
         switch (mode) {
-            case DumpstateMode::FULL:
-                return dumpstateBoardImpl(fd, true);
-
-            case DumpstateMode::DEFAULT:
-                return dumpstateBoardImpl(fd, false);
-
-            case DumpstateMode::INTERACTIVE:
-            case DumpstateMode::REMOTE:
-            case DumpstateMode::WEAR:
-            case DumpstateMode::CONNECTIVITY:
-            case DumpstateMode::WIFI:
-            case DumpstateMode::PROTO:
-                ALOGE("The requested mode is not supported: %s\n", toString(mode).c_str());
-                return DumpstateStatus::UNSUPPORTED_MODE;
+            case IDumpstateDevice::DumpstateMode::FULL:
+            case IDumpstateDevice::DumpstateMode::DEFAULT:
+                return ScopedAStatus::ok();
 
             default:
-                ALOGE("The requested mode is invalid: %s\n", toString(mode).c_str());
-                return DumpstateStatus::ILLEGAL_ARGUMENT;
+                ALOGE("The requested mode is not supported: %d\n", static_cast<int>(mode));
+                return ScopedAStatus::fromServiceSpecificError(
+                        IDumpstateDevice::ERROR_UNSUPPORTED_MODE);
         }
     }
 
-    Return<void> setVerboseLoggingEnabled(bool enable) override {
+    ScopedAStatus setVerboseLoggingEnabled(bool enable) override {
         ::android::base::SetProperty(kVerboseLoggingProperty, enable ? "true" : "false");
-        return Void();
+        return ScopedAStatus::ok();
     }
 
-    Return<bool> getVerboseLoggingEnabled() override { return getVerboseLoggingEnabledImpl(); }
-
-    // 1.0
-    Return<void> dumpstateBoard(const hidl_handle& h) override {
-        dumpstateBoard_1_1(h, DumpstateMode::DEFAULT, 0);
-        return Void();
-    }
-
-    DumpstateStatus dumpstateBoardImpl(const int /*fd*/, const bool /*full*/) {
-        return DumpstateStatus::OK;
-    }
-
-    static bool getVerboseLoggingEnabledImpl() {
-        return ::android::base::GetBoolProperty(kVerboseLoggingProperty, false);
+    ScopedAStatus getVerboseLoggingEnabled(bool* _aidl_return) override {
+        *_aidl_return = ::android::base::GetBoolProperty(kVerboseLoggingProperty, false);
+        return ScopedAStatus::ok();
     }
 };
 }  // namespace
 
 int main(int, char**) {
-    using ::android::sp;
-    using ::android::hardware::configureRpcThreadpool;
-    using ::android::hardware::joinRpcThreadpool;
-    using ::android::hardware::LazyServiceRegistrar;
+    ABinderProcess_setThreadPoolMaxThreadCount(0);
 
-    configureRpcThreadpool(1, true);
+    auto dumpstate = ::ndk::SharedRefBase::make<DumpstateDevice>();
+    const std::string instance = std::string(DumpstateDevice::descriptor) + "/default";
 
-    sp<DumpstateDevice> dumpstate(new DumpstateDevice);
-    auto serviceRegistrar = LazyServiceRegistrar::getInstance();
-
-    if (serviceRegistrar.registerService(dumpstate) != ::android::OK) {
+    if (AServiceManager_registerLazyService(dumpstate->asBinder().get(), instance.c_str()) !=
+        STATUS_OK) {
         ALOGE("Could not register service.");
         return 1;
     }
 
-    joinRpcThreadpool();
+    ABinderProcess_joinThreadPool();
     return 0;
 }

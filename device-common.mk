@@ -209,7 +209,8 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += android.hardware.drm-service.clearkey
 
 # DumpState
-PRODUCT_PACKAGES += android.hardware.dumpstate@1.1-service-kitakami
+PRODUCT_PACKAGES += \
+    android.hardware.dumpstate-service.kitakami
 
 # Flash LED config
 PRODUCT_COPY_FILES += \
