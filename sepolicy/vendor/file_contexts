@@ -38,6 +38,8 @@
 /(vendor|system/vendor)/lib(64)?/libllvm-qcom\.so                   u:object_r:same_process_hal_file:s0
 /(vendor|system/vendor)/lib(64)?/libllvm-qgl\.so                    u:object_r:same_process_hal_file:s0
 /(vendor|system/vendor)/lib(64)?/libgpudataproducer\.so             u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libaconfig_storage_read_api_cc\.so  u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/libsync\.so                         u:object_r:same_process_hal_file:s0
 /(vendor|system/vendor)/lib(64)?/libqdMetaData\.so                  u:object_r:same_process_hal_file:s0
 /(vendor|system/vendor)/lib(64)?/libqdutils\.so                     u:object_r:same_process_hal_file:s0
 /(vendor|system/vendor)/lib(64)?/libqdi\.so                         u:object_r:same_process_hal_file:s0
