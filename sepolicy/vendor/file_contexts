@@ -98,6 +98,9 @@
 # Dumpstate HAL
 /(vendor|system/vendor)/bin/hw/android\.hardware\.dumpstate-service\.kitakami u:object_r:hal_dumpstate_impl_exec:s0
 
+# Lights
+/(vendor|system/vendor)/bin/hw/android\.hardware\.light-service\.kitakami u:object_r:hal_light_default_exec:s0
+
 # FM
 /(vendor|system/vendor)/bin/fmd                            u:object_r:fmd_exec:s0
 /dev/socket/fmd                                            u:object_r:fmd_socket:s0
