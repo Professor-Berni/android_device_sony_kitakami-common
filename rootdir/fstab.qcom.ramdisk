@@ -1,0 +1,5 @@
+# First-stage fstab, boot ramdisk only. Replaces the device-tree fstab
+# (/proc/device-tree/firmware/android/fstab) that AOSP dropped in Android 17.
+
+/dev/block/platform/soc.0/f9824900.sdhci/by-name/LTALabel /lta-label ext4 ro,barrier=1 nofail,first_stage_mount
+/dev/block/platform/soc.0/f9824900.sdhci/by-name/system   /system    ext4 ro,barrier=1 wait,first_stage_mount
