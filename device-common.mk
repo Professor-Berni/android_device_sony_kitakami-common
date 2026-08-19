@@ -162,8 +162,7 @@ PRODUCT_PACKAGES += \
     libgbm_unlock_shim:32 \
     libsensor_vendor_shim:32 \
     libmutex_destroy_shim:32 \
-    libcammw_motionsensor_shim:32 \
-    libgui_shim_vendor:32
+    libcammw_motionsensor_shim:32
 
 # Charger
 PRODUCT_PACKAGES += charger_res_images
@@ -399,10 +398,6 @@ PRODUCT_PACKAGES += android.hardware.usb@1.3-service.basic
 PRODUCT_PACKAGES += \
     vibrator.default \
     android.hardware.vibrator-service.legacy
-
-# Widevine
-PRODUCT_PACKAGES += \
-    libwvcbs_shim
 
 # Wifi
 PRODUCT_PACKAGES += \

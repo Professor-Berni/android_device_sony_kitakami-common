@@ -238,8 +238,7 @@ TARGET_LD_SHIM_LIBS := \
      /system/vendor/lib64/libril-qc-qmi-1.so|libaudioclient_shim.so \
      /system/lib/libsys-utils.so|libshim_sensors.so \
      /system/lib64/libsys-utils.so|libshim_sensors.so \
-     /system/vendor/lib64/libmm-abl.so|libshims_postproc.so \
-     /vendor/lib/hw/camera.msm8994.so|libgui_shim_vendor.so
+     /system/vendor/lib64/libmm-abl.so|libshims_postproc.so
 
 ifneq ($(BOARD_HAVE_RADIO),false)
 TARGET_LD_SHIM_LIBS += \
