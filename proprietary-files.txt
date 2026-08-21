@@ -570,7 +570,6 @@ vendor/lib64/libprotobuf-cpp-lite-3.9.1.so
 vendor/lib/libprotobuf-cpp-lite-3.9.1.so
 
 # Thermal
-etc/thermal-engine.conf
 vendor/bin/thermal-engine
 vendor/lib64/libthermalclient.so
 vendor/lib64/libthermalioctl.so
