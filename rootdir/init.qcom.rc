@@ -139,7 +139,6 @@ on boot
 
     # VM tuning to reduce kswapd0 shrink_slab panic risk (keep more memory free)
     write /proc/sys/vm/min_free_kbytes 98304
-    write /proc/sys/vm/watermark_scale_factor 200
     write /proc/sys/vm/extra_free_kbytes 32768
     write /proc/sys/vm/swappiness 10
 
