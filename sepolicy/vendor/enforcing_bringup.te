@@ -281,9 +281,6 @@ allow system_server vendor_file:file { execute getattr open read };
 # tad
 allow tad trim_area_partition_device:blk_file { ioctl };
 
-# timekeep
-allow timekeep vendor_data_file:file { getattr open write };
-
 # toolbox
 allow toolbox media_rw_data_file:dir { getattr };
 allow toolbox ram_device:blk_file { getattr ioctl open read write };
