@@ -24,9 +24,9 @@ allow tee rpmb_device:blk_file rw_file_perms;
 allow tee ssd_device:blk_file rw_file_perms;
 
 allow tee system_data_file:dir r_dir_perms;
-allow tee vfat:file { getattr open read };
-allow tee vfat:dir search;
 allow tee system_data_root_file:dir rw_dir_perms;
+allow tee vfat:dir r_dir_perms;
+allow tee vfat:file r_file_perms;
 
 # qseecomd is in /system/bin, needs system_file_type
 typeattribute tee_exec system_file_type;

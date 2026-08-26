@@ -1,0 +1,4 @@
+allow untrusted_app aac_drc_prop:file r_file_perms;
+allow untrusted_app ab_update_gki_prop:file r_file_perms;
+allow untrusted_app adaptive_haptics_prop:file r_file_perms;
+allow untrusted_app vendor_default_prop:file r_file_perms;

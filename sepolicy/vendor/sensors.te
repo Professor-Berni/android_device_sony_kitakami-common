@@ -1,10 +1,23 @@
 # Started by init (sensors.qcom) -> transition into the sensors domain
 init_daemon_domain(sensors)
 
-allow sensors device:dir { write add_name };
+allow sensors device:chr_file rw_file_perms;
+allow sensors device:dir w_dir_perms;
 allow sensors input_device:chr_file { relabelfrom getattr link };
-allow sensors input_device:dir search;
+allow sensors input_device:dir r_dir_perms;
+allow sensors persist_file:dir search;
+allow sensors self:capability2 { block_suspend };
+allow sensors self:capability { chown dac_override net_raw setgid setuid };
+allow sensors self:socket create_socket_perms;
+allow sensors sensors_persist_file:dir create_dir_perms;
+allow sensors sensors_persist_file:file create_file_perms;
+allow sensors socket_device:dir w_dir_perms;
+allow sensors socket_device:sock_file create_file_perms;
+allow sensors sysfs:dir r_dir_perms;
+allow sensors sysfs:file r_file_perms;
+allow sensors sysfs_wake_lock:file rw_file_perms;
+allow sensors tad_socket:sock_file rw_file_perms;
 allow sensors tmpfs:file rw_file_perms;
-allow sensors tad_socket:sock_file { write };
-allow sensors sysfs:file { open read };
 allow sensors unlabeled:dir create_dir_perms;
+allow sensors unlabeled:file rw_file_perms;
+allow sensors vendor_file:file r_file_perms;

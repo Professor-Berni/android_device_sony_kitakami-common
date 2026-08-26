@@ -1,9 +1,23 @@
-allow thermal_engine ta_data_file:dir search;
-allow thermal_engine ta_data_file:file r_file_perms;
-allow thermal_engine diag_partition_device:dir search;
-allow thermal_engine diag_data_file:dir search;
-allow thermal_engine diag_data_file:sock_file write;
-allow thermal_engine socket_device:sock_file { create setattr };
-allow thermal_engine init:unix_dgram_socket sendto;
+type thermal_engine_exec, exec_type, file_type, vendor_file_type;
+init_daemon_domain(thermal_engine)
+
+allow thermal_engine device:chr_file rw_file_perms;
+allow thermal_engine diag_data_file:dir r_dir_perms;
+allow thermal_engine diag_data_file:sock_file rw_file_perms;
+allow thermal_engine diag_partition_device:dir r_dir_perms;
 allow thermal_engine iddd:unix_dgram_socket sendto;
-allow thermal_engine device:chr_file { ioctl open read write };
+allow thermal_engine init:unix_dgram_socket sendto;
+allow thermal_engine qmuxd:unix_stream_socket connectto;
+allow thermal_engine self:capability dac_override;
+allow thermal_engine self:socket create_socket_perms;
+allow thermal_engine socket_device:dir rw_dir_perms;
+allow thermal_engine socket_device:sock_file create_file_perms;
+allow thermal_engine sysfs_devices_system_cpu:file rw_file_perms;
+allow thermal_engine sysfs:dir r_dir_perms;
+allow thermal_engine sysfs:file rw_file_perms;
+allow thermal_engine system_file:file r_file_perms;
+allow thermal_engine ta_data_file:dir r_dir_perms;
+allow thermal_engine ta_data_file:file r_file_perms;
+allow thermal_engine thermal_device:chr_file rw_file_perms;
+dontaudit thermal_engine default_prop:file { getattr open read };
+get_prop(thermal_engine, system_prop)

@@ -1,0 +1,9 @@
+type imscmservice, domain;
+type imscmservice_exec, exec_type, file_type, vendor_file_type;
+type imscm_service, vndservice_manager_type;
+init_daemon_domain(imscmservice)
+vndbinder_use(imscmservice)
+
+allow imscmservice imscm_service:service_manager add;
+allow imscmservice sysfs:dir r_dir_perms;
+allow imscmservice sysfs:file r_file_perms;

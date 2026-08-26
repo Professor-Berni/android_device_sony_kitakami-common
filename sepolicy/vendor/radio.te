@@ -5,3 +5,5 @@ allow radio ims_socket:sock_file write;
 
 # Connect to ims service.
 allow radio ims:unix_stream_socket connectto;
+allow radio self:netlink_kobject_uevent_socket create_socket_perms;
+allow radio sysfs_switch:dir r_dir_perms;

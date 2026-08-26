@@ -1,0 +1,8 @@
+type macaddrsetup, domain;
+type macaddrsetup_exec, exec_type, file_type, vendor_file_type;
+init_daemon_domain(macaddrsetup)
+
+allow macaddrsetup tad_socket:sock_file write;
+allow macaddrsetup tad:unix_stream_socket connectto;
+allow macaddrsetup vendor_data_file:dir rw_dir_perms;
+allow macaddrsetup vendor_data_file:file create_file_perms;

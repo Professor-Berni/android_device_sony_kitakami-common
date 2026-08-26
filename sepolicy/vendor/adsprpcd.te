@@ -1,0 +1,5 @@
+type adsprpcd, domain;
+init_daemon_domain(adsprpcd)
+
+allow adsprpcd ion_device:chr_file rw_file_perms;
+allow adsprpcd qdsp_device:chr_file rw_file_perms;

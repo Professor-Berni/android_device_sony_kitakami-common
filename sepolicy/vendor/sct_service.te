@@ -10,4 +10,3 @@ allow sct_service self:capability net_raw;
 
 # Allow sct_service to create self:socket
 allow sct_service self:socket create_socket_perms;
-allow sct_service self:socket { create read write };

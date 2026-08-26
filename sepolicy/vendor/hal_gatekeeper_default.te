@@ -1,0 +1,5 @@
+allow hal_gatekeeper_default device:chr_file rw_file_perms;
+allow hal_gatekeeper_default gatekeeper_metadata_file:dir rw_dir_perms;
+allow hal_gatekeeper_default gatekeeper_metadata_file:file create_file_perms;
+allow hal_gatekeeper_default metadata_file:dir search;
+allow hal_gatekeeper_default system_prop:file r_file_perms;

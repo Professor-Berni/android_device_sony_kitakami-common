@@ -5,21 +5,21 @@ type loc_launcher_exec, exec_type, file_type, system_file_type;
 init_daemon_domain(loc_launcher)
 
 # baseline
+allow loc_launcher self:capability2 { block_suspend wake_alarm };
 allow loc_launcher self:capability { setuid setgid net_admin net_raw net_bind_service };
-allow loc_launcher self:capability2 wake_alarm;
+allow loc_launcher self:fifo_file rw_file_perms;
 allow loc_launcher self:process { fork setpgid getsched setsched };
-allow loc_launcher self:fifo_file { read write };
 
 # exec children
-allow loc_launcher loc_launcher_exec:file { execute read open getattr map };
+allow loc_launcher loc_launcher_exec:file rx_file_perms;
 allow loc_launcher self:process execmem;
 
 # location data
-allow loc_launcher system_data_file:dir { add_name remove_name write search };
-allow loc_launcher system_data_file:sock_file { create setattr unlink };
-allow loc_launcher location_data_file:dir { add_name remove_name write search getattr };
-allow loc_launcher location_data_file:sock_file { create setattr unlink read write };
-allow loc_launcher location_data_file:file { create read write open getattr setattr unlink };
+allow loc_launcher location_data_file:dir rw_dir_perms;
+allow loc_launcher location_data_file:file create_file_perms;
+allow loc_launcher location_data_file:sock_file create_file_perms;
+allow loc_launcher system_data_file:dir rw_dir_perms;
+allow loc_launcher system_data_file:sock_file create_file_perms;
 
 # qmux_gps QMI client socket
 allow loc_launcher qmuxd:unix_stream_socket connectto;
@@ -28,15 +28,26 @@ allow loc_launcher qmuxd:unix_stream_socket connectto;
 dontaudit loc_launcher default_prop:property_service set;
 
 # network
-allow loc_launcher self:udp_socket { ioctl create connect setopt getopt write read };
-allow loc_launcher self:netlink_socket { getattr create bind read write setopt };
-allow loc_launcher self:netlink_route_socket { create bind nlmsg_read read write };
+allow loc_launcher self:netlink_route_socket { create_socket_perms nlmsg_read };
+allow loc_launcher self:netlink_socket create_socket_perms;
+allow loc_launcher self:udp_socket create_socket_perms;
 
 # WiFi
-allow loc_launcher wifi_data_file:dir { search getattr };
-allow loc_launcher wifi_data_file:file { read open getattr };
+allow loc_launcher sysfs_addrsetup:file r_file_perms;
+allow loc_launcher wifi_data_file:dir r_dir_perms;
+allow loc_launcher wifi_data_file:file r_file_perms;
 allow loc_launcher wifi_prop:file r_file_perms;
-allow loc_launcher sysfs_addrsetup:file { read open getattr };
+
+allow loc_launcher init:unix_stream_socket connectto;
+allow loc_launcher property_socket:sock_file rw_file_perms;
+allow loc_launcher self:socket create_socket_perms;
+allow loc_launcher socket_device:dir w_dir_perms;
+allow loc_launcher socket_device:sock_file create_file_perms;
+allow loc_launcher sysfs:dir r_dir_perms;
+allow loc_launcher sysfs:file r_file_perms;
+allow loc_launcher system_data_file:file create_file_perms;
+allow loc_launcher wifi_hal_prop:file r_file_perms;
+
 
 dontaudit loc_launcher proc:dir { search getattr };
 dontaudit loc_launcher self:netlink_socket { getopt };

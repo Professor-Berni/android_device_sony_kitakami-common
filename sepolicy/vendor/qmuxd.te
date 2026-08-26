@@ -5,3 +5,10 @@ type qmuxd_socket, file_type;
 
 # Started by init -> transition into the qmuxd domain
 init_daemon_domain(qmuxd)
+
+allow qmuxd device:chr_file rw_file_perms;
+allow qmuxd socket_device:dir w_dir_perms;
+allow qmuxd socket_device:sock_file create_file_perms;
+allow qmuxd sysfs:dir r_dir_perms;
+allow qmuxd sysfs:file rw_file_perms;
+allow qmuxd sysfs_wake_lock:file ra_file_perms;

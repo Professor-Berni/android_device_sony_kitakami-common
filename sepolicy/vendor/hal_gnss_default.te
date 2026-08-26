@@ -1,1 +1,1 @@
-allow hal_gnss_default system_file:file { read open getattr };
+allow hal_gnss_default system_file:file r_file_perms;

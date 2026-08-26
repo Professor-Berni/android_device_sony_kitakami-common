@@ -8,7 +8,7 @@ init_daemon_domain(tad)
 # Read /proc/stat
 allow tad proc:file r_file_perms;
 
-allow tad trim_area_partition_device:blk_file { ioctl rw_file_perms };
-allowxperm tad trim_area_partition_device:blk_file ioctl 0x1260;
 allow tad block_device:dir search;
 allow tad tmpfs:file rw_file_perms;
+allow tad trim_area_partition_device:blk_file rw_file_perms;
+allowxperm tad trim_area_partition_device:blk_file ioctl 0x1260;

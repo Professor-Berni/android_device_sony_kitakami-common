@@ -1,0 +1,2 @@
+allow vendor_init default_prop:property_service { set };
+allow vendor_init radio_prop:property_service { set };

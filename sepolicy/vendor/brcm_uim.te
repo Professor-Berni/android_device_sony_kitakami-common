@@ -10,8 +10,8 @@ rw_dir_file(brcm_uim, brcm_ldisc_sysfs)
 rw_dir_file(brcm_uim, sysfs)
 rw_dir_file(brcm_uim, sysfs_bluetooth_writable)
 
-allow brcm_uim vendor_bluetooth_prop:file r_file_perms;
 allow brcm_uim exported_bluetooth_prop:file r_file_perms;
 allow brcm_uim hci_attach_dev:chr_file rw_file_perms;
 allow brcm_uim property_socket:sock_file write;
 allow brcm_uim self:capability net_admin;
+allow brcm_uim vendor_bluetooth_prop:file r_file_perms;

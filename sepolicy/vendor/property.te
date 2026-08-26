@@ -1,7 +1,7 @@
-type vendor_timekeep_prop, property_type;
-type vendor_tee_prop, property_type;
-type vendor_ta_prop, property_type;
 type display_prop, property_type;
 type vendor_bluetooth_prop, property_type;
-type vendor_net_radio_prop, property_type;
 type vendor_ims_prop, property_type;
+type vendor_net_radio_prop, property_type;
+type vendor_ta_prop, property_type;
+type vendor_tee_prop, property_type;
+type vendor_timekeep_prop, property_type;

@@ -1,1 +1,1 @@
-allow gatekeeperd vendor_tee_prop:file { getattr open read };
+allow gatekeeperd vendor_tee_prop:file r_file_perms;

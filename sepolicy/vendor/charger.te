@@ -1,6 +1,6 @@
+allow charger_vendor device:dir r_dir_perms;
+allow charger_vendor persist_block_device:file create_file_perms;
 allow charger_vendor self:capability { dac_override dac_read_search };
-allow charger_vendor sysfs:file { open read getattr };
-allow charger_vendor sysfs_usb_supply:file { open read getattr };
-allow charger_vendor sysfs_battery_supply:file { open read getattr };
-allow charger_vendor device:dir { open read };
-allow charger_vendor persist_block_device:file { create rw_file_perms };
+allow charger_vendor sysfs_battery_supply:file r_file_perms;
+allow charger_vendor sysfs:file r_file_perms;
+allow charger_vendor sysfs_usb_supply:file r_file_perms;

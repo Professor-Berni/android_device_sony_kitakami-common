@@ -1,1 +1,2 @@
-allow installd device:file { open write };
+allow installd device:file rw_file_perms;
+allow installd vendor_file:file r_file_perms;

@@ -26,4 +26,3 @@ allow timekeep timekeep_data_file:file create_file_perms;
 # vendor_data_file
 allow timekeep vendor_data_file:dir create_dir_perms;
 allow timekeep vendor_data_file:file create_file_perms;
-

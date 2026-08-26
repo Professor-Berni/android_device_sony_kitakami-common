@@ -1,7 +1,7 @@
-vendor.keymaster.loaded       u:object_r:vendor_tee_prop:s0
-vendor.listeners.registered   u:object_r:vendor_tee_prop:s0
-persist.vendor.timeadjust     u:object_r:vendor_timekeep_prop:s0
-persist.vendor.bdroid.bdaddr u:object_r:vendor_bluetooth_prop:s0
+persist.vendor.bdroid.bdaddr         u:object_r:vendor_bluetooth_prop:s0
 persist.vendor.tareset.notfirstboot  u:object_r:vendor_ta_prop:s0
-vendor.net.r_rmnet     u:object_r:vendor_net_radio_prop:s0
-vendor.ims.            u:object_r:vendor_ims_prop:s0
+persist.vendor.timeadjust            u:object_r:vendor_timekeep_prop:s0
+vendor.ims.                          u:object_r:vendor_ims_prop:s0
+vendor.keymaster.loaded              u:object_r:vendor_tee_prop:s0
+vendor.listeners.registered          u:object_r:vendor_tee_prop:s0
+vendor.net.r_rmnet                   u:object_r:vendor_net_radio_prop:s0
