@@ -378,6 +378,7 @@ PRODUCT_SOONG_NAMESPACES += \
 
 $(call soong_config_set,brcm_libbt,bdroid_buildcfg_include_dir,device/sony/kitakami-common/bluetooth)
 $(call soong_config_set,brcm_libbt,device,satsuki)
+$(call soong_config_set,lineage_health,charging_control_charging_path,/sys/class/power_supply/battery/charging_enabled)
 
 # Tethering
 PRODUCT_PACKAGES += TetheringConfigOverlay
