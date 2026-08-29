@@ -3,6 +3,7 @@ allow system_server debugfs:file r_file_perms;
 allow system_server debugfs_wakeup_sources:file r_file_perms;
 allow system_server default_android_service:service_manager find;
 allow system_server device:chr_file rw_file_perms;
+allow system_server device:file rw_file_perms;
 allow system_server exfat:dir rw_dir_perms;
 allow system_server exported_camera_prop:file r_file_perms;
 allow system_server init:binder { call transfer };

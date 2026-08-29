@@ -1,5 +1,6 @@
 allow surfaceflinger default_android_service:service_manager { add find };
-allow surfaceflinger init:binder { call };
+allow surfaceflinger device:file rw_file_perms;
+allow surfaceflinger init:binder call;
 allow surfaceflinger perfd:unix_stream_socket connectto;
 allow surfaceflinger socket_device:sock_file write;
 allow surfaceflinger vendor_default_prop:file r_file_perms;

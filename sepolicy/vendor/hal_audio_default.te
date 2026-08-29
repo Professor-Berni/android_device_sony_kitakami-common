@@ -3,6 +3,7 @@ allow hal_audio_default audio_data_file:file create_file_perms;
 allow hal_audio_default audio_prop:file r_file_perms;
 allow hal_audio_default default_prop:file r_file_perms;
 allow hal_audio_default device:chr_file rw_file_perms;
+allow hal_audio_default device:file rw_file_perms;
 allow hal_audio_default hal_power_default:binder call;
 allow hal_audio_default hal_power_hwservice:hwservice_manager find;
 allow hal_audio_default hal_power_service:service_manager find;
