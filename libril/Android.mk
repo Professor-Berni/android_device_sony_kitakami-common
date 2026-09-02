@@ -23,12 +23,23 @@ LOCAL_SHARED_LIBRARIES := \
     libhidlbase \
     android.hardware.radio.deprecated@1.0
 
+ifeq ($(BOARD_RIL_USES_LEGACY_NANOPB),true)
+LOCAL_STATIC_LIBRARIES := \
+    libprotobuf-c-nano-enable_malloc-legacy-ltype \
+
+else
 LOCAL_STATIC_LIBRARIES := \
     libprotobuf-c-nano-enable_malloc-32bit \
 
+endif
+
 LOCAL_CFLAGS += -Wall -Wextra -Wno-unused-parameter -Werror
 LOCAL_CFLAGS += -Wno-unused-but-set-variable
+ifeq ($(BOARD_RIL_USES_LEGACY_NANOPB),true)
+LOCAL_CFLAGS += -DPB_LEGACY_LTYPE_NUMBERING
+else
 LOCAL_CFLAGS += -DPB_FIELD_32BIT
+endif
 
 ifeq ($(SIM_COUNT), 2)
     LOCAL_CFLAGS += -DANDROID_MULTI_SIM -DDSDA_RILD1

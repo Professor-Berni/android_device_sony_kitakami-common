@@ -1,3 +1,5 @@
+type_transition rild socket_device:sock_file rild_socket "rild_ims0";
+type_transition rild socket_device:sock_file rild_socket "rild_ims1";
 allow rild audioserver_service:service_manager find;
 allow rild cache_file:dir rw_dir_perms;
 allow rild cache_file:file create_file_perms;
@@ -14,6 +16,7 @@ allow rild radio_core_data_file:dir rw_dir_perms;
 allow rild radio_core_data_file:file create_file_perms;
 allow rild radio_data_file:dir rw_dir_perms;
 allow rild radio_data_file:file create_file_perms;
+allow rild rild_socket:sock_file { create getattr setattr unlink write };
 allow rild self:capability { chown dac_override sys_module };
 allow rild self:socket ioctl;
 allow rild servicemanager:binder call;

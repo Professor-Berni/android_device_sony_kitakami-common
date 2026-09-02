@@ -110,9 +110,6 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.-->
         <boolean name="ignore_data_enabled_changed_for_video_calls" value="true"/>
     </carrier_config>
 
-    <!-- Yoigo (ES, 214/04). VoLTE/VT disabled: the MSM8994 modem firmware rejects the IMS
-         turn-on at the QMI layer, so IMS never registers and advertising VoLTE only loops the
-         framework and shows a dead Enhanced 4G LTE toggle. Voice uses CS (2G/3G). -->
     <carrier_config mcc="214" mnc="04">
         <boolean name="carrier_volte_available_bool" value="false" />
         <boolean name="carrier_volte_provisioned_bool" value="false" />

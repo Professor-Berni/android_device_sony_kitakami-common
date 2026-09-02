@@ -25,6 +25,7 @@
 #include <telephony/ril.h>
 
 #include <dlfcn.h>
+#include <sys/stat.h>
 
 #define RIL_LIB_NAME "libril-qc-qmi-1.so"
 
@@ -144,6 +145,8 @@ const RIL_RadioFunctions* RIL_Init(const struct RIL_Env* env, int argc, char** a
     RIL_RadioFunctions const* (*qmiRilInit)(const struct RIL_Env* env, int argc, char** argv);
     static struct RIL_Env shimmedRilEnv;
     void* qmiRil;
+
+    umask(S_IRWXO);
 
     /*
      * Save the RilEnv passed from rild.
