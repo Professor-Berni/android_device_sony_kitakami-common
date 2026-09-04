@@ -134,6 +134,9 @@
 # Broadcom WLAN firmware (bcmdhd)
 /system/etc/firmware/wlan(/.*)?                             u:object_r:firmware_file:s0
 
+# Broadcom Bluetooth/FM firmware patch
+/system/etc/firmware/BCM43xx\.hcd                           u:object_r:firmware_file:s0
+
 # Power Stats
 /(vendor|system/vendor)/bin/hw/android\.hardware\.power\.stats@1\.0-service\.mock u:object_r:hal_power_stats_default_exec:s0
 

@@ -9,6 +9,7 @@ allow fmd sysfs:file { open write };
 allow fmd self:capability net_admin;
 
 r_dir_file(fmd, system_file)
+r_dir_file(fmd, firmware_file)
 
 allow fmd fm_hci_socket:sock_file write;
 allow fmd hal_bluetooth_default:unix_stream_socket connectto;
