@@ -1,0 +1,14 @@
+type fmd, domain;
+type fmd_exec, exec_type, file_type, vendor_file_type;
+
+init_daemon_domain(fmd)
+
+allow fmd hci_attach_dev:chr_file rw_file_perms;
+
+allow fmd sysfs:file { open write };
+allow fmd self:capability net_admin;
+
+r_dir_file(fmd, system_file)
+
+allow fmd fm_hci_socket:sock_file write;
+allow fmd hal_bluetooth_default:unix_stream_socket connectto;

@@ -1,0 +1,6 @@
+service fmd /vendor/bin/fmd
+    class hal
+    user bluetooth
+    group bluetooth net_bt system
+    capabilities NET_ADMIN
+    socket fmd stream 0660 system system

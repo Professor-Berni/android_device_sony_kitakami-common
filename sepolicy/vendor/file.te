@@ -6,6 +6,8 @@ type mediadrm_vendor_data_file, file_type, data_file_type;
 
 # FM
 type brcm_ldisc_sysfs, sysfs_type, fs_type;
+type fmd_socket, file_type;
+type fm_hci_socket, file_type;
 
 # TAD
 type secd_data_file, file_type, data_file_type, core_data_file_type;

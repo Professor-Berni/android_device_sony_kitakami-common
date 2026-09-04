@@ -99,7 +99,9 @@
 /(vendor|system/vendor)/bin/hw/android\.hardware\.dumpstate@1\.1-service-kitakami u:object_r:hal_dumpstate_impl_exec:s0
 
 # FM
-/(vendor|system/vendor)/bin/brcm-uim-sysfs                 u:object_r:brcm_uim_exec:s0
+/(vendor|system/vendor)/bin/fmd                            u:object_r:fmd_exec:s0
+/dev/socket/fmd                                            u:object_r:fmd_socket:s0
+/dev/socket/fm_hci                                         u:object_r:fm_hci_socket:s0
 
 # HCI
 /dev/ttyHS0                                                u:object_r:hci_attach_dev:s0
