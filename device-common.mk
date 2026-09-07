@@ -162,7 +162,8 @@ PRODUCT_PACKAGES += \
     libgbm_unlock_shim:32 \
     libsensor_vendor_shim:32 \
     libmutex_destroy_shim:32 \
-    libcammw_motionsensor_shim:32
+    libcammw_motionsensor_shim:32 \
+    libalfort_shim:32
 
 # Charger
 PRODUCT_PACKAGES += charger_res_images

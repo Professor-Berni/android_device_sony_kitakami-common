@@ -79,6 +79,22 @@ cc_library_shared {
     compile_multilib: "32",
 }
 
+// Alfort program-binary translator + CkbPalBuf GraphicBuffer size fix (camera provider)
+cc_library_shared {
+    name: "libalfort_shim",
+    srcs: [
+        "alfort_shim.c",
+        "alfort_xlate.c",
+    ],
+    shared_libs: [
+        "libdl",
+        "liblog",
+    ],
+    cflags: ["-Wall", "-Wno-unused-parameter"],
+    vendor: true,
+    compile_multilib: "32",
+}
+
 // libpowermanager stub (AS libpowermanager.so; LiveDisplay legacymm blob chain)
 cc_library_shared {
     name: "libpowermanager_vendor_shim",
