@@ -19,3 +19,5 @@ allow secd socket_device:sock_file rw_file_perms;
 allow secd tad_socket:sock_file rw_file_perms;
 allow secd tad:unix_stream_socket connectto;
 allow secd tee_device:chr_file rw_file_perms;
+allow secd tmp_root_mount_file:dir r_dir_perms;
+allow secd tmp_root_mount_file:sock_file rw_file_perms;
