@@ -17,6 +17,7 @@
 #define LOG_TAG "CamDev@1.0-impl"
 
 #include <fcntl.h>
+#include <string>
 
 #include <hardware/camera.h>
 #include <hardware/gralloc1.h>
@@ -40,6 +41,26 @@ using ::android::hardware::graphics::common::V1_0::PixelFormat;
 HandleImporter CameraDevice::sHandleImporter;
 
 CameraDevice* sCameraDevice;
+
+static size_t findParam(const std::string& params, const std::string& key) {
+    if (params.compare(0, key.size() + 1, key + '=') == 0) {
+        return key.size() + 1;
+    }
+    size_t at = params.find(';' + key + '=');
+    return at == std::string::npos ? at : at + key.size() + 2;
+}
+
+static std::string getParam(const std::string& params, const std::string& key) {
+    size_t from = findParam(params, key);
+    return from == std::string::npos ? "" : params.substr(from, params.find(';', from) - from);
+}
+
+static void setParam(std::string& params, const std::string& key, const std::string& value) {
+    size_t from = findParam(params, key);
+    if (from != std::string::npos) {
+        params.replace(from, params.find(';', from) - from, value);
+    }
+}
 
 Status CameraDevice::getHidlStatus(const int& status) {
     switch (status) {
@@ -198,7 +219,11 @@ int CameraDevice::sEnqueueBuffer(struct preview_stream_ops* w, buffer_handle_t* 
         return INVALID_OPERATION;
     }
     uint64_t bufferId = object->mBufferIdMap.at(buffer);
-    return getStatusT(object->mPreviewCallback->enqueueBuffer(bufferId));
+    Status s = object->mPreviewCallback->enqueueBuffer(bufferId);
+    Mutex::Autolock _l(object->mFrameLock);
+    object->mFrameCount++;
+    object->mFrameCond.signal();
+    return getStatusT(s);
 }
 
 int CameraDevice::sCancelBuffer(struct preview_stream_ops* w, buffer_handle_t* buffer) {
@@ -684,6 +709,14 @@ Return<Status> CameraDevice::open(const sp<ICameraDeviceCallback>& callback) {
                 sNotifyCb, sDataCb, sDataCbTimestamp, sGetMemory, this);
     }
 
+    std::string params = getParametersLocked();
+    if (!params.empty() && mDevice->ops->set_parameters) {
+        setParam(params, "preview-frame-rate", "30");
+        setParam(params, "preview-fps-range", "1000,30000");
+        mDevice->ops->set_parameters(mDevice, params.c_str());
+    }
+    mFrameRatePending = false;
+
     return getHidlStatus(rc);
 }
 
@@ -806,6 +839,21 @@ Return<Status> CameraDevice::startRecording() {
         return Status::OPERATION_NOT_SUPPORTED;
     }
     if (mDevice->ops->start_recording) {
+        if (mFrameRatePending && mDevice->ops->preview_enabled &&
+                mDevice->ops->preview_enabled(mDevice)) {
+            Mutex::Autolock _f(mHalPreviewWindow.mFrameLock);
+            if (mHalPreviewWindow.mFrameCount == 0) {
+                nsecs_t start = systemTime();
+                nsecs_t left = ms2ns(1000);
+                do {
+                    mHalPreviewWindow.mFrameCond.waitRelative(mHalPreviewWindow.mFrameLock, left);
+                    left = start + ms2ns(1000) - systemTime();
+                } while (mHalPreviewWindow.mFrameCount == 0 && left > 0);
+                ALOGI("%s: waited %d ms for the first preview frame after a frame rate change",
+                        __FUNCTION__, static_cast<int>(ns2ms(systemTime() - start)));
+            }
+        }
+        mFrameRatePending = false;
         return getHidlStatus(mDevice->ops->start_recording(mDevice));
     }
     return Status::ILLEGAL_ARGUMENT;
@@ -877,11 +925,7 @@ void CameraDevice::releaseRecordingFrameLocked(
                 return;
             }
         }
-        VideoNativeHandleMetadata* md = (VideoNativeHandleMetadata*) data;
-        native_handle_t* nh = md->pHandle;
         mDevice->ops->release_recording_frame(mDevice, data);
-        native_handle_close(nh);
-        native_handle_delete(nh);
     }
 }
 
@@ -972,7 +1016,21 @@ Return<Status> CameraDevice::setParameters(const hidl_string& params) {
         return Status::OPERATION_NOT_SUPPORTED;
     }
     if (mDevice->ops->set_parameters) {
-        return getHidlStatus(mDevice->ops->set_parameters(mDevice, params.c_str()));
+        std::string current = getParametersLocked();
+        std::string next(params.c_str(), params.size());
+        bool rateChanged = false;
+        for (const char* key : {"preview-frame-rate", "preview-fps-range"}) {
+            std::string value = getParam(next, key);
+            rateChanged |= !value.empty() && value != getParam(current, key);
+        }
+        int rc = mDevice->ops->set_parameters(mDevice, params.c_str());
+        if (rc == OK && rateChanged && !(mDevice->ops->preview_enabled &&
+                mDevice->ops->preview_enabled(mDevice))) {
+            Mutex::Autolock _f(mHalPreviewWindow.mFrameLock);
+            mHalPreviewWindow.mFrameCount = 0;
+            mFrameRatePending = true;
+        }
+        return getHidlStatus(rc);
     }
     return Status::ILLEGAL_ARGUMENT;
 }
@@ -1010,6 +1068,22 @@ Return<Status> CameraDevice::sendCommand(CommandType cmd, int32_t arg1, int32_t 
         return getHidlStatus(mDevice->ops->send_command(mDevice, (int32_t) cmd, arg1, arg2));
     }
     return Status::ILLEGAL_ARGUMENT;
+}
+
+std::string CameraDevice::getParametersLocked() {
+    std::string params;
+    if (mDevice->ops->get_parameters) {
+        char* temp = mDevice->ops->get_parameters(mDevice);
+        if (temp != nullptr) {
+            params = temp;
+            if (mDevice->ops->put_parameters) {
+                mDevice->ops->put_parameters(mDevice, temp);
+            } else {
+                free(temp);
+            }
+        }
+    }
+    return params;
 }
 
 Return<void> CameraDevice::close() {
