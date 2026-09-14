@@ -62,10 +62,16 @@ cc_library_shared {
     compile_multilib: "32",
 }
 
-// cammw_sensor_open NULL stub (provider only; avoids decStrong SIGBUS)
+// libcammw sensor client (gyro/accel/light) over android.frameworks.sensorservice (camera provider)
 cc_library_shared {
     name: "libcammw_motionsensor_shim",
     srcs: ["libcammw_motionsensor_shim.cpp"],
+    shared_libs: [
+        "android.frameworks.sensorservice-V1-ndk",
+        "android.hardware.sensors-V3-ndk",
+        "libbinder_ndk",
+        "liblog",
+    ],
     vendor: true,
     compile_multilib: "32",
 }

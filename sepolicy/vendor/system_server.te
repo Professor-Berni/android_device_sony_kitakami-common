@@ -28,3 +28,4 @@ allow system_server unlabeled:file unlink;
 allow system_server userspace_reboot_config_prop:file r_file_perms;
 allow system_server vendor_file:file rx_file_perms;
 allow system_server vendor_security_patch_level_prop:file r_file_perms;
+binder_call(system_server, hal_camera_default)
