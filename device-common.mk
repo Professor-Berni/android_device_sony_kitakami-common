@@ -149,10 +149,26 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/etc/init/android.hardware.camera.provider@2.4-service.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/android.hardware.camera.provider@2.4-service.rc
 
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/camera/extension/media/audio/camera/common/af_success.m4a:system/media/audio/camera/common/af_success.m4a \
+    $(LOCAL_PATH)/camera/extension/media/audio/camera/common/selftimer_10sec.m4a:system/media/audio/camera/common/selftimer_10sec.m4a \
+    $(LOCAL_PATH)/camera/extension/media/audio/camera/common/selftimer_2sec.m4a:system/media/audio/camera/common/selftimer_2sec.m4a \
+    $(LOCAL_PATH)/camera/extension/media/audio/camera/common/selftimer_3sec.m4a:system/media/audio/camera/common/selftimer_3sec.m4a \
+    $(LOCAL_PATH)/camera/extension/media/audio/camera/sound0/no_sound.m4a:system/media/audio/camera/sound0/no_sound.m4a \
+    $(LOCAL_PATH)/camera/extension/media/audio/camera/sound1/fastcapture_launch_and_capture_done.wav:system/media/audio/camera/sound1/fastcapture_launch_and_capture_done.wav \
+    $(LOCAL_PATH)/camera/extension/media/audio/camera/sound1/shutter.m4a:system/media/audio/camera/sound1/shutter.m4a \
+    $(LOCAL_PATH)/camera/extension/media/audio/camera/sound1/shutter_done.wav:system/media/audio/camera/sound1/shutter_done.wav \
+    $(LOCAL_PATH)/camera/extension/media/audio/camera/sound1/start_rec.m4a:system/media/audio/camera/sound1/start_rec.m4a \
+    $(LOCAL_PATH)/camera/extension/media/audio/camera/sound1/stop_rec.m4a:system/media/audio/camera/sound1/stop_rec.m4a \
+    $(LOCAL_PATH)/camera/extension/media/audio/camera/sound1/timeshift_shutter.wav:system/media/audio/camera/sound1/timeshift_shutter.wav \
+    $(LOCAL_PATH)/camera/extension/media/audio/ui/VideoRecord.ogg:system/media/audio/ui/VideoRecord.ogg \
+    $(LOCAL_PATH)/camera/extension/media/audio/ui/camera_click.ogg:system/media/audio/ui/camera_click.ogg
+
 PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-service \
     android.hardware.camera.provider@2.4-impl-kitakami:32 \
     camera.device@1.0-impl-kitakami:32 \
+    sonycamera \
     libjpeg.vendor:32 \
     Aperture \
     libyuv \
@@ -164,6 +180,8 @@ PRODUCT_PACKAGES += \
     libmutex_destroy_shim:32 \
     libcammw_motionsensor_shim:32 \
     libalfort_shim:32
+
+$(call inherit-product, vendor/sony/kitakami-common/sonycamera/sonycamera.mk)
 
 # Charger
 PRODUCT_PACKAGES += charger_res_images

@@ -4,6 +4,7 @@ cc_library_shared {
     proprietary: true,
     srcs: [
         "CameraDevice.cpp",
+        "SonyParameters.cpp",
     ],
     shared_libs: [
         "libhidlbase",

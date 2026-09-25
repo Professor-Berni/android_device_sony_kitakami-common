@@ -1,0 +1,1 @@
+/(system_ext|system/system_ext)/bin/sonycamera    u:object_r:cameraserver_exec:s0

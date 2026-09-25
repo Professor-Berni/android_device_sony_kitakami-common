@@ -16,8 +16,11 @@
 
 #define LOG_TAG "CamDev@1.0-impl"
 
+#include <atomic>
 #include <fcntl.h>
+#include <string.h>
 #include <string>
+#include <unordered_set>
 
 #include <hardware/camera.h>
 #include <hardware/gralloc1.h>
@@ -27,6 +30,7 @@
 
 #include <media/hardware/HardwareAPI.h> // For VideoNativeHandleMetadata
 #include "CameraDevice_1_0.h"
+#include "SonyParameters.h"
 
 namespace android {
 namespace hardware {
@@ -40,7 +44,74 @@ using ::android::hardware::graphics::common::V1_0::PixelFormat;
 
 HandleImporter CameraDevice::sHandleImporter;
 
-CameraDevice* sCameraDevice;
+static Mutex sSessionLock;
+static std::unordered_map<int, CameraDevice*> sPrimarySessions;
+static std::unordered_set<CameraDevice*> sExtensionSessions;
+static std::unordered_set<const CameraDevice*> sSonyClientSessions;
+static constexpr MemoryId kNoMemory = UINT32_MAX;
+static constexpr int kMaxMemorySlots = 4;
+static std::atomic<CameraDevice*> sMemorySlots[kMaxMemorySlots];
+
+static camera_module_t* vendorModule() {
+    static camera_module_t* module = [] {
+        const hw_module_t* m = nullptr;
+        return hw_get_module_by_class(CAMERA_HARDWARE_MODULE_ID, "vendor", &m) == 0 ?
+                (camera_module_t*) m : nullptr;
+    }();
+    return module;
+}
+
+static CameraFrameMetadata toHidlMetadata(const camera_frame_metadata_t* metadata) {
+    CameraFrameMetadata hidlMetadata;
+    if (metadata) {
+        hidlMetadata.faces.resize(metadata->number_of_faces);
+        for (size_t i = 0; i < hidlMetadata.faces.size(); i++) {
+            hidlMetadata.faces[i].score = metadata->faces[i].score;
+            hidlMetadata.faces[i].id = metadata->faces[i].id;
+            for (int k = 0; k < 4; k++) {
+                hidlMetadata.faces[i].rect[k] = metadata->faces[i].rect[k];
+            }
+            for (int k = 0; k < 2; k++) {
+                hidlMetadata.faces[i].leftEye[k] = metadata->faces[i].left_eye[k];
+            }
+            for (int k = 0; k < 2; k++) {
+                hidlMetadata.faces[i].rightEye[k] = metadata->faces[i].right_eye[k];
+            }
+            for (int k = 0; k < 2; k++) {
+                hidlMetadata.faces[i].mouth[k] = metadata->faces[i].mouth[k];
+            }
+        }
+    }
+    return hidlMetadata;
+}
+
+static constexpr int32_t kSonyMetadataMagic = 0x534f4e59;
+static constexpr size_t kSonyFaceSize = 100;
+
+struct SonyFrameMetadata {
+    int32_t number_of_faces;
+    const uint8_t* faces;
+    int32_t extra;
+};
+
+static CameraFrameMetadata toSonyHidlMetadata(const camera_frame_metadata_t* metadata) {
+    CameraFrameMetadata hidlMetadata;
+    if (metadata == nullptr) {
+        return hidlMetadata;
+    }
+    const SonyFrameMetadata* md = reinterpret_cast<const SonyFrameMetadata*>(metadata);
+    size_t bytes = md->number_of_faces > 0 && md->faces != nullptr ?
+            md->number_of_faces * kSonyFaceSize : 0;
+    hidlMetadata.faces.resize(1 + (bytes + sizeof(CameraFace) - 1) / sizeof(CameraFace));
+    memset(hidlMetadata.faces.data(), 0, hidlMetadata.faces.size() * sizeof(CameraFace));
+    hidlMetadata.faces[0].rect[0] = kSonyMetadataMagic;
+    hidlMetadata.faces[0].rect[1] = md->extra;
+    hidlMetadata.faces[0].rect[2] = bytes > 0 ? md->number_of_faces : 0;
+    if (bytes > 0) {
+        memcpy(&hidlMetadata.faces[1], md->faces, bytes);
+    }
+    return hidlMetadata;
+}
 
 static size_t findParam(const std::string& params, const std::string& key) {
     if (params.compare(0, key.size() + 1, key + '=') == 0) {
@@ -389,10 +460,66 @@ CameraDevice::CameraHeapMemory::~CameraHeapMemory() {
 }
 
 // shared memory methods
+int CameraDevice::claimMemorySlot() {
+    for (int i = 0; i < kMaxMemorySlots; i++) {
+        CameraDevice* expected = nullptr;
+        if (sMemorySlots[i].compare_exchange_strong(expected, this)) {
+            return i;
+        }
+    }
+    ALOGE("%s: no free memory slot for camera %s", __FUNCTION__, mCameraId.c_str());
+    return -1;
+}
+
+void CameraDevice::releaseMemorySlot() {
+    if (mMemorySlot >= 0) {
+        sMemorySlots[mMemorySlot] = nullptr;
+        mMemorySlot = -1;
+    }
+}
+
+camera_request_memory CameraDevice::memoryCallback() const {
+    switch (mMemorySlot) {
+        case 0: return sGetMemory0;
+        case 1: return sGetMemory1;
+        case 2: return sGetMemory2;
+        case 3: return sGetMemory3;
+        default: return sGetMemory;
+    }
+}
+
+camera_memory_t* CameraDevice::sGetMemorySlot(int slot, int fd, size_t buf_size, uint_t num_bufs) {
+    CameraDevice* object = sMemorySlots[slot].load();
+    if (object == nullptr) {
+        ALOGE("%s: camera HAL request memory for a closed slot %d!", __FUNCTION__, slot);
+        return nullptr;
+    }
+    return sGetMemory(fd, buf_size, num_bufs, object);
+}
+
+camera_memory_t* CameraDevice::sGetMemory0(int fd, size_t buf_size, uint_t num_bufs, void*) {
+    return sGetMemorySlot(0, fd, buf_size, num_bufs);
+}
+
+camera_memory_t* CameraDevice::sGetMemory1(int fd, size_t buf_size, uint_t num_bufs, void*) {
+    return sGetMemorySlot(1, fd, buf_size, num_bufs);
+}
+
+camera_memory_t* CameraDevice::sGetMemory2(int fd, size_t buf_size, uint_t num_bufs, void*) {
+    return sGetMemorySlot(2, fd, buf_size, num_bufs);
+}
+
+camera_memory_t* CameraDevice::sGetMemory3(int fd, size_t buf_size, uint_t num_bufs, void*) {
+    return sGetMemorySlot(3, fd, buf_size, num_bufs);
+}
+
 camera_memory_t* CameraDevice::sGetMemory(int fd, size_t buf_size, uint_t num_bufs, void *user) {
     ALOGV("%s", __FUNCTION__);
-    CameraDevice* object = sCameraDevice;
-    (void)(user);
+    CameraDevice* object = static_cast<CameraDevice*>(user);
+    if (object == nullptr) {
+        ALOGE("%s: camera HAL request memory without a session!", __FUNCTION__);
+        return nullptr;
+    }
     if (object->mDeviceCallback == nullptr) {
         ALOGE("%s: camera HAL request memory while camera is not opened!", __FUNCTION__);
         return nullptr;
@@ -425,6 +552,7 @@ void CameraDevice::sPutMemory(camera_memory_t *data) {
         return;
 
     CameraHeapMemory* mem = static_cast<CameraHeapMemory *>(data->handle);
+    sForgetForeignMemory(mem);
     CameraDevice* device = mem->handle.mDevice;
     if (device == nullptr) {
         ALOGE("%s: camera HAL return memory for a null device!", __FUNCTION__);
@@ -443,8 +571,7 @@ void CameraDevice::sPutMemory(camera_memory_t *data) {
 // Callback forwarding methods
 void CameraDevice::sNotifyCb(int32_t msg_type, int32_t ext1, int32_t ext2, void *user) {
     ALOGV("%s", __FUNCTION__);
-    CameraDevice* object = sCameraDevice;
-    (void)(user);
+    CameraDevice* object = static_cast<CameraDevice*>(user);
     if (object->mDeviceCallback != nullptr) {
         object->mDeviceCallback->notifyCallback((NotifyCallbackMsg) msg_type, ext1, ext2);
     }
@@ -453,8 +580,7 @@ void CameraDevice::sNotifyCb(int32_t msg_type, int32_t ext1, int32_t ext2, void 
 void CameraDevice::sDataCb(int32_t msg_type, const camera_memory_t *data, unsigned int index,
         camera_frame_metadata_t *metadata, void *user) {
     ALOGV("%s", __FUNCTION__);
-    CameraDevice* object = sCameraDevice;
-    (void)(user);
+    CameraDevice* object = static_cast<CameraDevice*>(user);
     sp<CameraHeapMemory> mem(static_cast<CameraHeapMemory*>(data->handle));
     if (index >= mem->mNumBufs) {
         ALOGE("%s: invalid buffer index %d, max allowed is %d", __FUNCTION__,
@@ -462,29 +588,8 @@ void CameraDevice::sDataCb(int32_t msg_type, const camera_memory_t *data, unsign
         return;
     }
     if (object->mDeviceCallback != nullptr) {
-        CameraFrameMetadata hidlMetadata;
-        if (metadata) {
-            hidlMetadata.faces.resize(metadata->number_of_faces);
-            for (size_t i = 0; i < hidlMetadata.faces.size(); i++) {
-                hidlMetadata.faces[i].score = metadata->faces[i].score;
-                hidlMetadata.faces[i].id = metadata->faces[i].id;
-                for (int k = 0; k < 4; k++) {
-                    hidlMetadata.faces[i].rect[k] = metadata->faces[i].rect[k];
-                }
-                for (int k = 0; k < 2; k++) {
-                    hidlMetadata.faces[i].leftEye[k] = metadata->faces[i].left_eye[k];
-                }
-                for (int k = 0; k < 2; k++) {
-                    hidlMetadata.faces[i].rightEye[k] = metadata->faces[i].right_eye[k];
-                }
-                for (int k = 0; k < 2; k++) {
-                    hidlMetadata.faces[i].mouth[k] = metadata->faces[i].mouth[k];
-                }
-            }
-        }
-        CameraHeapMemory* mem = static_cast<CameraHeapMemory *>(data->handle);
         object->mDeviceCallback->dataCallback(
-                (DataCallbackMsg) msg_type, mem->handle.mId, index, hidlMetadata);
+                (DataCallbackMsg) msg_type, mem->handle.mId, index, toHidlMetadata(metadata));
     }
 }
 
@@ -524,8 +629,7 @@ void CameraDevice::handleCallbackTimestamp(
 void CameraDevice::sDataCbTimestamp(nsecs_t timestamp, int32_t msg_type,
         const camera_memory_t *data, unsigned index, void *user) {
     ALOGV("%s", __FUNCTION__);
-    CameraDevice* object = sCameraDevice;
-    (void)(user);
+    CameraDevice* object = static_cast<CameraDevice*>(user);
     // Start refcounting the heap object from here on.  When the clients
     // drop all references, it will be destroyed (as well as the enclosed
     // MemoryHeapBase.
@@ -555,6 +659,76 @@ void CameraDevice::sDataCbTimestamp(nsecs_t timestamp, int32_t msg_type,
             object->handleCallbackTimestamp(timestamp, msg_type, mem->handle.mId, index, handle);
         }
     }
+}
+
+bool CameraDevice::foreignMemoryId(const camera_memory_t* data, MemoryId* id) {
+    if (data == nullptr) {
+        *id = kNoMemory;
+        return true;
+    }
+    CameraHeapMemory* mem = static_cast<CameraHeapMemory*>(data->handle);
+    Mutex::Autolock _l(mMemoryMapLock);
+    auto it = mForeignMemory.find(mem);
+    if (it != mForeignMemory.end()) {
+        *id = it->second;
+        return true;
+    }
+    hidl_handle hidlHandle = mem->mHidlHandle;
+    auto ret = mDeviceCallback->registerMemory(hidlHandle, mem->mBufSize, mem->mNumBufs);
+    if (!ret.isOk()) {
+        ALOGE("%s: registerMemory failed: %s", __FUNCTION__, ret.description().c_str());
+        return false;
+    }
+    *id = ret;
+    mForeignMemory[mem] = *id;
+    mMemoryMap[*id] = mem;
+    return true;
+}
+
+void CameraDevice::sForgetForeignMemory(CameraHeapMemory* mem) {
+    Mutex::Autolock _s(sSessionLock);
+    for (CameraDevice* ext : sExtensionSessions) {
+        Mutex::Autolock _m(ext->mMemoryMapLock);
+        auto it = ext->mForeignMemory.find(mem);
+        if (it == ext->mForeignMemory.end()) {
+            continue;
+        }
+        if (ext->mDeviceCallback != nullptr) {
+            ext->mDeviceCallback->unregisterMemory(it->second).isOk();
+        }
+        ext->mMemoryMap.erase(it->second);
+        ext->mForeignMemory.erase(it);
+    }
+}
+
+void CameraDevice::sExtNotifyCb(int32_t msg_type, int32_t ext1, int32_t ext2, void *user) {
+    CameraDevice* object = static_cast<CameraDevice*>(user);
+    if (object->mDeviceCallback != nullptr) {
+        object->mDeviceCallback->notifyCallback((NotifyCallbackMsg) msg_type, ext1, ext2).isOk();
+    }
+}
+
+void CameraDevice::sExtDataCb(int32_t msg_type, const camera_memory_t *data, unsigned int index,
+        camera_frame_metadata_t *metadata, void *user) {
+    CameraDevice* object = static_cast<CameraDevice*>(user);
+    MemoryId id;
+    if (object->mDeviceCallback == nullptr || !object->foreignMemoryId(data, &id)) {
+        return;
+    }
+    object->mDeviceCallback->dataCallback(
+            (DataCallbackMsg) msg_type, id, index, toSonyHidlMetadata(metadata)).isOk();
+}
+
+void CameraDevice::sExtDataCbTimestamp(nsecs_t timestamp, int32_t msg_type,
+        const camera_memory_t *data, unsigned index, void *user) {
+    CameraDevice* object = static_cast<CameraDevice*>(user);
+    MemoryId id;
+    if (data == nullptr || object->mDeviceCallback == nullptr ||
+            !object->foreignMemoryId(data, &id)) {
+        return;
+    }
+    object->mDeviceCallback->dataCallbackTimestamp(
+            (DataCallbackMsg) msg_type, id, index, timestamp).isOk();
 }
 
 void CameraDevice::initHalPreviewWindow()
@@ -683,13 +857,20 @@ Return<Status> CameraDevice::open(const sp<ICameraDeviceCallback>& callback) {
         return getHidlStatus(res);
     }
 
+    {
+        Mutex::Autolock _s(sSessionLock);
+        mExtension = sPrimarySessions.count(mCameraIdInt) != 0;
+    }
+
     int rc = OK;
-    if (mModule->getModuleApiVersion() >= CAMERA_MODULE_API_VERSION_2_3 &&
-        info.device_version > CAMERA_DEVICE_API_VERSION_1_0) {
+    if (mExtension || (mModule->getModuleApiVersion() >= CAMERA_MODULE_API_VERSION_2_3 &&
+        info.device_version > CAMERA_DEVICE_API_VERSION_1_0)) {
         // Open higher version camera device as HAL1.0 device.
-        rc = mModule->openLegacy(mCameraId.c_str(),
-                                 CAMERA_DEVICE_API_VERSION_1_0,
-                                 (hw_device_t **)&mDevice);
+        camera_module_t* vendor = vendorModule();
+        rc = vendor != nullptr && vendor->open_legacy != nullptr ?
+                vendor->open_legacy(&vendor->common, mCameraId.c_str(),
+                                    CAMERA_DEVICE_API_VERSION_1_0, (hw_device_t **)&mDevice) :
+                -ENODEV;
     } else {
         rc = mModule->open(mCameraId.c_str(), (hw_device_t **)&mDevice);
     }
@@ -702,18 +883,39 @@ Return<Status> CameraDevice::open(const sp<ICameraDeviceCallback>& callback) {
     initHalPreviewWindow();
     mDeviceCallback = callback;
 
-    sCameraDevice = this;
+    if (mExtension) {
+        {
+            Mutex::Autolock _s(sSessionLock);
+            sExtensionSessions.insert(this);
+            auto primary = sPrimarySessions.find(mCameraIdInt);
+            if (primary != sPrimarySessions.end() &&
+                    sSonyClientSessions.insert(primary->second).second) {
+                ALOGI("Camera %s: Sony client, passing parameters through", mCameraId.c_str());
+            }
+        }
+        if (mDevice->ops->set_callbacks) {
+            mDevice->ops->set_callbacks(mDevice,
+                    sExtNotifyCb, sExtDataCb, sExtDataCbTimestamp, nullptr, this);
+        }
+        ALOGI("Camera %s opened as an extension session", mCameraId.c_str());
+        return Status::OK;
+    }
 
+    {
+        Mutex::Autolock _s(sSessionLock);
+        sPrimarySessions[mCameraIdInt] = this;
+        mMemorySlot = claimMemorySlot();
+    }
     if (mDevice->ops->set_callbacks) {
         mDevice->ops->set_callbacks(mDevice,
-                sNotifyCb, sDataCb, sDataCbTimestamp, sGetMemory, this);
+                sNotifyCb, sDataCb, sDataCbTimestamp, memoryCallback(), this);
     }
 
     std::string params = getParametersLocked();
     if (!params.empty() && mDevice->ops->set_parameters) {
         setParam(params, "preview-frame-rate", "30");
         setParam(params, "preview-fps-range", "1000,30000");
-        mDevice->ops->set_parameters(mDevice, params.c_str());
+        setParametersLocked(params);
     }
     mFrameRatePending = false;
 
@@ -1023,8 +1225,8 @@ Return<Status> CameraDevice::setParameters(const hidl_string& params) {
             std::string value = getParam(next, key);
             rateChanged |= !value.empty() && value != getParam(current, key);
         }
-        int rc = mDevice->ops->set_parameters(mDevice, params.c_str());
-        if (rc == OK && rateChanged && !(mDevice->ops->preview_enabled &&
+        int rc = setParametersLocked(next);
+        if (rc == OK && rateChanged && !mExtension && !(mDevice->ops->preview_enabled &&
                 mDevice->ops->preview_enabled(mDevice))) {
             Mutex::Autolock _f(mHalPreviewWindow.mFrameLock);
             mHalPreviewWindow.mFrameCount = 0;
@@ -1044,15 +1246,7 @@ Return<void> CameraDevice::getParameters(getParameters_cb _hidl_cb) {
         _hidl_cb(outStr);
         return Void();
     }
-    if (mDevice->ops->get_parameters) {
-        char *temp = mDevice->ops->get_parameters(mDevice);
-        outStr = temp;
-        if (mDevice->ops->put_parameters) {
-            mDevice->ops->put_parameters(mDevice, temp);
-        } else {
-            free(temp);
-        }
-    }
+    outStr = getParametersLocked();
     _hidl_cb(outStr);
     return Void();
 }
@@ -1083,7 +1277,22 @@ std::string CameraDevice::getParametersLocked() {
             }
         }
     }
-    return params;
+    return params.empty() || sonyParametersLocked() ? params : fixupGetParameters(params);
+}
+
+int CameraDevice::setParametersLocked(const std::string& params) {
+    if (sonyParametersLocked()) {
+        return mDevice->ops->set_parameters(mDevice, params.c_str());
+    }
+    return mDevice->ops->set_parameters(mDevice, fixupSetParameters(params).c_str());
+}
+
+bool CameraDevice::sonyParametersLocked() const {
+    if (mExtension) {
+        return true;
+    }
+    Mutex::Autolock _s(sSessionLock);
+    return sSonyClientSessions.count(this) != 0;
 }
 
 Return<void> CameraDevice::close() {
@@ -1095,11 +1304,29 @@ Return<void> CameraDevice::close() {
 void CameraDevice::closeLocked() {
     ALOGI("Closing camera %s", mCameraId.c_str());
     if(mDevice) {
+        if (!mExtension && mDevice->ops->release) {
+            mDevice->ops->release(mDevice);
+        }
         int rc = mDevice->common.close(&mDevice->common);
         if (rc != OK) {
             ALOGE("Could not close camera %s: %d", mCameraId.c_str(), rc);
         }
         mDevice = nullptr;
+    }
+    {
+        Mutex::Autolock _s(sSessionLock);
+        auto it = sPrimarySessions.find(mCameraIdInt);
+        if (it != sPrimarySessions.end() && it->second == this) {
+            sPrimarySessions.erase(it);
+        }
+        sExtensionSessions.erase(this);
+        sSonyClientSessions.erase(this);
+        releaseMemorySlot();
+    }
+    if (mExtension) {
+        Mutex::Autolock _m(mMemoryMapLock);
+        mForeignMemory.clear();
+        mMemoryMap.clear();
     }
 }
 

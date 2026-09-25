@@ -176,6 +176,9 @@ private:
 
     bool mMetadataMode = false;
     bool mFrameRatePending = false;
+    bool mExtension = false;
+    int mMemorySlot = -1;
+    std::unordered_map<CameraHeapMemory*, MemoryId> mForeignMemory;
 
     mutable Mutex mBatchLock;
     // Start of protection scope for mBatchLock
@@ -191,6 +194,14 @@ private:
 
     // shared memory methods
     static camera_memory_t* sGetMemory(int fd, size_t buf_size, uint_t num_bufs, void *user);
+    static camera_memory_t* sGetMemorySlot(int slot, int fd, size_t buf_size, uint_t num_bufs);
+    static camera_memory_t* sGetMemory0(int fd, size_t buf_size, uint_t num_bufs, void *user);
+    static camera_memory_t* sGetMemory1(int fd, size_t buf_size, uint_t num_bufs, void *user);
+    static camera_memory_t* sGetMemory2(int fd, size_t buf_size, uint_t num_bufs, void *user);
+    static camera_memory_t* sGetMemory3(int fd, size_t buf_size, uint_t num_bufs, void *user);
+    int claimMemorySlot();
+    void releaseMemorySlot();
+    camera_request_memory memoryCallback() const;
     static void sPutMemory(camera_memory_t *data);
 
     // Device callback forwarding methods
@@ -199,6 +210,14 @@ private:
                         camera_frame_metadata_t *metadata, void *user);
     static void sDataCbTimestamp(nsecs_t timestamp, int32_t msg_type,
                                     const camera_memory_t *data, unsigned index, void *user);
+
+    static void sExtNotifyCb(int32_t msg_type, int32_t ext1, int32_t ext2, void *user);
+    static void sExtDataCb(int32_t msg_type, const camera_memory_t *data, unsigned int index,
+                           camera_frame_metadata_t *metadata, void *user);
+    static void sExtDataCbTimestamp(nsecs_t timestamp, int32_t msg_type,
+                                    const camera_memory_t *data, unsigned index, void *user);
+    static void sForgetForeignMemory(CameraHeapMemory* mem);
+    bool foreignMemoryId(const camera_memory_t* data, MemoryId* id);
 
     // Preview window callback forwarding methods
     static int sDequeueBuffer(struct preview_stream_ops* w,
@@ -231,6 +250,8 @@ private:
 
     Status initStatus() const;
     std::string getParametersLocked();
+    int setParametersLocked(const std::string& params);
+    bool sonyParametersLocked() const;
     void closeLocked();
 };
 

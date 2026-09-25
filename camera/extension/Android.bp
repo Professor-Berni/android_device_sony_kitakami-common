@@ -1,0 +1,39 @@
+cc_library_shared {
+    name: "libsonycamera_bp",
+    system_ext_specific: true,
+    srcs: ["bpshim.cpp"],
+    compile_multilib: "both",
+    cflags: ["-fvisibility=hidden"],
+    shared_libs: [
+        "libbinder",
+        "libcamera_client",
+        "liblog",
+        "libutils",
+    ],
+    ldflags: [
+        "-Wl,-z,global",
+        "-Wl,--no-as-needed",
+    ],
+}
+
+cc_binary {
+    name: "sonycamera",
+    system_ext_specific: true,
+    srcs: ["sonycamera.cpp"],
+    init_rc: ["sonycamera.rc"],
+    compile_multilib: "32",
+    shared_libs: [
+        "android.hardware.camera.common@1.0",
+        "android.hardware.camera.device@1.0",
+        "android.hardware.camera.provider@2.4",
+        "libbinder",
+        "libcamera_metadata",
+        "libcutils",
+        "libhardware",
+        "libhidlbase",
+        "liblog",
+        "libsonycamera_bp",
+        "libutils",
+    ],
+    ldflags: ["-Wl,--export-dynamic-symbol=hw_get_module"],
+}

@@ -21,6 +21,8 @@ ifneq ($(filter ivy karin karin_windy satsuki sumire suzuran,$(TARGET_DEVICE)),)
 
 include $(call all-makefiles-under,$(LOCAL_PATH))
 
+include vendor/sony/kitakami-common/sonycamera/Android.mk
+
 include $(CLEAR_VARS)
 
 ADSP_IMAGES := \

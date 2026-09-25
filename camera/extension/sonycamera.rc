@@ -1,0 +1,6 @@
+service sonycamera /system_ext/bin/sonycamera
+    class main
+    user cameraserver
+    group audio camera input drmrpc
+    ioprio rt 4
+    task_profiles CameraServiceCapacity MaxPerformance
