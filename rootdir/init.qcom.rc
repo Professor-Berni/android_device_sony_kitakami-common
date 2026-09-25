@@ -811,7 +811,7 @@ service secd /system/bin/secd
     user system
     group system
     # secd CTX buffer-overflow shim (Sony's 288B HMAC_CTX vs BoringSSL ~400B)
-    setenv LD_PRELOAD libsecd_crypto_shim.so
+    setenv LD_PRELOAD libsecd_crypto_shim.so:libdrmfix.so
     socket secd_ebl_sock stream 0660 system oem_2996
     socket secd_devsec_sock stream 0660 system oem_2996
     socket secd_credmgr_sock stream 0660 system oem_2996
