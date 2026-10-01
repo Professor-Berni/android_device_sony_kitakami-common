@@ -6,4 +6,6 @@ allow priv_app proc_interrupts:file r_file_perms;
 allow priv_app rootfs:dir create_dir_perms;
 allow priv_app rootfs:file create_file_perms;
 allow priv_app sysfs_android_usb:file r_file_perms;
+allow priv_app tmp_root_mount_file:dir r_dir_perms;
+allow priv_app tmp_root_mount_file:sock_file rw_file_perms;
 allow priv_app vendor_file:file rx_file_perms;
