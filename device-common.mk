@@ -413,7 +413,11 @@ PRODUCT_COPY_FILES += \
 # Sensors
 PRODUCT_PACKAGES += \
     android.hardware.sensors@1.0-impl \
-    libshim_sensors
+    libshim_sensors \
+    sensors.kitakami
+
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/sensors/hals.conf:$(TARGET_COPY_OUT_VENDOR)/etc/sensors/hals.conf
 
 # Soong
 PRODUCT_SOONG_NAMESPACES += \
