@@ -70,6 +70,13 @@
 /dev/block/bootdevice/mmcblk0p39                           u:object_r:diag_partition_device:s0
 /dev/block/mmcblk0p39                                      u:object_r:diag_partition_device:s0
 
+# misc
+/dev/block/mmcblk0p33                                      u:object_r:misc_block_device:s0
+/dev/block/platform/soc\.0/7824900\.sdhci/by-name/misc     u:object_r:misc_block_device:s0
+/dev/block/platform/soc\.0/f9824900\.sdhci/by-name/misc    u:object_r:misc_block_device:s0
+/dev/block/platform/msm_sdcc\.1/by-name/misc               u:object_r:misc_block_device:s0
+/dev/block/bootdevice/by-name/misc                         u:object_r:misc_block_device:s0
+
 # ssd (Sony Secure Storage Device)
 /dev/block/mmcblk0p14                                      u:object_r:ssd_device:s0
 /dev/block/platform/soc\.0/7824900\.sdhci/by-name/ssd      u:object_r:ssd_device:s0
