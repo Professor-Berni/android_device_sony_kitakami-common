@@ -112,6 +112,9 @@ on early-boot
     setrlimit 8 67108864 67108864
     write /sys/kernel/boot_adsp/boot 1
 
+on charger
+    write /sys/class/leds/lcd-backlight/brightness 1536
+
 on fs
     wait /dev/block/platform/soc.0/${ro.boot.bootdevice}
     symlink /dev/block/platform/soc.0/${ro.boot.bootdevice} /dev/block/bootdevice
