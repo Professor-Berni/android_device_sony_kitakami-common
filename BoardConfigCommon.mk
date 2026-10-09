@@ -160,7 +160,8 @@ BOARD_HAVE_BCM_FM_SYSFS := "/sys/bus/platform/drivers/bcm_ldisc/bcm_ldisc/"
 BOARD_BRCM_HCI_NUM := 26
 
 # Partitions types
-BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
+# Cache partition is repurposed as /metadata
+# BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 
@@ -225,6 +226,9 @@ WITH_DEXPREOPT_BOOT_IMG_AND_SYSTEM_SERVER_ONLY ?= true
 # Recovery
 TARGET_RECOVERY_FSTAB := $(COMMON_PATH)/rootdir/fstab.qcom
 TARGET_USERIMAGES_USE_EXT4 := true
+
+# Create /metadata as an empty dir in the root structure so it persists as a mountpoint
+BOARD_USES_METADATA_PARTITION := true
 
 # Shims
 TARGET_LD_SHIM_LIBS := \
