@@ -3,6 +3,7 @@ type_transition rild socket_device:sock_file rild_socket "rild_ims1";
 allow rild audioserver_service:service_manager find;
 allow rild cache_file:dir rw_dir_perms;
 allow rild cache_file:file create_file_perms;
+allow rild cache_file:lnk_file r_file_perms;
 allow rild default_android_service:service_manager find;
 allow rild default_prop:file r_file_perms;
 allow rild device:chr_file rw_file_perms;
