@@ -50,6 +50,7 @@ allow shell fst_prop:file r_file_perms;
 #allow shell gsid_prop:file r_file_perms;
 # allow shell ipacm-diag_prop:file r_file_perms;
 allow shell ipacm_prop:file r_file_perms;
+allow shell kernel:system syslog_read;
 allow shell llkd_prop:file r_file_perms;
 allow shell location_prop:file r_file_perms;
 allow shell lowpan_prop:file r_file_perms;

@@ -1,3 +1,4 @@
+allow platform_app bluetooth_finder_prop:file r_file_perms;
 allow platform_app exported_camera_prop:file r_file_perms;
 allow platform_app sysfs:file r_file_perms;
 allow platform_app sysfs_rtc:dir r_dir_perms;
