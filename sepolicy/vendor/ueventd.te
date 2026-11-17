@@ -3,6 +3,7 @@ r_dir_file(ueventd, firmware_file)
 
 allow ueventd device:file relabelfrom;
 allow ueventd proc:file r_file_perms;
+allow ueventd self:capability2 mac_admin;
 allow ueventd self:capability sys_nice;
 allow ueventd sysfs_camera_torch:file rw_file_perms;
 allow ueventd vfat:dir r_dir_perms;
